@@ -96,6 +96,15 @@ li button {
     margin-top: 2rem;
 }
 
+.logout-btn {
+    margin-top: 20px;
+    background-color: #e74c3c;
+}
+
+.logout-btn:hover {
+    background-color: #c0392b;
+}
+
 @media (max-width: 600px) {
     .container {
         width: 95%;
