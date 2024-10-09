@@ -3,12 +3,18 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// 添加 CORS 支持
+app.use(cors());
+
 // 连接到 MongoDB（请确保您已安装并运行了 MongoDB）
-mongoose.connect('mongodb://localhost/task_manager', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost/task_manager', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log('Connected to MongoDB'))
+    .catch(err => console.error('Could not connect to MongoDB', err));
 
 // 定义用户模型
 const User = mongoose.model('User', {
@@ -31,15 +37,18 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 注册
 app.post('/api/register', async (req, res) => {
     try {
+        console.log('Received registration request:', req.body);
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         const user = new User({
             username: req.body.username,
             password: hashedPassword
         });
         await user.save();
+        console.log('User registered successfully');
         res.status(201).send();
-    } catch {
-        res.status(500).send();
+    } catch (error) {
+        console.error('Registration error:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
@@ -107,3 +116,7 @@ app.delete('/api/tasks/:id', authenticateToken, async (req, res) => {
 
 // 检查认证状态
 app.get('/api/check-auth', authenticateToken, (req, res) => {
+    res.status(200).send();
+});
+
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
