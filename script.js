@@ -192,14 +192,8 @@ function showNotification(message) {
     }
 }
 
-function savePhoneNumber() {
-    const phoneNumber = document.getElementById('phoneNumber').value;
-    if (phoneNumber) {
-        localStorage.setItem('userPhoneNumber', phoneNumber);
-        alert('手机号码已保存（仅用于本地存储，不会发送实际短信）');
-    } else {
-        alert('请输入有效的手机号码');
-    }
-}
+// 删除 savePhoneNumber 函数
 
-// 删除 sendSMSReminder 函数，因为我们不再使用后端发送短信
+// 其他函数保持不变...
+
+// 删除 sendSMSReminder 函数（如果之前有的话）
