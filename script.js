@@ -60,17 +60,26 @@ function register() {
 function addTask() {
     const taskName = document.getElementById('taskName').value;
     const dueDate = document.getElementById('dueDate').value;
+    const dueTime = document.getElementById('dueTime').value;
     const priority = document.getElementById('priority').value;
     const category = document.getElementById('category').value;
     
-    if (taskName && dueDate && priority && category) {
-        const task = { id: Date.now(), name: taskName, dueDate, priority, category };
+    if (taskName && dueDate && dueTime && priority && category) {
+        const task = { 
+            id: Date.now(), 
+            name: taskName, 
+            dueDate, 
+            dueTime,
+            priority, 
+            category 
+        };
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         tasks.push(task);
         localStorage.setItem('tasks', JSON.stringify(tasks));
         
         document.getElementById('taskName').value = '';
         document.getElementById('dueDate').value = '';
+        document.getElementById('dueTime').value = '';
         document.getElementById('priority').value = 'low';
         document.getElementById('category').value = '';
         loadTasks();
@@ -91,7 +100,7 @@ function displayTasks(tasks) {
     tasks.forEach(task => {
         const li = document.createElement('li');
         li.innerHTML = `
-            <span>${task.name} (截止日期: ${task.dueDate}, 优先级: ${task.priority}, 分类: ${task.category})</span>
+            <span>${task.name} (截止日期: ${task.dueDate} ${task.dueTime}, 优先级: ${task.priority}, 分类: ${task.category})</span>
             <button onclick="editTask(${task.id})">编辑</button>
             <button onclick="deleteTask(${task.id})">删除</button>
         `;
@@ -141,16 +150,56 @@ window.onload = function() {
     } else {
         showLoginForm();
     }
+
+    // 每小时检查一次任务
+    setInterval(checkAndRemindTasks, 3600000); // 3600000 毫秒 = 1 小时
 };
 
 // 添加这个新函数
 function checkAndRemindTasks() {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const today = new Date().toISOString().split('T')[0]; // 获取今天的日期
-    const todayTasks = tasks.filter(task => task.dueDate === today);
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const currentTime = now.toTimeString().split(' ')[0].slice(0, 5); // 获取当前时间 HH:MM
     
-    if (todayTasks.length > 0) {
-        const taskNames = todayTasks.map(task => task.name).join(', ');
-        alert(`提醒：今天有以下任务需要完成：${taskNames}`);
+    const upcomingTasks = tasks.filter(task => {
+        return task.dueDate === today && task.dueTime > currentTime && task.dueTime <= addMinutes(currentTime, 60);
+    });
+    
+    if (upcomingTasks.length > 0) {
+        const taskMessages = upcomingTasks.map(task => `${task.name} (${task.dueTime})`).join(', ');
+        showNotification(`提醒：接下来一小时内有以下任务需要完成：${taskMessages}`);
     }
 }
+
+function addMinutes(time, minutes) {
+    const [hours, mins] = time.split(':').map(Number);
+    const date = new Date(2000, 0, 1, hours, mins + minutes);
+    return date.toTimeString().slice(0, 5);
+}
+
+function showNotification(message) {
+    if ("Notification" in window) {
+        Notification.requestPermission().then(function (permission) {
+            if (permission === "granted") {
+                new Notification("任务提醒", { body: message });
+            } else {
+                alert(message);
+            }
+        });
+    } else {
+        alert(message);
+    }
+}
+
+function savePhoneNumber() {
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    if (phoneNumber) {
+        localStorage.setItem('userPhoneNumber', phoneNumber);
+        alert('手机号码已保存（仅用于本地存储，不会发送实际短信）');
+    } else {
+        alert('请输入有效的手机号码');
+    }
+}
+
+// 删除 sendSMSReminder 函数，因为我们不再使用后端发送短信
