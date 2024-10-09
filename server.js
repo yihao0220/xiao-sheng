@@ -1,10 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const app = express();
+const path = require('path');
 
-// 连接到 MongoDB
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// 连接到 MongoDB（请确保您已安装并运行了 MongoDB）
 mongoose.connect('mongodb://localhost/task_manager', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // 定义用户模型
@@ -23,6 +26,7 @@ const Task = mongoose.model('Task', {
 });
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 // 注册
 app.post('/api/register', async (req, res) => {
@@ -103,7 +107,3 @@ app.delete('/api/tasks/:id', authenticateToken, async (req, res) => {
 
 // 检查认证状态
 app.get('/api/check-auth', authenticateToken, (req, res) => {
-    res.status(200).send();
-});
-
-app.listen(3000, () => console.log('Server started on port 3000'));
