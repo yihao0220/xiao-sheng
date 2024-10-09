@@ -1,17 +1,26 @@
-// 设置 API 基础 URL
-const API_BASE_URL = 'http://localhost:3000';  // 确保这里是您本地服务器的地址和端口
+// 显示登录表单
+function showLoginForm() {
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('registerForm').style.display = 'none';
+}
+
+// 显示注册表单
+function showRegisterForm() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
+}
 
 // 用户管理
 function login() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
     
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const user = users.find(u => u.username === username && u.password === password);
     
     if (user) {
         localStorage.setItem('currentUser', username);
-        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('authForm').style.display = 'none';
         document.getElementById('taskManager').style.display = 'block';
         loadTasks();
     } else {
@@ -20,8 +29,13 @@ function login() {
 }
 
 function register() {
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const username = document.getElementById('registerUsername').value;
+    const password = document.getElementById('registerPassword').value;
+    
+    if (!username || !password) {
+        alert('请输入用户名和密码');
+        return;
+    }
     
     const users = JSON.parse(localStorage.getItem('users')) || [];
     if (users.some(u => u.username === username)) {
@@ -32,6 +46,7 @@ function register() {
     users.push({ username, password });
     localStorage.setItem('users', JSON.stringify(users));
     alert('注册成功，请登录');
+    showLoginForm();
 }
 
 // 任务管理
@@ -81,7 +96,6 @@ function editTask(taskId) {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const task = tasks.find(t => t.id === taskId);
     if (task) {
-        // 这里可以实现编辑功能，例如弹出一个编辑框
         const newName = prompt('请输入新的任务名称：', task.name);
         if (newName) {
             task.name = newName;
@@ -102,8 +116,10 @@ function deleteTask(taskId) {
 window.onload = function() {
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
-        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('authForm').style.display = 'none';
         document.getElementById('taskManager').style.display = 'block';
         loadTasks();
+    } else {
+        showLoginForm();
     }
 };
