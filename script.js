@@ -1,113 +1,156 @@
-body {
-    font-family: 'Arial', sans-serif;
-    line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+// 显示登录表单
+function showLoginForm() {
+    document.getElementById('loginForm').style.display = 'block';
+    document.getElementById('registerForm').style.display = 'none';
 }
 
-.container {
-    width: 90%;
-    max-width: 500px;
-    background-color: #ffffff;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+// 显示注册表单
+function showRegisterForm() {
+    document.getElementById('loginForm').style.display = 'none';
+    document.getElementById('registerForm').style.display = 'block';
 }
 
-h1, h2 {
-    color: #333;
-    text-align: center;
-    margin-bottom: 1.5rem;
+// 用户管理
+function login() {
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.username === username && u.password === password);
+    
+    if (user) {
+        localStorage.setItem('currentUser', username);
+        document.getElementById('authForm').style.display = 'none';
+        document.getElementById('taskManager').style.display = 'block';
+        loadTasks();
+        checkAndRemindTasks(); // 添加这行
+    } else {
+        alert('用户名或密码错误');
+    }
 }
 
-h1 {
-    font-size: 2rem;
-    color: #2c3e50;
+function register() {
+    const username = document.getElementById('registerUsername').value;
+    const password = document.getElementById('registerPassword').value;
+    
+    if (!username || !password) {
+        alert('请输入用户名和密码');
+        return;
+    }
+    
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    if (users.some(u => u.username === username)) {
+        alert('用户名已存在');
+        return;
+    }
+    
+    users.push({ username, password });
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    // 自动登录
+    localStorage.setItem('currentUser', username);
+    document.getElementById('authForm').style.display = 'none';
+    document.getElementById('taskManager').style.display = 'block';
+    loadTasks();
+    
+    alert('注册成功，已自动登录');
 }
 
-input, select, button {
-    display: block;
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 1rem;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
+// 任务管理
+function addTask() {
+    const taskName = document.getElementById('taskName').value;
+    const dueDate = document.getElementById('dueDate').value;
+    const priority = document.getElementById('priority').value;
+    const category = document.getElementById('category').value;
+    
+    if (taskName && dueDate && priority && category) {
+        const task = { id: Date.now(), name: taskName, dueDate, priority, category };
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.push(task);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        
+        document.getElementById('taskName').value = '';
+        document.getElementById('dueDate').value = '';
+        document.getElementById('priority').value = 'low';
+        document.getElementById('category').value = '';
+        loadTasks();
+    } else {
+        alert('请填写所有任务信息！');
+    }
 }
 
-input:focus, select:focus {
-    outline: none;
-    border-color: #3498db;
+function loadTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    displayTasks(tasks);
 }
 
-button {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+function displayTasks(tasks) {
+    const taskList = document.getElementById('todayTasks');
+    taskList.innerHTML = '';
+    
+    tasks.forEach(task => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span>${task.name} (截止日期: ${task.dueDate}, 优先级: ${task.priority}, 分类: ${task.category})</span>
+            <button onclick="editTask(${task.id})">编辑</button>
+            <button onclick="deleteTask(${task.id})">删除</button>
+        `;
+        taskList.appendChild(li);
+    });
 }
 
-button:hover {
-    background-color: #2980b9;
+function editTask(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+        const newName = prompt('请输入新的任务名称：', task.name);
+        if (newName) {
+            task.name = newName;
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+            loadTasks();
+        }
+    }
 }
 
-ul {
-    list-style-type: none;
-    padding: 0;
+function deleteTask(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const updatedTasks = tasks.filter(t => t.id !== taskId);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    loadTasks();
 }
 
-li {
-    background: #f8f9fa;
-    margin-bottom: 10px;
-    padding: 15px;
-    border-radius: 4px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+// 添加退出函数
+function logout() {
+    localStorage.removeItem('currentUser');
+    document.getElementById('taskManager').style.display = 'none';
+    document.getElementById('authForm').style.display = 'block';
+    showLoginForm();
+    // 清空登录表单
+    document.getElementById('loginUsername').value = '';
+    document.getElementById('loginPassword').value = '';
 }
 
-li button {
-    width: auto;
-    padding: 5px 10px;
-    margin-left: 10px;
-}
+// 页面加载时检查登录状态
+window.onload = function() {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+        document.getElementById('authForm').style.display = 'none';
+        document.getElementById('taskManager').style.display = 'block';
+        loadTasks();
+        checkAndRemindTasks(); // 添加这行
+    } else {
+        showLoginForm();
+    }
+};
 
-#authForm p {
-    text-align: center;
-    margin-top: 1rem;
-}
-
-#authForm a {
-    color: #3498db;
-    text-decoration: none;
-}
-
-#authForm a:hover {
-    text-decoration: underline;
-}
-
-#taskManager {
-    margin-top: 2rem;
-}
-
-.logout-btn {
-    margin-top: 20px;
-    background-color: #e74c3c;
-}
-
-.logout-btn:hover {
-    background-color: #c0392b;
-}
-
-@media (max-width: 600px) {
-    .container {
-        width: 95%;
-        padding: 1rem;
+// 添加这个新函数
+function checkAndRemindTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const today = new Date().toISOString().split('T')[0]; // 获取今天的日期
+    const todayTasks = tasks.filter(task => task.dueDate === today);
+    
+    if (todayTasks.length > 0) {
+        const taskNames = todayTasks.map(task => task.name).join(', ');
+        alert(`提醒：今天有以下任务需要完成：${taskNames}`);
     }
 }
