@@ -30,6 +30,7 @@
                 <h2>添加新任务</h2>
                 <input type="text" id="taskName" placeholder="任务名称" required>
                 <input type="date" id="dueDate" required>
+                <input type="time" id="dueTime" required>
                 <select id="priority">
                     <option value="low">低优先级</option>
                     <option value="medium">中优先级</option>
@@ -41,6 +42,11 @@
             <div id="taskList">
                 <h2>今日任务</h2>
                 <ul id="todayTasks"></ul>
+            </div>
+            <div id="userSettings">
+                <h2>用户设置</h2>
+                <input type="tel" id="phoneNumber" placeholder="输入手机号码用于短信提醒">
+                <button onclick="savePhoneNumber()">保存手机号码</button>
             </div>
             <!-- 添加退出按钮 -->
             <button onclick="logout()" class="logout-btn">退出登录</button>
