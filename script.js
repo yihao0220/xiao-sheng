@@ -62,22 +62,35 @@ function displayTasks(tasks) {
     if (taskList) {
         taskList.innerHTML = '';
         
-        tasks.forEach(task => {
-            const li = document.createElement('li');
-            let taskInfo = `${task.name} (截止日期: ${task.dueDate}`;
-            if (task.dueTime) taskInfo += ` ${task.dueTime}`;
-            taskInfo += `, 优先级: ${task.priority}`;
-            if (task.category) taskInfo += `, 分类: ${task.category}`;
-            if (task.location) taskInfo += `, 地点: ${task.location}`;
-            taskInfo += `)`;
-            
-            li.innerHTML = `
-                <span>${taskInfo}</span>
-                <button onclick="window.editTask(${task.id})">编辑</button>
-                <button onclick="window.deleteTask(${task.id})">删除</button>
-            `;
-            taskList.appendChild(li);
-        });
+        if (tasks.length === 0) {
+            taskList.innerHTML = '<li>没有找到匹配的任务</li>';
+        } else {
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                let taskInfo = `${task.name} (截止日期: ${task.dueDate}`;
+                if (task.dueTime) taskInfo += ` ${task.dueTime}`;
+                taskInfo += `, 优先级: ${task.priority}`;
+                if (task.category) taskInfo += `, 分类: ${task.category}`;
+                if (task.location) taskInfo += `, 地点: ${task.location}`;
+                taskInfo += `)`;
+                
+                li.innerHTML = `
+                    <span>${taskInfo}</span>
+                    <button onclick="window.editTask(${task.id})">编辑</button>
+                    <button onclick="window.deleteTask(${task.id})">删除</button>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+        
+        // 添加清除搜索的按钮
+        const clearSearchButton = document.createElement('button');
+        clearSearchButton.textContent = '清除搜索';
+        clearSearchButton.onclick = function() {
+            document.getElementById('searchInput').value = '';
+            loadTasks();
+        };
+        taskList.insertAdjacentElement('beforebegin', clearSearchButton);
     }
 }
 
@@ -272,17 +285,4 @@ window.sortTasks = function() {
 
     tasks.sort((a, b) => {
         switch (sortBy) {
-            case 'dueDate':
-                return new Date(a.dueDate + ' ' + (a.dueTime || '')) - new Date(b.dueDate + ' ' + (b.dueTime || ''));
-            case 'priority':
-                const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
-                return priorityOrder[a.priority] - priorityOrder[b.priority];
-            case 'category':
-                return (a.category || '').localeCompare(b.category || '');
-            default:
-                return 0;
-        }
-    });
-
-    displayTasks(tasks);
-};
+  
