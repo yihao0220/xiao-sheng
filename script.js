@@ -28,6 +28,51 @@ document.addEventListener('DOMContentLoaded', function() {
         if (element) element.style.display = 'none';
     }
 
+    // 检查并提醒任务
+    function checkAndRemindTasks() {
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        const now = new Date();
+        const today = now.toISOString().split('T')[0];
+        const currentTime = now.toTimeString().split(' ')[0].slice(0, 5);
+        
+        const upcomingTasks = tasks.filter(task => {
+            if (task.dueDate !== today) return false;
+            if (!task.dueTime) return true; // 如果没有具体时间，就认为是今天的任务
+            return task.dueTime > currentTime && task.dueTime <= addMinutes(currentTime, 60);
+        });
+        
+        if (upcomingTasks.length > 0) {
+            const taskMessages = upcomingTasks.map(task => {
+                let message = task.name;
+                if (task.dueTime) message += ` (${task.dueTime})`;
+                return message;
+            }).join(', ');
+            showNotification(`提醒：接下来一小时内有以下任务需要完成：${taskMessages}`);
+        }
+    }
+
+    // 添加分钟
+    function addMinutes(time, minutes) {
+        const [hours, mins] = time.split(':').map(Number);
+        const date = new Date(2000, 0, 1, hours, mins + minutes);
+        return date.toTimeString().slice(0, 5);
+    }
+
+    // 显示通知
+    function showNotification(message) {
+        if ("Notification" in window) {
+            Notification.requestPermission().then(function (permission) {
+                if (permission === "granted") {
+                    new Notification("任务提醒", { body: message });
+                } else {
+                    alert(message);
+                }
+            });
+        } else {
+            alert(message);
+        }
+    }
+
     // 显示登录表单
     window.showLoginForm = function() {
         const loginForm = document.getElementById('loginForm');
@@ -175,51 +220,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const loginPassword = document.getElementById('loginPassword');
         if (loginUsername) loginUsername.value = '';
         if (loginPassword) loginPassword.value = '';
-    }
-
-    // 检查并提醒任务
-    window.checkAndRemindTasks = function() {
-        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        const now = new Date();
-        const today = now.toISOString().split('T')[0];
-        const currentTime = now.toTimeString().split(' ')[0].slice(0, 5);
-        
-        const upcomingTasks = tasks.filter(task => {
-            if (task.dueDate !== today) return false;
-            if (!task.dueTime) return true; // 如果没有具体时间，就认为是今天的任务
-            return task.dueTime > currentTime && task.dueTime <= addMinutes(currentTime, 60);
-        });
-        
-        if (upcomingTasks.length > 0) {
-            const taskMessages = upcomingTasks.map(task => {
-                let message = task.name;
-                if (task.dueTime) message += ` (${task.dueTime})`;
-                return message;
-            }).join(', ');
-            showNotification(`提醒：接下来一小时内有以下任务需要完成：${taskMessages}`);
-        }
-    }
-
-    // 添加分钟
-    window.addMinutes = function(time, minutes) {
-        const [hours, mins] = time.split(':').map(Number);
-        const date = new Date(2000, 0, 1, hours, mins + minutes);
-        return date.toTimeString().slice(0, 5);
-    }
-
-    // 显示通知
-    window.showNotification = function(message) {
-        if ("Notification" in window) {
-            Notification.requestPermission().then(function (permission) {
-                if (permission === "granted") {
-                    new Notification("任务提醒", { body: message });
-                } else {
-                    alert(message);
-                }
-            });
-        } else {
-            alert(message);
-        }
     }
 
     // 初始化应用
