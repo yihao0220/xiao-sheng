@@ -68,12 +68,13 @@ function displayTasks(tasks) {
             if (task.dueTime) taskInfo += ` ${task.dueTime}`;
             taskInfo += `, 优先级: ${task.priority}`;
             if (task.category) taskInfo += `, 分类: ${task.category}`;
+            if (task.location) taskInfo += `, 地点: ${task.location}`;
             taskInfo += `)`;
             
             li.innerHTML = `
                 <span>${taskInfo}</span>
-                <button onclick="editTask(${task.id})">编辑</button>
-                <button onclick="deleteTask(${task.id})">删除</button>
+                <button onclick="window.editTask(${task.id})">编辑</button>
+                <button onclick="window.deleteTask(${task.id})">删除</button>
             `;
             taskList.appendChild(li);
         });
@@ -159,6 +160,7 @@ window.addTask = function() {
     const dueTime = document.getElementById('dueTime').value;
     const priority = document.getElementById('priority').value;
     const category = document.getElementById('category').value;
+    const location = document.getElementById('location').value;
     
     if (taskName && dueDate) {
         const task = { 
@@ -167,7 +169,8 @@ window.addTask = function() {
             dueDate, 
             dueTime: dueTime || null,
             priority, 
-            category: category || null
+            category: category || null,
+            location: location || null
         };
         const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
         tasks.push(task);
@@ -178,6 +181,7 @@ window.addTask = function() {
         document.getElementById('dueTime').value = '';
         document.getElementById('priority').value = 'low';
         document.getElementById('category').value = '';
+        document.getElementById('location').value = '';
         loadTasks();
     } else {
         alert('请至少填写任务名称和截止日期！');
@@ -185,8 +189,59 @@ window.addTask = function() {
 };
 
 window.editTask = function(taskId) {
-    // 实现编辑任务的逻辑
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const taskToEdit = tasks.find(task => task.id === taskId);
+    
+    if (taskToEdit) {
+        // 填充表单
+        document.getElementById('taskName').value = taskToEdit.name;
+        document.getElementById('dueDate').value = taskToEdit.dueDate;
+        document.getElementById('dueTime').value = taskToEdit.dueTime || '';
+        document.getElementById('priority').value = taskToEdit.priority;
+        document.getElementById('category').value = taskToEdit.category || '';
+        document.getElementById('location').value = taskToEdit.location || '';
+        
+        // 更改添加任务按钮为保存编辑按钮
+        const addTaskButton = document.querySelector('#taskForm button');
+        addTaskButton.textContent = '保存编辑';
+        addTaskButton.onclick = function() {
+            saveEditedTask(taskId);
+        };
+    }
 };
+
+function saveEditedTask(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const taskIndex = tasks.findIndex(task => task.id === taskId);
+    
+    if (taskIndex !== -1) {
+        tasks[taskIndex] = {
+            id: taskId,
+            name: document.getElementById('taskName').value,
+            dueDate: document.getElementById('dueDate').value,
+            dueTime: document.getElementById('dueTime').value || null,
+            priority: document.getElementById('priority').value,
+            category: document.getElementById('category').value || null,
+            location: document.getElementById('location').value || null
+        };
+        
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        loadTasks();
+        
+        // 重置表单
+        document.getElementById('taskName').value = '';
+        document.getElementById('dueDate').value = '';
+        document.getElementById('dueTime').value = '';
+        document.getElementById('priority').value = 'low';
+        document.getElementById('category').value = '';
+        document.getElementById('location').value = '';
+        
+        // 恢复添加任务按钮
+        const addTaskButton = document.querySelector('#taskForm button');
+        addTaskButton.textContent = '添加任务';
+        addTaskButton.onclick = window.addTask;
+    }
+}
 
 window.deleteTask = function(taskId) {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
