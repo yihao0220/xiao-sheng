@@ -54,7 +54,7 @@ function checkAndRemindTasks() {
 
 function loadTasks() {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    displayTasks(tasks);
+    sortTasks(); // 这里调用 sortTasks 而不是直接调用 displayTasks
 }
 
 function displayTasks(tasks) {
@@ -182,7 +182,7 @@ window.addTask = function() {
         document.getElementById('priority').value = 'low';
         document.getElementById('category').value = '';
         document.getElementById('location').value = '';
-        loadTasks();
+        sortTasks(); // 替换 loadTasks();
     } else {
         alert('请至少填写任务名称和截止日期！');
     }
@@ -226,7 +226,7 @@ function saveEditedTask(taskId) {
         };
         
         localStorage.setItem('tasks', JSON.stringify(tasks));
-        loadTasks();
+        sortTasks(); // 替换 loadTasks();
         
         // 重置表单
         document.getElementById('taskName').value = '';
@@ -247,7 +247,7 @@ window.deleteTask = function(taskId) {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const updatedTasks = tasks.filter(task => task.id !== taskId);
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    loadTasks();
+    sortTasks(); // 替换 loadTasks();
 };
 
 window.logout = function() {
@@ -264,3 +264,25 @@ window.logout = function() {
 
 // 当 DOM 加载完成后初始化应用
 document.addEventListener('DOMContentLoaded', init);
+
+// 在其他全局函数定义之后添加这个新函数
+window.sortTasks = function() {
+    const sortBy = document.getElementById('sortBy').value;
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    tasks.sort((a, b) => {
+        switch (sortBy) {
+            case 'dueDate':
+                return new Date(a.dueDate + ' ' + (a.dueTime || '')) - new Date(b.dueDate + ' ' + (b.dueTime || ''));
+            case 'priority':
+                const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            case 'category':
+                return (a.category || '').localeCompare(b.category || '');
+            default:
+                return 0;
+        }
+    });
+
+    displayTasks(tasks);
+};
