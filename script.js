@@ -108,10 +108,8 @@
     };
 
     window.showRegisterForm = function() {
-        const loginForm = document.getElementById('loginForm');
-        const registerForm = document.getElementById('registerForm');
-        if (loginForm) loginForm.style.display = 'none';
-        if (registerForm) registerForm.style.display = 'block';
+        hideElement('loginForm');
+        showElement('registerForm');
     };
 
     window.login = function() {
