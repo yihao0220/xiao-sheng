@@ -50,13 +50,13 @@
                         <option value="category">分类</option>
                     </select>
                 </div>
+                <div id="searchBox">
+                    <input type="text" id="searchInput" placeholder="搜索任务...">
+                    <button onclick="searchTasks()">搜索</button>
+                </div>
                 <ul id="allTasks"></ul>
             </div>
             <button onclick="window.logout()" class="logout-btn">退出登录</button>
         </div>
     </div>
-    <script src="script.js"></script>
-    <script>
-        window.addEventListener('load', function() {
-            console.log('Window loaded');
-       
+    <sc
