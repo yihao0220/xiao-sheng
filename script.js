@@ -53,8 +53,7 @@ function checkAndRemindTasks() {
 }
 
 function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    sortTasks(); // 这里调用 sortTasks 而不是直接调用 displayTasks
+    sortTasks();
 }
 
 function displayTasks(tasks) {
@@ -104,12 +103,13 @@ function init() {
         checkAndRemindTasks();
     } else {
         showElement('authForm');
-        showLoginForm();
+        window.showLoginForm();
     }
 
     // 每小时检查一次任务
     setInterval(checkAndRemindTasks, 3600000);
 }
+
 
 // 全局函数定义
 window.showLoginForm = function() {
@@ -195,7 +195,7 @@ window.addTask = function() {
         document.getElementById('priority').value = 'low';
         document.getElementById('category').value = '';
         document.getElementById('location').value = '';
-        sortTasks(); // 替换 loadTasks();
+        sortTasks();
     } else {
         alert('请至少填写任务名称和截止日期！');
     }
@@ -239,7 +239,7 @@ function saveEditedTask(taskId) {
         };
         
         localStorage.setItem('tasks', JSON.stringify(tasks));
-        sortTasks(); // 替换 loadTasks();
+        sortTasks();
         
         // 重置表单
         document.getElementById('taskName').value = '';
@@ -260,14 +260,14 @@ window.deleteTask = function(taskId) {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const updatedTasks = tasks.filter(task => task.id !== taskId);
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    sortTasks(); // 替换 loadTasks();
+    sortTasks();
 };
 
 window.logout = function() {
     localStorage.removeItem('currentUser');
     showElement('authForm');
     hideElement('taskManager');
-    showLoginForm();
+    window.showLoginForm();
     // 清空登录表单
     const loginUsername = document.getElementById('loginUsername');
     const loginPassword = document.getElementById('loginPassword');
@@ -275,10 +275,6 @@ window.logout = function() {
     if (loginPassword) loginPassword.value = '';
 };
 
-// 当 DOM 加载完成后初始化应用
-document.addEventListener('DOMContentLoaded', init);
-
-// 在其他全局函数定义之后添加这个新函数
 window.sortTasks = function() {
     const sortBy = document.getElementById('sortBy').value;
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
