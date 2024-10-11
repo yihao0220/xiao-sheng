@@ -66,8 +66,7 @@ function displayTasks(tasks) {
         } else {
             tasks.forEach(task => {
                 const li = document.createElement('li');
-                let taskInfo = `${task.name} (截止日期: ${task.dueDate}`;
-                if (task.dueTime) taskInfo += ` ${task.dueTime}`;
+                let taskInfo = `${task.name} (时间段: ${task.startDate} 至 ${task.endDate}`;
                 taskInfo += `, 优先级: ${task.priority}`;
                 if (task.category) taskInfo += `, 分类: ${task.category}`;
                 if (task.location) taskInfo += `, 地点: ${task.location}`;
@@ -99,6 +98,23 @@ function init() {
 
     // 每小时检查一次任务
     setInterval(checkAndRemindTasks, 3600000);
+
+    cleanExpiredTasks(); // 在初始化时清除过期任务
+    
+    // 每天凌晨自动清除过期任务
+    const now = new Date();
+    const night = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1, // 下一天
+        0, 0, 0 // 凌晨 00:00:00
+    );
+    const msToMidnight = night.getTime() - now.getTime();
+    
+    setTimeout(function() {
+        cleanExpiredTasks();
+        setInterval(cleanExpiredTasks, 86400000); // 之后每24小时执行一次
+    }, msToMidnight);
 
     // 添加事件监听器
     addEventListeners();
@@ -216,18 +232,18 @@ function register() {
 
 function addTask() {
     const taskName = document.getElementById('taskName').value;
-    const dueDate = document.getElementById('dueDate').value;
-    const dueTime = document.getElementById('dueTime').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
     const priority = document.getElementById('priority').value;
     const category = document.getElementById('category').value;
     const location = document.getElementById('location').value;
     
-    if (taskName && dueDate) {
+    if (taskName && startDate && endDate) {
         const task = { 
             id: Date.now(), 
             name: taskName, 
-            dueDate, 
-            dueTime: dueTime || null,
+            startDate,
+            endDate,
             priority, 
             category: category || null,
             location: location || null
@@ -237,14 +253,14 @@ function addTask() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
         
         document.getElementById('taskName').value = '';
-        document.getElementById('dueDate').value = '';
-        document.getElementById('dueTime').value = '';
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
         document.getElementById('priority').value = 'low';
         document.getElementById('category').value = '';
         document.getElementById('location').value = '';
         sortTasks();
     } else {
-        alert('请至少填写任务名称和截止日期！');
+        alert('请填写任务名称、开始日期和结束日期！');
     }
 }
 
@@ -328,8 +344,10 @@ function sortTasks() {
 
     tasks.sort((a, b) => {
         switch (sortBy) {
-            case 'dueDate':
-                return new Date(a.dueDate) - new Date(b.dueDate);
+            case 'startDate':
+                return new Date(a.startDate) - new Date(b.startDate);
+            case 'endDate':
+                return new Date(a.endDate) - new Date(b.endDate);
             case 'priority':
                 const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
                 return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -360,6 +378,18 @@ function searchTasks() {
 function clearSearch() {
     document.getElementById('searchInput').value = '';
     loadTasks();
+}
+
+// 添加自动清除过期任务的函数
+function cleanExpiredTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const currentDate = new Date().toISOString().split('T')[0];
+    const updatedTasks = tasks.filter(task => task.endDate >= currentDate);
+    
+    if (tasks.length !== updatedTasks.length) {
+        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+        displayTasks(updatedTasks);
+    }
 }
 
 // 确保在页面加载时初始化应用
