@@ -148,7 +148,7 @@ function addEventListeners() {
         });
     }
 
-    const addTaskButton = document.querySelector('#taskForm button');
+    const addTaskButton = document.getElementById('addTaskButton');
     if (addTaskButton) {
         addTaskButton.addEventListener('click', addTask);
     }
@@ -252,13 +252,19 @@ function addTask() {
         tasks.push(task);
         localStorage.setItem('tasks', JSON.stringify(tasks));
         
+        // 清空表单
         document.getElementById('taskName').value = '';
         document.getElementById('startDate').value = '';
         document.getElementById('endDate').value = '';
         document.getElementById('priority').value = 'low';
         document.getElementById('category').value = '';
         document.getElementById('location').value = '';
+        
+        // 重新加载任务列表
         sortTasks();
+        
+        // 可选：显示成功消息
+        alert('任务添加成功！');
     } else {
         alert('请填写任务名称、开始日期和结束日期！');
     }
