@@ -75,21 +75,12 @@ function displayTasks(tasks) {
                 
                 li.innerHTML = `
                     <span>${taskInfo}</span>
-                    <button onclick="window.editTask(${task.id})">编辑</button>
-                    <button onclick="window.deleteTask(${task.id})">删除</button>
+                    <button onclick="editTask(${task.id})">编辑</button>
+                    <button onclick="deleteTask(${task.id})">删除</button>
                 `;
                 taskList.appendChild(li);
             });
         }
-        
-        // 添加清除搜索的按钮
-        const clearSearchButton = document.createElement('button');
-        clearSearchButton.textContent = '清除搜索';
-        clearSearchButton.onclick = function() {
-            document.getElementById('searchInput').value = '';
-            loadTasks();
-        };
-        taskList.insertAdjacentElement('beforebegin', clearSearchButton);
     }
 }
 
@@ -103,27 +94,84 @@ function init() {
         checkAndRemindTasks();
     } else {
         showElement('authForm');
-        window.showLoginForm();
+        showLoginForm();
     }
 
     // 每小时检查一次任务
     setInterval(checkAndRemindTasks, 3600000);
+
+    // 添加事件监听器
+    addEventListeners();
+}
+
+// 添加事件监听器
+function addEventListeners() {
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+        loginButton.addEventListener('click', login);
+    }
+
+    const registerButton = document.getElementById('registerButton');
+    if (registerButton) {
+        registerButton.addEventListener('click', register);
+    }
+
+    const showRegisterLink = document.getElementById('showRegisterLink');
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showRegisterForm();
+        });
+    }
+
+    const showLoginLink = document.getElementById('showLoginLink');
+    if (showLoginLink) {
+        showLoginLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showLoginForm();
+        });
+    }
+
+    const addTaskButton = document.querySelector('#taskForm button');
+    if (addTaskButton) {
+        addTaskButton.addEventListener('click', addTask);
+    }
+
+    const logoutButton = document.getElementById('logoutButton');
+    if (logoutButton) {
+        logoutButton.addEventListener('click', logout);
+    }
+
+    const sortBySelect = document.getElementById('sortBy');
+    if (sortBySelect) {
+        sortBySelect.addEventListener('change', sortTasks);
+    }
+
+    const searchInput = document.getElementById('searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', searchTasks);
+    }
+
+    const clearSearchButton = document.getElementById('clearSearchButton');
+    if (clearSearchButton) {
+        clearSearchButton.addEventListener('click', clearSearch);
+    }
 }
 
 // 全局函数定义
-window.showLoginForm = function() {
+function showLoginForm() {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     if (loginForm) loginForm.style.display = 'block';
     if (registerForm) registerForm.style.display = 'none';
-};
+}
 
-window.showRegisterForm = function() {
+function showRegisterForm() {
     hideElement('loginForm');
     showElement('registerForm');
-};
+}
 
-window.login = function() {
+function login() {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
     
@@ -138,9 +186,9 @@ window.login = function() {
     } else {
         alert('用户名或密码错误');
     }
-};
+}
 
-window.register = function() {
+function register() {
     const username = document.getElementById('registerUsername').value;
     const password = document.getElementById('registerPassword').value;
     
@@ -164,9 +212,9 @@ window.register = function() {
     loadTasks();
     
     alert('注册成功，已自动登录');
-};
+}
 
-window.addTask = function() {
+function addTask() {
     const taskName = document.getElementById('taskName').value;
     const dueDate = document.getElementById('dueDate').value;
     const dueTime = document.getElementById('dueTime').value;
@@ -198,9 +246,9 @@ window.addTask = function() {
     } else {
         alert('请至少填写任务名称和截止日期！');
     }
-};
+}
 
-window.editTask = function(taskId) {
+function editTask(taskId) {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const taskToEdit = tasks.find(task => task.id === taskId);
     
@@ -220,7 +268,7 @@ window.editTask = function(taskId) {
             saveEditedTask(taskId);
         };
     }
-};
+}
 
 function saveEditedTask(taskId) {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
@@ -237,6 +285,7 @@ function saveEditedTask(taskId) {
             location: document.getElementById('location').value || null
         };
         
+        localStorage.setItem('tasks', JSON.stringify(tasks));
         sortTasks();
         
         // 重置表单
@@ -250,30 +299,30 @@ function saveEditedTask(taskId) {
         // 恢复添加任务按钮
         const addTaskButton = document.querySelector('#taskForm button');
         addTaskButton.textContent = '添加任务';
-        addTaskButton.onclick = window.addTask;
+        addTaskButton.onclick = addTask;
     }
 }
 
-window.deleteTask = function(taskId) {
+function deleteTask(taskId) {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
     const updatedTasks = tasks.filter(task => task.id !== taskId);
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     sortTasks();
-};
+}
 
-window.logout = function() {
+function logout() {
     localStorage.removeItem('currentUser');
     showElement('authForm');
     hideElement('taskManager');
-    window.showLoginForm();
+    showLoginForm();
     // 清空登录表单
     const loginUsername = document.getElementById('loginUsername');
     const loginPassword = document.getElementById('loginPassword');
     if (loginUsername) loginUsername.value = '';
     if (loginPassword) loginPassword.value = '';
-};
+}
 
-window.sortTasks = function() {
+function sortTasks() {
     const sortBy = document.getElementById('sortBy').value;
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
@@ -293,10 +342,9 @@ window.sortTasks = function() {
 
     localStorage.setItem('tasks', JSON.stringify(tasks));
     displayTasks(tasks);
-};
+}
 
-// 添加搜索功能
-window.searchTasks = function() {
+function searchTasks() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 
@@ -307,38 +355,12 @@ window.searchTasks = function() {
     );
 
     displayTasks(filteredTasks);
-};
+}
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    loadTasks();
+}
 
 // 确保在页面加载时初始化应用
 document.addEventListener('DOMContentLoaded', init);
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM fully loaded and parsed');
-    
-    const loginButton = document.getElementById('loginButton');
-    if (loginButton) {
-        loginButton.addEventListener('click', window.login);
-    }
-
-    const registerButton = document.getElementById('registerButton');
-    if (registerButton) {
-        registerButton.addEventListener('click', window.register);
-    }
-
-    const showRegisterLink = document.getElementById('showRegisterLink');
-    if (showRegisterLink) {
-        showRegisterLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.showRegisterForm();
-        });
-    }
-
-    const showLoginLink = document.getElementById('showLoginLink');
-    if (showLoginLink) {
-        showLoginLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.showLoginForm();
-        });
-    }
-
-    init();
-});
