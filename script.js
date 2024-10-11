@@ -9,50 +9,7 @@ function hideElement(id) {
     if (element) element.style.display = 'none';
 }
 
-function addMinutes(time, minutes) {
-    const [hours, mins] = time.split(':').map(Number);
-    const date = new Date(2000, 0, 1, hours, mins + minutes);
-    return date.toTimeString().slice(0, 5);
-}
-
-function showNotification(message) {
-    if ("Notification" in window) {
-        Notification.requestPermission().then(function (permission) {
-            if (permission === "granted") {
-                new Notification("任务提醒", { body: message });
-            } else {
-                alert(message);s
-                
-            }
-        });
-    } else {
-        alert(message);
-    }
-}
-
 // 核心功能函数
-function checkAndRemindTasks() {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-    const currentTime = now.toTimeString().split(' ')[0].slice(0, 5);
-    
-    const upcomingTasks = tasks.filter(task => {
-        if (task.dueDate !== today) return false;
-        if (!task.dueTime) return true;
-        return task.dueTime > currentTime && task.dueTime <= addMinutes(currentTime, 60);
-    });
-    
-    if (upcomingTasks.length > 0) {
-        const taskMessages = upcomingTasks.map(task => {
-            let message = task.name;
-            if (task.dueTime) message += ` (${task.dueTime})`;
-            return message;
-        }).join(', ');
-        showNotification(`提醒：接下来一小时内有以下任务需要完成：${taskMessages}`);
-    }
-}
-
 function loadTasks() {
     sortTasks();
 }
@@ -67,8 +24,10 @@ function displayTasks(tasks) {
         } else {
             tasks.forEach(task => {
                 const li = document.createElement('li');
-                let taskInfo = `${task.name} (截止日期: ${task.dueDate}`;
-                if (task.dueTime) taskInfo += ` ${task.dueTime}`;
+                let taskInfo = `${task.name} (日期: ${task.startDate} 到 ${task.endDate}`;
+                if (task.startTime && task.endTime) {
+                    taskInfo += `, 时间: ${task.startTime} 到 ${task.endTime}`;
+                }
                 taskInfo += `, 优先级: ${task.priority}`;
                 if (task.category) taskInfo += `, 分类: ${task.category}`;
                 if (task.location) taskInfo += `, 地点: ${task.location}`;
@@ -94,93 +53,24 @@ function displayTasks(tasks) {
     }
 }
 
-// 初始化函数
-function init() {
-    const currentUser = localStorage.getItem('currentUser');
-    if (currentUser) {
-        showElement('taskManager');
-        hideElement('authForm');
-        loadTasks();
-        checkAndRemindTasks();
-    } else {
-        showElement('authForm');
-        window.showLoginForm();
-    }
-
-    // 每小时检查一次任务
-    setInterval(checkAndRemindTasks, 3600000);
-}
-
-// 全局函数定义
-window.showLoginForm = function() {
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-    if (loginForm) loginForm.style.display = 'block';
-    if (registerForm) registerForm.style.display = 'none';
-};
-
-window.showRegisterForm = function() {
-    hideElement('loginForm');
-    showElement('registerForm');
-};
-
-window.login = function() {
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
-    
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(u => u.username === username && u.password === password);
-    
-    if (user) {
-        localStorage.setItem('currentUser', username);
-        showElement('taskManager');
-        hideElement('authForm');
-        loadTasks();
-    } else {
-        alert('用户名或密码错误');
-    }
-};
-
-window.register = function() {
-    const username = document.getElementById('registerUsername').value;
-    const password = document.getElementById('registerPassword').value;
-    
-    if (!username || !password) {
-        alert('请输入用户名和密码');
-        return;
-    }
-    
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    if (users.some(u => u.username === username)) {
-        alert('用户名已存在');
-        return;
-    }
-    
-    users.push({ username, password });
-    localStorage.setItem('users', JSON.stringify(users));
-    
-    localStorage.setItem('currentUser', username);
-    showElement('taskManager');
-    hideElement('authForm');
-    loadTasks();
-    
-    alert('注册成功，已自动登录');
-};
-
 window.addTask = function() {
     const taskName = document.getElementById('taskName').value;
-    const dueDate = document.getElementById('dueDate').value;
-    const dueTime = document.getElementById('dueTime').value;
+    const startDate = document.getElementById('startDate').value;
+    const endDate = document.getElementById('endDate').value;
+    const startTime = document.getElementById('startTime').value;
+    const endTime = document.getElementById('endTime').value;
     const priority = document.getElementById('priority').value;
     const category = document.getElementById('category').value;
     const location = document.getElementById('location').value;
     
-    if (taskName && dueDate) {
+    if (taskName && startDate && endDate) {
         const task = { 
             id: Date.now(), 
             name: taskName, 
-            dueDate, 
-            dueTime: dueTime || null,
+            startDate,
+            endDate,
+            startTime: startTime || null,
+            endTime: endTime || null,
             priority, 
             category: category || null,
             location: location || null
@@ -189,15 +79,18 @@ window.addTask = function() {
         tasks.push(task);
         localStorage.setItem('tasks', JSON.stringify(tasks));
         
+        // 重置表单
         document.getElementById('taskName').value = '';
-        document.getElementById('dueDate').value = '';
-        document.getElementById('dueTime').value = '';
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+        document.getElementById('startTime').value = '';
+        document.getElementById('endTime').value = '';
         document.getElementById('priority').value = 'low';
         document.getElementById('category').value = '';
         document.getElementById('location').value = '';
         sortTasks();
     } else {
-        alert('请至少填写任务名称和截止日期！');
+        alert('请至少填写任务名称、开始日期和结束日期！');
     }
 };
 
@@ -208,8 +101,10 @@ window.editTask = function(taskId) {
     if (taskToEdit) {
         // 填充表单
         document.getElementById('taskName').value = taskToEdit.name;
-        document.getElementById('dueDate').value = taskToEdit.dueDate;
-        document.getElementById('dueTime').value = taskToEdit.dueTime || '';
+        document.getElementById('startDate').value = taskToEdit.startDate;
+        document.getElementById('endDate').value = taskToEdit.endDate;
+        document.getElementById('startTime').value = taskToEdit.startTime || '';
+        document.getElementById('endTime').value = taskToEdit.endTime || '';
         document.getElementById('priority').value = taskToEdit.priority;
         document.getElementById('category').value = taskToEdit.category || '';
         document.getElementById('location').value = taskToEdit.location || '';
@@ -231,24 +126,28 @@ function saveEditedTask(taskId) {
         tasks[taskIndex] = {
             id: taskId,
             name: document.getElementById('taskName').value,
-            dueDate: document.getElementById('dueDate').value,
-            dueTime: document.getElementById('dueTime').value || null,
+            startDate: document.getElementById('startDate').value,
+            endDate: document.getElementById('endDate').value,
+            startTime: document.getElementById('startTime').value || null,
+            endTime: document.getElementById('endTime').value || null,
             priority: document.getElementById('priority').value,
             category: document.getElementById('category').value || null,
             location: document.getElementById('location').value || null
         };
         
+        localStorage.setItem('tasks', JSON.stringify(tasks));
         sortTasks();
         
-        // 重置表单
+        // 重置表单和按钮
         document.getElementById('taskName').value = '';
-        document.getElementById('dueDate').value = '';
-        document.getElementById('dueTime').value = '';
+        document.getElementById('startDate').value = '';
+        document.getElementById('endDate').value = '';
+        document.getElementById('startTime').value = '';
+        document.getElementById('endTime').value = '';
         document.getElementById('priority').value = 'low';
         document.getElementById('category').value = '';
         document.getElementById('location').value = '';
         
-        // 恢复添加任务按钮
         const addTaskButton = document.querySelector('#taskForm button');
         addTaskButton.textContent = '添加任务';
         addTaskButton.onclick = window.addTask;
@@ -280,4 +179,34 @@ window.sortTasks = function() {
 
     tasks.sort((a, b) => {
         switch (sortBy) {
-            case '
+            case 'dueDate':
+                return new Date(a.startDate) - new Date(b.startDate);
+            case 'priority':
+                const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            case 'category':
+                return (a.category || '').localeCompare(b.category || '');
+            default:
+                return 0;
+        }
+    });
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    displayTasks(tasks);
+};
+
+// 添加搜索功能
+window.searchTasks = function() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    const filteredTasks = tasks.filter(task => 
+        task.name.toLowerCase().includes(searchTerm) ||
+        (task.category && task.category.toLowerCase().includes(searchTerm)) ||
+        (task.location && task.location.toLowerCase().includes(searchTerm))
+    );
+
+    displayTasks(filteredTasks);
+};
+
+// 确保在页面加载时初始化应用
