@@ -57,7 +57,8 @@ function checkAndRemindTasks() {
 }
 
 function loadTasks() {
-    sortTasks();
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    displayTasks(tasks);
 }
 
 function displayTasks(tasks) {
@@ -65,8 +66,27 @@ function displayTasks(tasks) {
     if (taskList) {
         taskList.innerHTML = '';
         
+        // 添加当天课程
+        const today = new Date().toLocaleString('zh-CN', { weekday: 'long' });
+        const todayClasses = weeklySchedule[today];
+        
+        if (todayClasses && todayClasses.length > 0) {
+            const todayClassesLi = document.createElement('li');
+            todayClassesLi.className = 'today-classes';
+            todayClassesLi.innerHTML = `<h3>今日课程：</h3>`;
+            const classesList = document.createElement('ul');
+            todayClasses.forEach(course => {
+                const classItem = document.createElement('li');
+                classItem.textContent = `${course.name} (${course.time}, ${course.location})`;
+                classesList.appendChild(classItem);
+            });
+            todayClassesLi.appendChild(classesList);
+            taskList.appendChild(todayClassesLi);
+        }
+        
+        // 显示任务
         if (tasks.length === 0) {
-            taskList.innerHTML = '<li>没有找到匹配的任务</li>';
+            taskList.innerHTML += '<li>没有找到匹配的任务</li>';
         } else {
             tasks.forEach(task => {
                 const li = document.createElement('li');
@@ -89,6 +109,52 @@ function displayTasks(tasks) {
                 taskList.appendChild(li);
             });
         }
+    }
+}
+
+// 在文件顶部添加课程表数据
+const weeklySchedule = {
+    "周一": [
+        { name: "大学英语(一)", time: "08:20-10:00", location: "教十一楼B区401" },
+        { name: "高等数学B(一)", time: "10:20-12:00", location: "教一楼三区505" },
+        { name: "体育(一)", time: "16:00-17:40", location: "黄家湖南区运动场" }
+    ],
+    "周二": [
+        { name: "大学生心理健康教育", time: "08:20-10:00", location: "教一楼一区304" },
+        { name: "大学计算机基础", time: "10:20-12:00", location: "教三楼106(黄家湖)" },
+        { name: "普通化学", time: "16:00-17:40", location: "教一楼三区205" }
+    ],
+    "周三": [
+        { name: "大学英语(一)", time: "08:20-10:00", location: "教十一楼B区401" },
+        { name: "高等数学B(一)", time: "10:20-12:00", location: "教一楼三区505" },
+        { name: "工程制图", time: "14:00-15:40", location: "教一楼三区405" }
+    ],
+    "周四": [
+        { name: "普通化学", time: "10:20-12:00", location: "教一楼三区205" },
+        { name: "工程制图", time: "14:00-15:40", location: "教一楼三区505" }
+    ],
+    "周五": [
+        { name: "大学生心理健康教育", time: "08:20-10:00", location: "教一楼一区204" },
+        { name: "高等数学B(一)", time: "10:20-12:00", location: "教一楼三区505" },
+        { name: "思想道德与法治", time: "16:00-17:40", location: "教一楼三区310" }
+    ],
+    "周六": [],
+    "周日": [
+        { name: "形势与政策", time: "14:00-15:40", location: "教一楼一区210" }
+    ]
+};
+
+// 添加检查今日课程的函数
+function checkTodayClasses() {
+    const today = new Date().toLocaleString('zh-CN', { weekday: 'long' });
+    const todayClasses = weeklySchedule[today];
+    
+    if (todayClasses && todayClasses.length > 0) {
+        let message = `今天的课程安排：\n`;
+        todayClasses.forEach(course => {
+            message += `${course.name} (${course.time}, ${course.location})\n`;
+        });
+        showNotification(message, 'info');
     }
 }
 
@@ -133,6 +199,24 @@ function init() {
     const notificationContainer = document.createElement('div');
     notificationContainer.id = 'notificationContainer';
     document.body.appendChild(notificationContainer);
+
+    checkTodayClasses(); // 检查今天的课程
+
+    // 每天早上 7 点检查课程
+    setDailyCheck();
+}
+
+// 设置每日检查
+function setDailyCheck() {
+    const now = new Date();
+    const millisTill7AM = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0, 0) - now;
+    if (millisTill7AM < 0) {
+        millisTill7AM += 86400000; // 如果已经过了今天的7点，就设置为明天的7点
+    }
+    setTimeout(function() {
+        checkTodayClasses();
+        setDailyCheck(); // 设置下一天的检查
+    }, millisTill7AM);
 }
 
 // 添加事件监听器
@@ -215,6 +299,7 @@ function login() {
         hideElement('authForm');
         loadTasks();
         showUnfinishedTasks(); // 确保这行存在
+        checkTodayClasses(); // 登录后立即检查今天的课程
     } else {
         alert('用户名或密码错误');
     }
