@@ -204,6 +204,21 @@ function init() {
 
     // 每天早上 7 点检查课程
     setDailyCheck();
+
+    // 显示之前上传的课表图片
+    const savedScheduleImage = localStorage.getItem('scheduleImage');
+    if (savedScheduleImage) {
+        const scheduleDisplay = document.createElement('div');
+        scheduleDisplay.id = 'scheduleDisplay';
+        scheduleDisplay.innerHTML = `<img src="${savedScheduleImage}" alt="Saved Schedule" style="max-width: 100%;">`;
+        document.getElementById('scheduleUpload').appendChild(scheduleDisplay);
+    }
+
+    // 加载保存的课表
+    const savedSchedule = localStorage.getItem('userSchedule');
+    if (savedSchedule) {
+        weeklySchedule = JSON.parse(savedSchedule);
+    }
 }
 
 // 设置每日检查
@@ -542,3 +557,72 @@ function showUnfinishedTasks() {
         }, 100);
     }
 }
+
+function handleScheduleUpload() {
+    const fileInput = document.getElementById('scheduleFile');
+    const file = fileInput.files[0];
+    if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const scheduleDisplay = document.getElementById('scheduleDisplay');
+            const scheduleImage = document.getElementById('scheduleImage');
+            scheduleImage.src = e.target.result;
+            scheduleDisplay.style.display = 'block';
+            
+            // 创建课表输入字段
+            createScheduleInputs();
+        };
+        reader.readAsDataURL(file);
+    } else {
+        showNotification('请上传图片文件', 'error');
+    }
+}
+
+function createScheduleInputs() {
+    const scheduleInputs = document.getElementById('scheduleInputs');
+    scheduleInputs.innerHTML = '';
+    
+    const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+    days.forEach(day => {
+        const dayDiv = document.createElement('div');
+        dayDiv.innerHTML = `
+            <h4>${day}</h4>
+            <input type="text" placeholder="课程名称" name="${day}-name">
+            <input type="text" placeholder="时间" name="${day}-time">
+            <input type="text" placeholder="地点" name="${day}-location">
+        `;
+        scheduleInputs.appendChild(dayDiv);
+    });
+}
+
+document.getElementById('scheduleForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const schedule = {};
+    
+    for (let [key, value] of formData.entries()) {
+        const [day, field] = key.split('-');
+        if (!schedule[day]) schedule[day] = [];
+        if (field === 'name' && value) {
+            schedule[day].push({
+                name: value,
+                time: formData.get(`${day}-time`),
+                location: formData.get(`${day}-location`)
+            });
+        }
+    }
+    
+    localStorage.setItem('userSchedule', JSON.stringify(schedule));
+    showNotification('课表保存成功！');
+    
+    // 删除图片
+    document.getElementById('scheduleImage').src = '';
+    document.getElementById('scheduleDisplay').style.display = 'none';
+    document.getElementById('scheduleFile').value = '';
+    
+    // 更新全局变量
+    weeklySchedule = schedule;
+    
+    // 刷新任务列表以显示新的课程信息
+    loadTasks();
+});
