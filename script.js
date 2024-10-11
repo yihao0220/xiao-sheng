@@ -1,62 +1,340 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大学任务提醒</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <h1>大学任务提醒</h1>
-        <div id="authForm">
-            <div id="loginForm">
-                <h2>登录</h2>
-                <input type="text" id="loginUsername" placeholder="用户名" required>
-                <input type="password" id="loginPassword" placeholder="密码" required>
-                <button id="loginButton">登录</button>
-                <p>没有账号？<a href="#" id="showRegisterLink">注册新账号</a></p>
-            </div>
-            <div id="registerForm" style="display: none;">
-                <h2>注册</h2>
-                <input type="text" id="registerUsername" placeholder="用户名" required>
-                <input type="password" id="registerPassword" placeholder="密码" required>
-                <button onclick="window.register()">注册</button>
-                <p>已有账号？<a href="#" onclick="window.showLoginForm()">返回登录</a></p>
-            </div>
-        </div>
-        <div id="taskManager" style="display: none;">
-            <div id="taskForm">
-                <h2>添加新任务</h2>
-                <input type="text" id="taskName" placeholder="任务名称" required>
-                <input type="date" id="dueDate" required>
-                <input type="time" id="dueTime" placeholder="具体时间（可选）">
-                <select id="priority">
-                    <option value="low">低优先级</option>
-                    <option value="medium">中优先级</option>
-                    <option value="high">高优先级</option>
-                </select>
-                <input type="text" id="category" placeholder="分类（可选）">
-                <input type="text" id="location" placeholder="地点（可选）">
-                <button onclick="window.addTask()">添加任务</button>
-            </div>
-            <div id="taskList">
-                <h2>任务列表</h2>
-                <div id="sortOptions">
-                    <label for="sortBy">排序方式：</label>
-                    <select id="sortBy" onchange="sortTasks()">
-                        <option value="dueDate">截止日期</option>
-                        <option value="priority">优先级</option>
-                        <option value="category">分类</option>
-                    </select>
-                </div>
-                <div id="searchBox">
-                    <input type="text" id="searchInput" placeholder="搜索任务...">
-                    <button onclick="searchTasks()">搜索</button>
-                </div>
-                <ul id="allTasks"></ul>
-            </div>
-            <button onclick="window.logout()" class="logout-btn">退出登录</button>
-        </div>
-    </div>
-    <sc
+// 辅助函数
+function showElement(id) {
+    const element = document.getElementById(id);
+    if (element) element.style.display = 'block';
+}
+
+function hideElement(id) {
+    const element = document.getElementById(id);
+    if (element) element.style.display = 'none';
+}
+
+function addMinutes(time, minutes) {
+    const [hours, mins] = time.split(':').map(Number);
+    const date = new Date(2000, 0, 1, hours, mins + minutes);
+    return date.toTimeString().slice(0, 5);
+}
+
+function showNotification(message) {
+    if ("Notification" in window) {
+        Notification.requestPermission().then(function (permission) {
+            if (permission === "granted") {
+                new Notification("任务提醒", { body: message });
+            } else {
+                alert(message);
+            }
+        });
+    } else {
+        alert(message);
+    }
+}
+
+// 核心功能函数
+function checkAndRemindTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const now = new Date();
+    const today = now.toISOString().split('T')[0];
+    const currentTime = now.toTimeString().split(' ')[0].slice(0, 5);
+    
+    const upcomingTasks = tasks.filter(task => {
+        if (task.dueDate !== today) return false;
+        if (!task.dueTime) return true;
+        return task.dueTime > currentTime && task.dueTime <= addMinutes(currentTime, 60);
+    });
+    
+    if (upcomingTasks.length > 0) {
+        const taskMessages = upcomingTasks.map(task => {
+            let message = task.name;
+            if (task.dueTime) message += ` (${task.dueTime})`;
+            return message;
+        }).join(', ');
+        showNotification(`提醒：接下来一小时内有以下任务需要完成：${taskMessages}`);
+    }
+}
+
+function loadTasks() {
+    sortTasks();
+}
+
+function displayTasks(tasks) {
+    const taskList = document.getElementById('allTasks');
+    if (taskList) {
+        taskList.innerHTML = '';
+        
+        if (tasks.length === 0) {
+            taskList.innerHTML = '<li>没有找到匹配的任务</li>';
+        } else {
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                let taskInfo = `${task.name} (截止日期: ${task.dueDate}`;
+                if (task.dueTime) taskInfo += ` ${task.dueTime}`;
+                taskInfo += `, 优先级: ${task.priority}`;
+                if (task.category) taskInfo += `, 分类: ${task.category}`;
+                if (task.location) taskInfo += `, 地点: ${task.location}`;
+                taskInfo += `)`;
+                
+                li.innerHTML = `
+                    <span>${taskInfo}</span>
+                    <button onclick="window.editTask(${task.id})">编辑</button>
+                    <button onclick="window.deleteTask(${task.id})">删除</button>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+        
+        // 添加清除搜索的按钮
+        const clearSearchButton = document.createElement('button');
+        clearSearchButton.textContent = '清除搜索';
+        clearSearchButton.onclick = function() {
+            document.getElementById('searchInput').value = '';
+            loadTasks();
+        };
+        taskList.insertAdjacentElement('beforebegin', clearSearchButton);
+    }
+}
+
+// 初始化函数
+function init() {
+    const currentUser = localStorage.getItem('currentUser');
+    if (currentUser) {
+        showElement('taskManager');
+        hideElement('authForm');
+        loadTasks();
+        checkAndRemindTasks();
+    } else {
+        showElement('authForm');
+        window.showLoginForm();
+    }
+
+    // 每小时检查一次任务
+    setInterval(checkAndRemindTasks, 3600000);
+}
+
+
+// 全局函数定义
+window.showLoginForm = function() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    if (loginForm) loginForm.style.display = 'block';
+    if (registerForm) registerForm.style.display = 'none';
+};
+
+window.showRegisterForm = function() {
+    hideElement('loginForm');
+    showElement('registerForm');
+};
+
+window.login = function() {
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
+    
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.username === username && u.password === password);
+    
+    if (user) {
+        localStorage.setItem('currentUser', username);
+        showElement('taskManager');
+        hideElement('authForm');
+        loadTasks();
+    } else {
+        alert('用户名或密码错误');
+    }
+};
+
+window.register = function() {
+    const username = document.getElementById('registerUsername').value;
+    const password = document.getElementById('registerPassword').value;
+    
+    if (!username || !password) {
+        alert('请输入用户名和密码');
+        return;
+    }
+    
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    if (users.some(u => u.username === username)) {
+        alert('用户名已存在');
+        return;
+    }
+    
+    users.push({ username, password });
+    localStorage.setItem('users', JSON.stringify(users));
+    
+    localStorage.setItem('currentUser', username);
+    showElement('taskManager');
+    hideElement('authForm');
+    loadTasks();
+    
+    alert('注册成功，已自动登录');
+};
+
+window.addTask = function() {
+    const taskName = document.getElementById('taskName').value;
+    const dueDate = document.getElementById('dueDate').value;
+    const dueTime = document.getElementById('dueTime').value;
+    const priority = document.getElementById('priority').value;
+    const category = document.getElementById('category').value;
+    const location = document.getElementById('location').value;
+    
+    if (taskName && dueDate) {
+        const task = { 
+            id: Date.now(), 
+            name: taskName, 
+            dueDate, 
+            dueTime: dueTime || null,
+            priority, 
+            category: category || null,
+            location: location || null
+        };
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.push(task);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        
+        document.getElementById('taskName').value = '';
+        document.getElementById('dueDate').value = '';
+        document.getElementById('dueTime').value = '';
+        document.getElementById('priority').value = 'low';
+        document.getElementById('category').value = '';
+        document.getElementById('location').value = '';
+        sortTasks();
+    } else {
+        alert('请至少填写任务名称和截止日期！');
+    }
+};
+
+window.editTask = function(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const taskToEdit = tasks.find(task => task.id === taskId);
+    
+    if (taskToEdit) {
+        // 填充表单
+        document.getElementById('taskName').value = taskToEdit.name;
+        document.getElementById('dueDate').value = taskToEdit.dueDate;
+        document.getElementById('dueTime').value = taskToEdit.dueTime || '';
+        document.getElementById('priority').value = taskToEdit.priority;
+        document.getElementById('category').value = taskToEdit.category || '';
+        document.getElementById('location').value = taskToEdit.location || '';
+        
+        // 更改添加任务按钮为保存编辑按钮
+        const addTaskButton = document.querySelector('#taskForm button');
+        addTaskButton.textContent = '保存编辑';
+        addTaskButton.onclick = function() {
+            saveEditedTask(taskId);
+        };
+    }
+};
+
+function saveEditedTask(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const taskIndex = tasks.findIndex(task => task.id === taskId);
+    
+    if (taskIndex !== -1) {
+        tasks[taskIndex] = {
+            id: taskId,
+            name: document.getElementById('taskName').value,
+            dueDate: document.getElementById('dueDate').value,
+            dueTime: document.getElementById('dueTime').value || null,
+            priority: document.getElementById('priority').value,
+            category: document.getElementById('category').value || null,
+            location: document.getElementById('location').value || null
+        };
+        
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        sortTasks();
+        
+        // 重置表单
+        document.getElementById('taskName').value = '';
+        document.getElementById('dueDate').value = '';
+        document.getElementById('dueTime').value = '';
+        document.getElementById('priority').value = 'low';
+        document.getElementById('category').value = '';
+        document.getElementById('location').value = '';
+        
+        // 恢复添加任务按钮
+        const addTaskButton = document.querySelector('#taskForm button');
+        addTaskButton.textContent = '添加任务';
+        addTaskButton.onclick = window.addTask;
+    }
+}
+
+window.deleteTask = function(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const updatedTasks = tasks.filter(task => task.id !== taskId);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    sortTasks();
+};
+
+window.logout = function() {
+    localStorage.removeItem('currentUser');
+    showElement('authForm');
+    hideElement('taskManager');
+    window.showLoginForm();
+    // 清空登录表单
+    const loginUsername = document.getElementById('loginUsername');
+    const loginPassword = document.getElementById('loginPassword');
+    if (loginUsername) loginUsername.value = '';
+    if (loginPassword) loginPassword.value = '';
+};
+
+window.sortTasks = function() {
+    const sortBy = document.getElementById('sortBy').value;
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    tasks.sort((a, b) => {
+        switch (sortBy) {
+            case 'dueDate':
+                return new Date(a.dueDate + ' ' + (a.dueTime || '')) - new Date(b.dueDate + ' ' + (b.dueTime || ''));
+            case 'priority':
+                const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
+                return priorityOrder[a.priority] - priorityOrder[b.priority];
+            case 'category':
+                return (a.category || '').localeCompare(b.category || '');
+            default:
+                return 0;
+        }
+    });
+
+    displayTasks(tasks);
+};
+
+window.searchTasks = function() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+    const filteredTasks = tasks.filter(task => 
+        task.name.toLowerCase().includes(searchTerm) ||
+        (task.category && task.category.toLowerCase().includes(searchTerm)) ||
+        (task.location && task.location.toLowerCase().includes(searchTerm))
+    );
+
+    displayTasks(filteredTasks);
+};
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM fully loaded and parsed');
+    console.log('login function:', window.login);
+    console.log('showRegisterForm function:', window.showRegisterForm);  // 添加这行
+    init();
+    
+    // 绑定登录按钮点击事件
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+        loginButton.addEventListener('click', window.login);
+    }
+
+    // 绑定 "注册新账号" 链接的点击事件
+    const registerLink = document.querySelector('a[onclick="window.showRegisterForm()"]');
+    if (registerLink) {
+        registerLink.onclick = function(e) {
+            e.preventDefault();
+            window.showRegisterForm();
+        };
+    }
+
+    const showRegisterLink = document.getElementById('showRegisterLink');
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            window.showRegisterForm();
+        });
+    }
+});
