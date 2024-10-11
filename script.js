@@ -430,8 +430,8 @@ function showUnfinishedTasks() {
         overlay.style.display = "block";
         
         // 点击任何地方关闭覆盖层
-        overlay.addEventListener('click', function() {
+        function closeOverlay(event) {
             overlay.style.display = "none";
-        });
-    }
-}
+            document.removeEventListener('click', closeOverlay);
+        }
+ 
