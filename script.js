@@ -93,7 +93,7 @@ function init() {
         hideElement('authForm');
         loadTasks();
         checkAndRemindTasks();
-        showUnfinishedTasks(); // 添加这一行
+        showUnfinishedTasks(); // 确保这行存在
     } else {
         showElement('authForm');
         showLoginForm();
@@ -202,7 +202,7 @@ function login() {
         showElement('taskManager');
         hideElement('authForm');
         loadTasks();
-        showUnfinishedTasks(); // 添加这一行
+        showUnfinishedTasks(); // 确保这行存在
     } else {
         alert('用户名或密码错误');
     }
@@ -416,11 +416,24 @@ function showUnfinishedTasks() {
     const unfinishedTasks = tasks.filter(task => task.endDateTime > currentDateTime);
     
     if (unfinishedTasks.length > 0) {
-        let message = "您有以下未完成的任务：\n\n";
+        let message = "<ul>";
         unfinishedTasks.forEach(task => {
             const endDateTime = new Date(task.endDateTime);
-            message += `- ${task.name} (截止时间: ${endDateTime.toLocaleString()})\n`;
+            message += `<li>${task.name} (截止时间: ${endDateTime.toLocaleString()})</li>`;
         });
-        alert(message);
+        message += "</ul>";
+        
+        const modalMessage = document.getElementById('modalMessage');
+        modalMessage.innerHTML = message;
+        
+        const modal = document.getElementById('customModal');
+        modal.style.display = "block";
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
     }
 }
