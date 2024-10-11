@@ -15,18 +15,22 @@ function addMinutes(time, minutes) {
     return date.toTimeString().slice(0, 5);
 }
 
-function showNotification(message) {
-    if ("Notification" in window) {
-        Notification.requestPermission().then(function (permission) {
-            if (permission === "granted") {
-                new Notification("任务提醒", { body: message });
-            } else {
-                alert(message);
-            }
-        });
-    } else {
-        alert(message);
-    }
+function showNotification(message, type = 'success') {
+    const notification = document.createElement('div');
+    notification.className = `notification ${type}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+
+    // 显示通知
+    setTimeout(() => {
+        notification.style.display = 'block';
+    }, 100);
+
+    // 3秒后隐藏通知
+    setTimeout(() => {
+        notification.style.display = 'none';
+        notification.remove();
+    }, 3000);
 }
 
 // 核心功能函数
@@ -66,6 +70,7 @@ function displayTasks(tasks) {
         } else {
             tasks.forEach(task => {
                 const li = document.createElement('li');
+                li.className = `priority-${task.priority}`;
                 const startDateTime = new Date(task.startDateTime);
                 const endDateTime = new Date(task.endDateTime);
                 let taskInfo = `${task.name} (时间段: ${startDateTime.toLocaleString()} 至 ${endDateTime.toLocaleString()}`;
@@ -76,8 +81,10 @@ function displayTasks(tasks) {
                 
                 li.innerHTML = `
                     <span>${taskInfo}</span>
-                    <button onclick="editTask(${task.id})">编辑</button>
-                    <button onclick="deleteTask(${task.id})">删除</button>
+                    <div class="task-actions">
+                        <button class="edit-btn" onclick="editTask(${task.id})">编辑</button>
+                        <button class="delete-btn" onclick="deleteTask(${task.id})">删除</button>
+                    </div>
                 `;
                 taskList.appendChild(li);
             });
@@ -121,6 +128,11 @@ function init() {
 
     // 添加事件监听器
     addEventListeners();
+
+    // 创建通知容器
+    const notificationContainer = document.createElement('div');
+    notificationContainer.id = 'notificationContainer';
+    document.body.appendChild(notificationContainer);
 }
 
 // 添加事件监听器
@@ -272,9 +284,13 @@ function addTask() {
         sortTasks();
         
         // 显示成功消息
-        alert('任务添加成功！');
+        showNotification('任务添加成功！');
+
+        // 添加新任务动画
+        const newTask = taskList.lastElementChild;
+        newTask.classList.add('task-added');
     } else {
-        alert('请填写所有必填字段！');
+        showNotification('请填写所有必填字段！', 'error');
     }
 }
 
@@ -338,6 +354,7 @@ function deleteTask(taskId) {
     const updatedTasks = tasks.filter(task => task.id !== taskId);
     localStorage.setItem('tasks', JSON.stringify(updatedTasks));
     sortTasks();
+    showNotification('任务已删除');
 }
 
 function logout() {
