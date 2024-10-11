@@ -111,3 +111,31 @@ li button {
         padding: 1rem;
     }
 }
+
+#sortOptions {
+    margin-bottom: 1rem;
+}
+
+#sortOptions label {
+    margin-right: 0.5rem;
+}
+
+#sortBy {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+#searchBox {
+    margin-bottom: 1rem;
+    display: flex;
+}
+
+#searchInput {
+    flex-grow: 1;
+    margin-right: 0.5rem;
+}
+
+#searchBox button {
+    width: auto;
+}
