@@ -430,14 +430,14 @@ function showUnfinishedTasks() {
         modal.style.display = "block";
         
         // 点击任何地方关闭模态框
-        function closeModal() {
-            modal.style.display = "none";
-            document.removeEventListener('click', closeModal);
+        function closeModal(event) {
+            if (event.target === modal || !modal.contains(event.target)) {
+                modal.style.display = "none";
+                document.removeEventListener('click', closeModal);
+            }
         }
         
-        // 延迟添加事件监听器，以防止立即关闭
-        setTimeout(() => {
-            document.addEventListener('click', closeModal);
-        }, 100);
+        // 立即添加事件监听器
+        document.addEventListener('click', closeModal);
     }
 }
