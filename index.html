@@ -59,4 +59,16 @@
             <button onclick="window.logout()" class="logout-btn">退出登录</button>
         </div>
     </div>
-    <sc
+    <script src="script.js"></script>
+    <script>
+        window.addEventListener('load', function() {
+            console.log('Window loaded');
+            console.log('showRegisterForm function:', window.showRegisterForm);
+            console.log('login function:', window.login);
+            console.log('register function:', window.register);
+            console.log('addTask function:', window.addTask);
+            console.log('logout function:', window.logout);
+        });
+    </script>
+</body>
+</html>
