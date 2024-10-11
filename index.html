@@ -29,8 +29,8 @@
             <div id="taskForm">
                 <h2>添加新任务</h2>
                 <input type="text" id="taskName" placeholder="任务名称" required>
-                <input type="date" id="dueDate" required>
-                <input type="time" id="dueTime" placeholder="具体时间（可选）">
+                <input type="date" id="startDate" required>
+                <input type="date" id="endDate" required>
                 <select id="priority">
                     <option value="low">低优先级</option>
                     <option value="medium">中优先级</option>
@@ -45,7 +45,8 @@
                 <div id="sortOptions">
                     <label for="sortBy">排序方式：</label>
                     <select id="sortBy" onchange="sortTasks()">
-                        <option value="dueDate">截止日期</option>
+                        <option value="startDate">开始日期</option>
+                        <option value="endDate">结束日期</option>
                         <option value="priority">优先级</option>
                         <option value="category">分类</option>
                     </select>
