@@ -21,7 +21,8 @@ function showNotification(message) {
             if (permission === "granted") {
                 new Notification("任务提醒", { body: message });
             } else {
-                alert(message);
+                alert(message);s
+                
             }
         });
     } else {
