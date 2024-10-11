@@ -429,9 +429,14 @@ function showUnfinishedTasks() {
         const overlay = document.getElementById('unfinishedTasksOverlay');
         overlay.style.display = "block";
         
-        // 点击任何地方关闭覆盖层
-        function closeOverlay(event) {
+        function closeOverlay() {
             overlay.style.display = "none";
             document.removeEventListener('click', closeOverlay);
         }
- 
+        
+        // 使用 setTimeout 来延迟添加事件监听器
+        setTimeout(() => {
+            document.addEventListener('click', closeOverlay);
+        }, 100);
+    }
+}
