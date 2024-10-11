@@ -30,7 +30,9 @@
                 <h2>添加新任务</h2>
                 <input type="text" id="taskName" placeholder="任务名称" required>
                 <input type="date" id="startDate" required>
+                <input type="time" id="startTime" required>
                 <input type="date" id="endDate" required>
+                <input type="time" id="endTime" required>
                 <select id="priority">
                     <option value="low">低优先级</option>
                     <option value="medium">中优先级</option>
@@ -58,6 +60,18 @@
                 <ul id="allTasks"></ul>
             </div>
             <button onclick="window.logout()" class="logout-btn">退出登录</button>
+        </div>
+    </div>
+    <div id="customModal" class="modal">
+        <div class="modal-content">
+            <h2>未完成任务提醒</h2>
+            <div id="modalMessage"></div>
+        </div>
+    </div>
+    <div id="unfinishedTasksOverlay" class="overlay">
+        <div class="overlay-content">
+            <h2>未完成任务提醒</h2>
+            <div id="unfinishedTasksList"></div>
         </div>
     </div>
     <script src="script.js"></script>
