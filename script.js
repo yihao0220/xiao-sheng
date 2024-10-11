@@ -313,8 +313,8 @@ function login() {
         showElement('taskManager');
         hideElement('authForm');
         loadTasks();
-        showUnfinishedTasks(); // 确保这行存在
-        checkTodayClasses(); // 登录后立即检查今天的课程
+        showUnfinishedTasks();
+        checkTodayClasses();
     } else {
         alert('用户名或密码错误');
     }
@@ -524,7 +524,10 @@ function cleanExpiredTasks() {
 }
 
 // 确保在页面加载时初始化应用
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function() {
+    init();
+    addEventListeners();
+});
 
 // 新增函数显示未完成任务
 function showUnfinishedTasks() {
