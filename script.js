@@ -110,7 +110,6 @@ function init() {
     setInterval(checkAndRemindTasks, 3600000);
 }
 
-
 // 全局函数定义
 window.showLoginForm = function() {
     const loginForm = document.getElementById('loginForm');
@@ -238,7 +237,6 @@ function saveEditedTask(taskId) {
             location: document.getElementById('location').value || null
         };
         
-        localStorage.setItem('tasks', JSON.stringify(tasks));
         sortTasks();
         
         // 重置表单
@@ -281,60 +279,4 @@ window.sortTasks = function() {
 
     tasks.sort((a, b) => {
         switch (sortBy) {
-            case 'dueDate':
-                return new Date(a.dueDate + ' ' + (a.dueTime || '')) - new Date(b.dueDate + ' ' + (b.dueTime || ''));
-            case 'priority':
-                const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
-                return priorityOrder[a.priority] - priorityOrder[b.priority];
-            case 'category':
-                return (a.category || '').localeCompare(b.category || '');
-            default:
-                return 0;
-        }
-    });
-
-    displayTasks(tasks);
-};
-
-window.searchTasks = function() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-
-    const filteredTasks = tasks.filter(task => 
-        task.name.toLowerCase().includes(searchTerm) ||
-        (task.category && task.category.toLowerCase().includes(searchTerm)) ||
-        (task.location && task.location.toLowerCase().includes(searchTerm))
-    );
-
-    displayTasks(filteredTasks);
-};
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM fully loaded and parsed');
-    console.log('login function:', window.login);
-    console.log('showRegisterForm function:', window.showRegisterForm);  // 添加这行
-    init();
-    
-    // 绑定登录按钮点击事件
-    const loginButton = document.getElementById('loginButton');
-    if (loginButton) {
-        loginButton.addEventListener('click', window.login);
-    }
-
-    // 绑定 "注册新账号" 链接的点击事件
-    const registerLink = document.querySelector('a[onclick="window.showRegisterForm()"]');
-    if (registerLink) {
-        registerLink.onclick = function(e) {
-            e.preventDefault();
-            window.showRegisterForm();
-        };
-    }
-
-    const showRegisterLink = document.getElementById('showRegisterLink');
-    if (showRegisterLink) {
-        showRegisterLink.addEventListener('click', function(e) {
-            e.preventDefault();
-            window.showRegisterForm();
-        });
-    }
-});
+            case '
