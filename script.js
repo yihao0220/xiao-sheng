@@ -93,6 +93,7 @@ function init() {
         hideElement('authForm');
         loadTasks();
         checkAndRemindTasks();
+        showUnfinishedTasks(); // 添加这一行
     } else {
         showElement('authForm');
         showLoginForm();
@@ -201,6 +202,7 @@ function login() {
         showElement('taskManager');
         hideElement('authForm');
         loadTasks();
+        showUnfinishedTasks(); // 添加这一行
     } else {
         alert('用户名或密码错误');
     }
@@ -399,4 +401,26 @@ function cleanExpiredTasks() {
     const updatedTasks = tasks.filter(task => task.endDateTime >= currentDateTime);
     
     if (tasks.length !== updatedTasks.length) {
-        localStorage.setItem('tasks', JSON.stringify
+        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+        displayTasks(updatedTasks);
+    }
+}
+
+// 确保在页面加载时初始化应用
+document.addEventListener('DOMContentLoaded', init);
+
+// 新增函数显示未完成任务
+function showUnfinishedTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const currentDateTime = new Date().toISOString();
+    const unfinishedTasks = tasks.filter(task => task.endDateTime > currentDateTime);
+    
+    if (unfinishedTasks.length > 0) {
+        let message = "您有以下未完成的任务：\n\n";
+        unfinishedTasks.forEach(task => {
+            const endDateTime = new Date(task.endDateTime);
+            message += `- ${task.name} (截止时间: ${endDateTime.toLocaleString()})\n`;
+        });
+        alert(message);
+    }
+}
