@@ -423,21 +423,15 @@ function showUnfinishedTasks() {
         });
         message += "</ul>";
         
-        const modalMessage = document.getElementById('modalMessage');
-        modalMessage.innerHTML = message;
+        const unfinishedTasksList = document.getElementById('unfinishedTasksList');
+        unfinishedTasksList.innerHTML = message;
         
-        const modal = document.getElementById('customModal');
-        modal.style.display = "block";
+        const overlay = document.getElementById('unfinishedTasksOverlay');
+        overlay.style.display = "block";
         
-        // 点击任何地方关闭模态框
-        function closeModal(event) {
-            if (event.target === modal || !modal.contains(event.target)) {
-                modal.style.display = "none";
-                document.removeEventListener('click', closeModal);
-            }
-        }
-        
-        // 立即添加事件监听器
-        document.addEventListener('click', closeModal);
+        // 点击任何地方关闭覆盖层
+        overlay.addEventListener('click', function() {
+            overlay.style.display = "none";
+        });
     }
 }
