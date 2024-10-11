@@ -66,7 +66,9 @@ function displayTasks(tasks) {
         } else {
             tasks.forEach(task => {
                 const li = document.createElement('li');
-                let taskInfo = `${task.name} (时间段: ${task.startDate} 至 ${task.endDate}`;
+                const startDateTime = new Date(task.startDateTime);
+                const endDateTime = new Date(task.endDateTime);
+                let taskInfo = `${task.name} (时间段: ${startDateTime.toLocaleString()} 至 ${endDateTime.toLocaleString()}`;
                 taskInfo += `, 优先级: ${task.priority}`;
                 if (task.category) taskInfo += `, 分类: ${task.category}`;
                 if (task.location) taskInfo += `, 地点: ${task.location}`;
@@ -233,17 +235,19 @@ function register() {
 function addTask() {
     const taskName = document.getElementById('taskName').value;
     const startDate = document.getElementById('startDate').value;
+    const startTime = document.getElementById('startTime').value;
     const endDate = document.getElementById('endDate').value;
+    const endTime = document.getElementById('endTime').value;
     const priority = document.getElementById('priority').value;
     const category = document.getElementById('category').value;
     const location = document.getElementById('location').value;
     
-    if (taskName && startDate && endDate) {
+    if (taskName && startDate && startTime && endDate && endTime) {
         const task = { 
             id: Date.now(), 
             name: taskName, 
-            startDate,
-            endDate,
+            startDateTime: `${startDate}T${startTime}`,
+            endDateTime: `${endDate}T${endTime}`,
             priority, 
             category: category || null,
             location: location || null
@@ -255,7 +259,9 @@ function addTask() {
         // 清空表单
         document.getElementById('taskName').value = '';
         document.getElementById('startDate').value = '';
+        document.getElementById('startTime').value = '';
         document.getElementById('endDate').value = '';
+        document.getElementById('endTime').value = '';
         document.getElementById('priority').value = 'low';
         document.getElementById('category').value = '';
         document.getElementById('location').value = '';
@@ -263,10 +269,10 @@ function addTask() {
         // 重新加载任务列表
         sortTasks();
         
-        // 可选：显示成功消息
+        // 显示成功消息
         alert('任务添加成功！');
     } else {
-        alert('请填写任务名称、开始日期和结束日期！');
+        alert('请填写所有必填字段！');
     }
 }
 
@@ -351,9 +357,9 @@ function sortTasks() {
     tasks.sort((a, b) => {
         switch (sortBy) {
             case 'startDate':
-                return new Date(a.startDate) - new Date(b.startDate);
+                return new Date(a.startDateTime) - new Date(b.startDateTime);
             case 'endDate':
-                return new Date(a.endDate) - new Date(b.endDate);
+                return new Date(a.endDateTime) - new Date(b.endDateTime);
             case 'priority':
                 const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
                 return priorityOrder[a.priority] - priorityOrder[b.priority];
@@ -389,14 +395,8 @@ function clearSearch() {
 // 添加自动清除过期任务的函数
 function cleanExpiredTasks() {
     const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const currentDate = new Date().toISOString().split('T')[0];
-    const updatedTasks = tasks.filter(task => task.endDate >= currentDate);
+    const currentDateTime = new Date().toISOString();
+    const updatedTasks = tasks.filter(task => task.endDateTime >= currentDateTime);
     
     if (tasks.length !== updatedTasks.length) {
-        localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-        displayTasks(updatedTasks);
-    }
-}
-
-// 确保在页面加载时初始化应用
-document.addEventListener('DOMContentLoaded', init);
+        localStorage.setItem('tasks', JSON.stringify
