@@ -111,7 +111,7 @@ function displayTasks(tasks) {
                 li.className = `priority-${task.priority}`;
                 const startDateTime = new Date(task.startDateTime);
                 const endDateTime = new Date(task.endDateTime);
-                let taskInfo = `${task.name} (时间段: ${startDateTime.toLocaleString()} 至 ${endDateTime.toLocaleString()}`;
+                let taskInfo = `${task.name} (开始: ${startDateTime.toLocaleString()}, 结束: ${endDateTime.toLocaleString()}`;
                 taskInfo += `, 优先级: ${task.priority}`;
                 if (task.category) taskInfo += `, 分类: ${task.category}`;
                 if (task.location) taskInfo += `, 地点: ${task.location}`;
@@ -392,12 +392,12 @@ function addTask() {
     const category = document.getElementById('category').value;
     const location = document.getElementById('location').value;
     
-    if (taskName && startDate && startTime && endDate && endTime) {
+    if (taskName && startDate && endDate) {
         const task = { 
             id: Date.now(), 
             name: taskName, 
-            startDateTime: `${startDate}T${startTime}`,
-            endDateTime: `${endDate}T${endTime}`,
+            startDateTime: startTime ? `${startDate}T${startTime}` : `${startDate}T00:00`,
+            endDateTime: endTime ? `${endDate}T${endTime}` : `${endDate}T23:59`,
             priority, 
             category: category || null,
             location: location || null
@@ -417,16 +417,12 @@ function addTask() {
         document.getElementById('location').value = '';
         
         // 重新加载任务列表
-        sortTasks();
+        loadTasks();
         
         // 显示成功消息
         showNotification('任务添加成功！');
-
-        // 添加新任务动画
-        const newTask = taskList.lastElementChild;
-        newTask.classList.add('task-added');
     } else {
-        showNotification('请填写所有必填字段！', 'error');
+        showNotification('请填写任务名称、开始日期和结束日期！', 'error');
     }
 }
 
