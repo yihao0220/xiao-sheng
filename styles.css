@@ -109,83 +109,83 @@ li button {
     .container {
         width: 95%;
         padding: 1rem;
+        margin: 1rem auto;
     }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.2rem;
+    }
+
+    input, select, button {
+        font-size: 16px; /* 防止 iOS 设备上的自动缩放 */
+    }
+
+    #taskForm, #taskList {
+        padding: 0.5rem;
+    }
+
+    li {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .task-actions {
+        margin-top: 10px;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .task-actions button {
+        width: 48%;
+    }
+
+    #searchBox {
+        flex-direction: column;
+    }
+
+    #searchBox input {
+        margin-bottom: 0.5rem;
+    }
+
+    #searchBox button {
+        width: 100%;
+    }
+
+    #scheduleUpload input[type="file"] {
+        width: 100%;
+    }
+
+    #scheduleDisplay img {
+        width: 100%;
+        height: auto;
+    }
+}
+
+/* 确保长文本不会溢出 */
+.task-info {
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+/* 改善表单布局 */
+#taskForm > * {
+    margin-bottom: 0.5rem;
+}
+
+/* 改善课表输入布局 */
+#scheduleInputs > div {
+    margin-bottom: 1rem;
+}
+
+#scheduleInputs input {
+    margin-bottom: 0.5rem;
 }
 
 #sortOptions {
     margin-bottom: 1rem;
-}
-
-#sortOptions label {
-    margin-right: 0.5rem;
-}
-
-#sortBy {
-    padding: 5px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-}
-
-#searchBox {
-    margin-bottom: 1rem;
-    display: flex;
-}
-
-#searchInput {
-    flex-grow: 1;
-    margin-right: 0.5rem;
-}
-
-#searchBox button {
-    width: auto;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1000;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.modal h2 {
-    margin-top: 0;
-}
-
-.overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-}
-
-.overlay-content {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 5px;
-    max-width: 80%;
-    max-height: 80%;
-    overflow-y: auto;
 }
