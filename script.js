@@ -1,3 +1,19 @@
+// 检查 localStorage
+console.log("Checking localStorage...");
+try {
+    localStorage.setItem('test', 'testvalue');
+    console.log("localStorage test:", localStorage.getItem('test'));
+    localStorage.removeItem('test');
+    console.log("localStorage is working properly");
+} catch (e) {
+    console.error("localStorage is not available:", e);
+}
+
+window.onerror = function(message, source, lineno, colno, error) {
+    console.error("JavaScript error:", message, "at", source, ":", lineno);
+    return true;
+};
+
 console.log("Script is running");
 
 // 辅助函数
@@ -162,7 +178,7 @@ function checkTodayClasses() {
 
 // 初始化函数
 function init() {
-    console.log("Initializing application");
+    console.log("Initializing application...");
     addEventListeners(); // 添加这行
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
