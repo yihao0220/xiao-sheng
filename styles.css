@@ -1,6 +1,6 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f7f9fc;
+    background: linear-gradient(to bottom right, #6a11cb, #2575fc);
     color: #333;
     margin: 0;
     padding: 0;
@@ -17,12 +17,17 @@ body {
     padding: 20px;
     background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     margin: 20px;
 }
 
-h1, h2, h3 {
-    color: #333;
+h1 {
+    color: #ffffff;
+    text-align: center;
+}
+
+h2, h3 {
+    color: #444;
     text-align: center;
 }
 
@@ -36,7 +41,7 @@ input[type="text"], input[type="password"], input[type="file"] {
 }
 
 .button {
-    background-color: #007bff;
+    background-color: #28a745;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -47,14 +52,14 @@ input[type="text"], input[type="password"], input[type="file"] {
 }
 
 .button:hover {
-    background-color: #0056b3;
+    background-color: #218838;
 }
 
 .task-list li {
     list-style-type: none;
     margin-bottom: 15px;
     padding: 15px;
-    background: #f1f1f1;
+    background: #f9f9f9;
     border-radius: 5px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     display: flex;
@@ -64,6 +69,7 @@ input[type="text"], input[type="password"], input[type="file"] {
 
 .task-info {
     max-width: 70%;
+    color: #333;
 }
 
 .task-actions {
@@ -104,7 +110,7 @@ input[type="text"], input[type="password"], input[type="file"] {
     left: 50%;
     transform: translateX(-50%);
     z-index: 1000;
-    background-color: #28a745;
+    background-color: #17a2b8;
     color: white;
     padding: 15px;
     border-radius: 5px;
