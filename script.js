@@ -1,3 +1,5 @@
+console.log("Script is running");
+
 // 辅助函数
 function showElement(id) {
     const element = document.getElementById(id);
@@ -160,13 +162,15 @@ function checkTodayClasses() {
 
 // 初始化函数
 function init() {
+    console.log("Initializing application");
+    addEventListeners(); // 添加这行
     const currentUser = localStorage.getItem('currentUser');
     if (currentUser) {
         showElement('taskManager');
         hideElement('authForm');
         loadTasks();
         checkAndRemindTasks();
-        showUnfinishedTasks(); // 确保这行存在
+        showUnfinishedTasks();
     } else {
         showElement('authForm');
         showLoginForm();
@@ -241,7 +245,8 @@ function addEventListeners() {
     const loginButton = document.getElementById('loginButton');
     if (loginButton) {
         console.log("Login button found");
-        loginButton.addEventListener('click', function() {
+        loginButton.addEventListener('click', function(e) {
+            e.preventDefault(); // 防止表单默认提交
             console.log("Login button clicked");
             login();
         });
@@ -542,7 +547,6 @@ function cleanExpiredTasks() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM fully loaded");
     init();
-    addEventListeners();
 });
 
 // 新增函数显示未完成任务
