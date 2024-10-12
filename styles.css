@@ -1,3 +1,4 @@
+
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
@@ -188,4 +189,183 @@ li button {
 
 #sortOptions {
     margin-bottom: 1rem;
+}
+
+#sortOptions label {
+    margin-right: 0.5rem;
+}
+
+#sortBy {
+    padding: 5px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+#searchBox {
+    margin-bottom: 1rem;
+    display: flex;
+}
+
+#searchInput {
+    flex-grow: 1;
+    margin-right: 0.5rem;
+}
+
+#searchBox button {
+    width: auto;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.modal h2 {
+    margin-top: 0;
+}
+
+/* 删除或注释掉这些样式 */
+/*
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+}
+
+.overlay-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    max-width: 80%;
+    max-height: 80%;
+    overflow-y: auto;
+}
+*/
+
+/* 任务优先级颜色 */
+.priority-high {
+    border-left: 5px solid #e74c3c;
+}
+
+.priority-medium {
+    border-left: 5px solid #f39c12;
+}
+
+.priority-low {
+    border-left: 5px solid #3498db;
+}
+
+/* 改善布局，减少空白 */
+.container {
+    padding: 1.5rem;
+}
+
+#taskForm, #taskList {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+/* 添加任务动画 */
+@keyframes taskAdded {
+    0% { transform: translateY(-20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.task-added {
+    animation: taskAdded 0.5s ease-out;
+}
+
+/* 任务操作按钮样式 */
+.task-actions button {
+    padding: 5px 10px;
+    margin-left: 5px;
+    border-radius: 3px;
+    font-size: 0.9em;
+}
+
+.edit-btn {
+    background-color: #f39c12;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+}
+
+/* 提示消息样式 */
+.notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #2ecc71;
+    color: white;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    display: none;
+}
+
+/* 添加以下样式 */
+#scheduleUpload {
+    margin-top: 2rem;
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 5px;
+}
+
+#scheduleUpload h2 {
+    margin-top: 0;
+}
+
+#scheduleFile {
+    margin-bottom: 1rem;
+}
+
+.today-classes {
+    background-color: #e8f4f8;
+    border-left: 5px solid #3498db;
+    margin-bottom: 20px;
+}
+
+.today-classes h3 {
+    margin: 0 0 10px 0;
+    color: #2980b9;
+}
+
+.today-classes ul {
+    margin: 0;
+    padding-left: 20px;
+}
+
+.today-classes li {
+    background: none;
+    padding: 5px 0;
+    margin-bottom: 5px;
 }
