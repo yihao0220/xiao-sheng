@@ -236,9 +236,17 @@ function setDailyCheck() {
 
 // 添加事件监听器
 function addEventListeners() {
+    console.log("Adding event listeners");
+
     const loginButton = document.getElementById('loginButton');
     if (loginButton) {
-        loginButton.addEventListener('click', login);
+        console.log("Login button found");
+        loginButton.addEventListener('click', function() {
+            console.log("Login button clicked");
+            login();
+        });
+    } else {
+        console.log("Login button not found");
     }
 
     const registerButton = document.getElementById('registerButton');
@@ -302,13 +310,19 @@ function showRegisterForm() {
 }
 
 function login() {
+    console.log("Login function called");
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
     
+    console.log("Username:", username, "Password:", password);
+
     const users = JSON.parse(localStorage.getItem('users')) || [];
+    console.log("Users from localStorage:", users);
+
     const user = users.find(u => u.username === username && u.password === password);
     
     if (user) {
+        console.log("User found, logging in");
         localStorage.setItem('currentUser', username);
         showElement('taskManager');
         hideElement('authForm');
@@ -316,6 +330,7 @@ function login() {
         showUnfinishedTasks();
         checkTodayClasses();
     } else {
+        console.log("User not found or password incorrect");
         alert('用户名或密码错误');
     }
 }
@@ -525,6 +540,7 @@ function cleanExpiredTasks() {
 
 // 确保在页面加载时初始化应用
 document.addEventListener('DOMContentLoaded', function() {
+    console.log("DOM fully loaded");
     init();
     addEventListeners();
 });
