@@ -1,4 +1,3 @@
-// JavaScript 功能
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM fully loaded");
     init();
@@ -13,6 +12,7 @@ function init() {
         showElement('taskManager');
         hideElement('authForm');
         loadTasks();
+        remindTodayClasses();
     } else {
         showElement('authForm');
         showLoginForm();
@@ -46,6 +46,22 @@ function addEventListeners() {
             addTask();
         });
     }
+
+    const uploadScheduleButton = document.getElementById('uploadScheduleButton');
+    if (uploadScheduleButton) {
+        uploadScheduleButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            handleScheduleUpload();
+        });
+    }
+
+    const addClassButton = document.getElementById('addClassButton');
+    if (addClassButton) {
+        addClassButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            addClass();
+        });
+    }
 }
 
 // 登录功能
@@ -60,6 +76,7 @@ function login() {
         showElement('taskManager');
         hideElement('authForm');
         loadTasks();
+        remindTodayClasses();
         showNotification('登录成功！');
     } else {
         showNotification('用户名或密码错误', 'error');
@@ -139,56 +156,49 @@ function displayTasks(tasks) {
     }
 }
 
-// 添加任务
-function addTask() {
-    const taskName = document.getElementById('taskName').value;
-    const startDate = document.getElementById('startDate').value;
-    const startTime = document.getElementById('startTime').value;
-    const endDate = document.getElementById('endDate').value;
-    const endTime = document.getElementById('endTime').value;
-    const priority = document.getElementById('priority').value;
-    const category = document.getElementById('category').value;
-    const location = document.getElementById('location').value;
+// 添加课程信息
+function addClass() {
+    const className = document.getElementById('className').value;
+    const classDay = document.getElementById('classDay').value;
+    const classTime = document.getElementById('classTime').value;
+    const classLocation = document.getElementById('classLocation').value;
 
-    if (taskName && startDate && endDate) {
-        const task = {
-            id: Date.now(),
-            name: taskName,
-            startDateTime: startTime ? `${startDate}T${startTime}` : `${startDate}T00:00`,
-            endDateTime: endTime ? `${endDate}T${endTime}` : `${endDate}T23:59`,
-            priority,
-            category: category || null,
-            location: location || null
+    if (className && classDay && classTime) {
+        const newClass = {
+            name: className,
+            day: classDay,
+            time: classTime,
+            location: classLocation || '未指定地点'
         };
-        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-        tasks.push(task);
-        localStorage.setItem('tasks', JSON.stringify(tasks));
+
+        const classSchedule = JSON.parse(localStorage.getItem('classSchedule')) || [];
+        classSchedule.push(newClass);
+        localStorage.setItem('classSchedule', JSON.stringify(classSchedule));
 
         // 清空表单
-        document.getElementById('taskName').value = '';
-        document.getElementById('startDate').value = '';
-        document.getElementById('startTime').value = '';
-        document.getElementById('endDate').value = '';
-        document.getElementById('endTime').value = '';
-        document.getElementById('priority').value = 'low';
-        document.getElementById('category').value = '';
-        document.getElementById('location').value = '';
+        document.getElementById('className').value = '';
+        document.getElementById('classDay').value = '周一';
+        document.getElementById('classTime').value = '';
+        document.getElementById('classLocation').value = '';
 
-        // 重新加载任务列表
-        loadTasks();
-
-        // 显示成功消息
-        showNotification('任务添加成功！');
+        showNotification('课程添加成功！');
     } else {
-        showNotification('请填写任务名称、开始日期和结束日期！', 'error');
+        showNotification('请填写课程名称、日期和时间！', 'error');
     }
 }
 
-// 删除任务
-function deleteTask(taskId) {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    const updatedTasks = tasks.filter(task => task.id !== taskId);
-    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    loadTasks();
-    showNotification('任务已删除');
+// 提醒当天课程
+function remindTodayClasses() {
+    const classSchedule = JSON.parse(localStorage.getItem('classSchedule')) || [];
+    const today = new Date().toLocaleString('zh-CN', { weekday: 'long' });
+
+    const todayClasses = classSchedule.filter(cls => cls.day === today);
+
+    if (todayClasses.length > 0) {
+        let message = `今天的课程安排：\n`;
+        todayClasses.forEach(cls => {
+            message += `${cls.name} - 时间: ${cls.time} - 地点: ${cls.location}\n`;
+        });
+        showNotification(message, 'info');
+    }
 }
