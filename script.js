@@ -88,6 +88,76 @@ function displayTasks(tasks) {
     }
 }
 
+function addTask() {
+    const taskName = document.getElementById('taskName').value;
+    const startDate = document.getElementById('startDate').value;
+    const startTime = document.getElementById('startTime').value;
+    const endDate = document.getElementById('endDate').value;
+    const endTime = document.getElementById('endTime').value;
+    const priority = document.getElementById('priority').value;
+    const category = document.getElementById('category').value;
+    const location = document.getElementById('location').value;
+    
+    if (taskName && startDate && endDate) {
+        const task = { 
+            id: Date.now(), 
+            name: taskName, 
+            startDateTime: startTime ? `${startDate}T${startTime}` : `${startDate}T00:00`,
+            endDateTime: endTime ? `${endDate}T${endTime}` : `${endDate}T23:59`,
+            priority, 
+            category: category || null,
+            location: location || null
+        };
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.push(task);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        
+        // 清空表单
+        document.getElementById('taskName').value = '';
+        document.getElementById('startDate').value = '';
+        document.getElementById('startTime').value = '';
+        document.getElementById('endDate').value = '';
+        document.getElementById('endTime').value = '';
+        document.getElementById('priority').value = 'low';
+        document.getElementById('category').value = '';
+        document.getElementById('location').value = '';
+        
+        // 重新加载任务列表
+        loadTasks();
+        
+        // 显示成功消息
+        showNotification('任务添加成功！');
+    } else {
+        showNotification('请填写任务名称、开始日期和结束日期！', 'error');
+    }
+}
+
+function editTask(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const taskToEdit = tasks.find(task => task.id === taskId);
+    
+    if (taskToEdit) {
+        document.getElementById('taskName').value = taskToEdit.name;
+        document.getElementById('startDate').value = taskToEdit.startDateTime.split('T')[0];
+        document.getElementById('startTime').value = taskToEdit.startDateTime.split('T')[1];
+        document.getElementById('endDate').value = taskToEdit.endDateTime.split('T')[0];
+        document.getElementById('endTime').value = taskToEdit.endDateTime.split('T')[1];
+        document.getElementById('priority').value = taskToEdit.priority;
+        document.getElementById('category').value = taskToEdit.category || '';
+        document.getElementById('location').value = taskToEdit.location || '';
+        
+        deleteTask(taskId); // 删除旧的任务，准备保存更新后的任务
+    }
+}
+
+function deleteTask(taskId) {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    const updatedTasks = tasks.filter(task => task.id !== taskId);
+    localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+    loadTasks();
+    showNotification('任务已删除');
+}
+
 // 初始化函数
 function init() {
     console.log("Initializing application...");
@@ -109,13 +179,10 @@ function addEventListeners() {
 
     const loginButton = document.getElementById('loginButton');
     if (loginButton) {
-        console.log("Login button found");
         loginButton.addEventListener('click', function(e) {
             e.preventDefault();
             login();
         });
-    } else {
-        console.log("Login button not found");
     }
 
     const showRegisterLink = document.getElementById('showRegisterLink');
@@ -123,6 +190,14 @@ function addEventListeners() {
         showRegisterLink.addEventListener('click', function(e) {
             e.preventDefault();
             showRegisterForm();
+        });
+    }
+
+    const addTaskButton = document.getElementById('addTaskButton');
+    if (addTaskButton) {
+        addTaskButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            addTask();
         });
     }
 }
