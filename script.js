@@ -131,7 +131,7 @@ function displayTasks(tasks) {
 }
 
 // 在文件顶部添加课程表数据
-const weeklySchedule = {
+let weeklySchedule = {
     "周一": [
         { name: "大学英语(一)", time: "08:20-10:00", location: "教十一楼B区401" },
         { name: "高等数学B(一)", time: "10:20-12:00", location: "教一楼三区505" },
@@ -653,11 +653,6 @@ document.getElementById('scheduleForm').addEventListener('submit', function(e) {
     
     localStorage.setItem('userSchedule', JSON.stringify(schedule));
     showNotification('课表保存成功！');
-    
-    // 删除图片
-    document.getElementById('scheduleImage').src = '';
-    document.getElementById('scheduleDisplay').style.display = 'none';
-    document.getElementById('scheduleFile').value = '';
     
     // 更新全局变量
     weeklySchedule = schedule;
