@@ -1,58 +1,48 @@
-// 获取今天的日期（星期几，1表示周一，7表示周日）
-function getToday() {
-    const today = new Date();
-    return today.getDay(); // 返回值：0-6 (0表示周日)
-}
-
-// 获取本地存储中的课表
-function getStoredClasses() {
-    return JSON.parse(localStorage.getItem("classSchedule")) || {};
-}
-
-// 存储课表到本地存储
-function storeClasses(classSchedule) {
-    localStorage.setItem("classSchedule", JSON.stringify(classSchedule));
-}
-
-// 提醒今天的课程
-function remindTodayClasses() {
-    const today = getToday();
-    const classSchedule = getStoredClasses();
-    const todayClasses = classSchedule[today] || []; // 如果没有今天的课程，返回空数组
-
-    if (todayClasses.length > 0) {
-        alert("今天的课程有: " + todayClasses.map(c => `${c.name} (${c.time})`).join(", "));
-    } else {
-        console.log("今天没有课程");
-    }
-}
-
-// 添加课程到课表
-document.getElementById("addClassButton").addEventListener("click", function(event) {
+// 登录功能
+document.getElementById("loginButton").addEventListener("click", function(event) {
     event.preventDefault();
-    
-    const className = document.getElementById("className").value;
-    const classDay = document.getElementById("classDay").value; // 获取星期几
-    const classTime = document.getElementById("classTime").value;
-    const classLocation = document.getElementById("classLocation").value || "无地点";
-
-    if (className && classTime) {
-        const classSchedule = getStoredClasses();
-        
-        // 确保每个星期几都有一个数组存储课程
-        if (!classSchedule[classDay]) {
-            classSchedule[classDay] = [];
-        }
-
-        // 添加新的课程
-        classSchedule[classDay].push({ name: className, time: classTime, location: classLocation });
-        storeClasses(classSchedule);
-
-        alert(`已添加课程: ${className}, 时间: ${classDay} ${classTime}, 地点: ${classLocation}`);
+    const username = document.getElementById("loginUsername").value;
+    const password = document.getElementById("loginPassword").value;
+    if (username && password) {
+        document.getElementById("authForm").style.display = "none";
+        document.getElementById("taskManager").style.display = "block";
     }
 });
 
-// 页面加载时提醒今天的课程
-document.addEventListener("DOMContentLoaded", function() {
-    remindTodayClasses();
+// 添加任务功能
+document.getElementById("addTaskButton").addEventListener("click", function() {
+    const taskName = document.getElementById("taskName").value;
+    const startDate = document.getElementById("startDate").value;
+    const startTime = document.getElementById("startTime").value;
+    const endDate = document.getElementById("endDate").value;
+    const endTime = document.getElementById("endTime").value;
+    const priority = document.getElementById("priority").value;
+    const category = document.getElementById("category").value;
+    const location = document.getElementById("location").value;
+
+    if (taskName) {
+        const taskItem = document.createElement("li");
+        taskItem.innerText = `任务: ${taskName}, 开始: ${startDate} ${startTime}, 结束: ${endDate} ${endTime}, 优先级: ${priority}, 分类: ${category}, 地点: ${location}`;
+        document.getElementById("allTasks").appendChild(taskItem);
+    }
+});
+
+// 清除搜索功能
+document.getElementById("clearSearchButton").addEventListener("click", function() {
+    document.getElementById("searchInput").value = "";
+});
+
+// 添加课程功能
+document.getElementById("addClassButton").addEventListener("click", function(event) {
+    event.preventDefault();
+    const className = document.getElementById("className").value;
+    const classDay = document.getElementById("classDay").value;
+    const classTime = document.getElementById("classTime").value;
+    const classLocation = document.getElementById("classLocation").value;
+
+    if (className && classDay && classTime) {
+        const classItem = document.createElement("p");
+        classItem.innerText = `课程: ${className}, 时间: ${classDay} ${classTime}, 地点: ${classLocation}`;
+        document.getElementById("notificationContainer").appendChild(classItem);
+    }
 });
