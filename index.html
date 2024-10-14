@@ -9,6 +9,8 @@
 <body>
     <div class="container">
         <h1>大学任务管理器</h1>
+
+        <!-- 登录功能 -->
         <div id="authForm">
             <form id="loginForm">
                 <h2>登录</h2>
@@ -21,6 +23,7 @@
             <a href="#" id="showRegisterLink">没有账号？点击注册</a>
         </div>
         
+        <!-- 任务管理器功能 -->
         <div id="taskManager" style="display: none;">
             <h2>添加新任务</h2>
             <div id="addTaskForm">
@@ -38,6 +41,7 @@
                 <input type="text" id="location" placeholder="地点 (可选)">
                 <button id="addTaskButton" class="button">添加任务</button>
             </div>
+
             <h2>任务列表</h2>
             <div>
                 <label for="sortBy">排序方式:</label>
@@ -53,6 +57,7 @@
             <button id="logoutButton" class="button">退出登录</button>
         </div>
 
+        <!-- 课程管理功能 -->
         <div id="scheduleUpload">
             <h2>添加课程信息</h2>
             <form id="classForm">
@@ -72,6 +77,7 @@
             </form>
         </div>
 
+        <!-- 未完成任务提醒 -->
         <div id="unfinishedTasksOverlay" style="display: none;">
             <h2>未完成任务提醒</h2>
             <div id="unfinishedTasksList"></div>
