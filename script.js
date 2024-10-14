@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (taskName) {
                 const taskItem = document.createElement("li");
                 taskItem.innerText = `任务: ${taskName}, 开始: ${startDate} ${startTime}, 结束: ${endDate} ${endTime}, 优先级: ${priority}, 分类: ${category}, 地点: ${location}`;
-                
+
                 // 添加删除按钮
                 const deleteButton = document.createElement("button");
                 deleteButton.innerText = "删除";
@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 deleteButton.addEventListener("click", function() {
                     deleteTask(taskItem, taskName);
                 });
-                
+
                 taskItem.appendChild(deleteButton);
                 document.getElementById("allTasks").appendChild(taskItem);
 
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
         tasks.forEach(task => {
             const taskItem = document.createElement("li");
             taskItem.innerText = `任务: ${task.name}, 开始: ${task.startDate} ${task.startTime}, 结束: ${task.endDate} ${task.endTime}, 优先级: ${task.priority}, 分类: ${task.category}, 地点: ${task.location}`;
-            
+
             // 添加删除按钮
             const deleteButton = document.createElement("button");
             deleteButton.innerText = "删除";
@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", function() {
             deleteButton.addEventListener("click", function() {
                 deleteTask(taskItem, task.name);
             });
-            
+
             taskItem.appendChild(deleteButton);
             document.getElementById("allTasks").appendChild(taskItem);
         });
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function() {
         let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
         tasks = tasks.filter(task => task.name !== taskName);
         localStorage.setItem("tasks", JSON.stringify(tasks));
-        
+
         alert("任务已删除！");
     }
 });
