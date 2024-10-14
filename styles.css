@@ -1,48 +1,62 @@
-/* 重置所有元素的默认样式 */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* 主布局样式 */
+.main-grid {
+    display: grid;
+    grid-template-areas:
+        "header header"
+        "sidebar content"
+        "footer footer";
+    grid-template-columns: 200px 1fr;
+    grid-template-rows: auto 1fr auto;
+    gap: 20px;
 }
 
-body {
-    font-family: Arial, sans-serif;
+.header {
+    grid-area: header;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.sidebar {
+    grid-area: sidebar;
     background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
+    padding: 10px;
 }
 
-.container {
+.content {
+    grid-area: content;
+    padding: 20px;
+}
+
+.footer {
+    grid-area: footer;
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
+
+.task-form {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 90%;
-    max-width: 600px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-h1, h2 {
-    text-align: center;
+    gap: 10px;
     margin-bottom: 20px;
 }
 
-label {
-    margin-bottom: 5px;
-    display: block;
+.task-list {
+    list-style-type: none;
+    padding: 0;
 }
 
-input, select, button {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
+.task-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
+    margin-bottom: 10px;
 }
 
 .button {
@@ -52,53 +66,43 @@ input, select, button {
     padding: 10px;
     cursor: pointer;
     text-align: center;
+    border-radius: 5px;
 }
 
 .button:hover {
     background-color: #45a049;
 }
 
-.task-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.task-list li {
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
+.edit-button {
+    background-color: #FFA500;
+    margin-left: 10px;
 }
 
 .delete-button {
-    margin-left: 10px;
     background-color: #f44336;
-    padding: 5px;
+    margin-left: 10px;
 }
 
-.delete-button:hover {
-    background-color: #e53935;
-}
-
-#notificationContainer p {
-    background-color: #dff0d8;
-    padding: 10px;
-    border-radius: 5px;
-    margin-bottom: 10px;
+.task-controls {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
 }
 
 /* 响应式设计 - 针对移动设备 */
 @media (max-width: 768px) {
-    .container {
-        width: 95%;
-        padding: 15px;
+    .main-grid {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "header"
+            "content"
+            "footer";
     }
-    h1, h2 {
-        font-size: 1.5em;
+    .sidebar {
+        display: none;
     }
     .button {
-        padding: 12px;
-    }
-    input, select, button {
+        padding: 15px;
         font-size: 16px;
     }
 }
