@@ -42,7 +42,16 @@ document.addEventListener("DOMContentLoaded", function() {
                     deleteTask(taskItem, taskName);
                 });
 
+                // 添加修改按钮
+                const editButton = document.createElement("button");
+                editButton.innerText = "修改";
+                editButton.classList.add("button", "edit-button");
+                editButton.addEventListener("click", function() {
+                    editTask(taskItem, taskName);
+                });
+
                 taskItem.appendChild(deleteButton);
+                taskItem.appendChild(editButton);
                 document.getElementById("allTasks").appendChild(taskItem);
 
                 // 存储任务到 localStorage
@@ -58,31 +67,39 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // 添加课程功能
-    const addClassButton = document.getElementById("addClassButton");
-    if (addClassButton) {
-        addClassButton.addEventListener("click", function(event) {
-            event.preventDefault();
-            let className = document.getElementById("className").value;
-            let classDay = document.getElementById("classDay").value;
-            let classTime = document.getElementById("classTime").value;
-            let classLocation = document.getElementById("classLocation").value || "无地点";
+    // 修改任务功能
+    function editTask(taskElement, oldTaskName) {
+        // 从 localStorage 中查找任务
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        let taskToEdit = tasks.find(task => task.name === oldTaskName);
 
-            if (className && classDay && classTime) {
-                const classItem = document.createElement("p");
-                classItem.innerText = `课程: ${className}, 时间: ${classDay} ${classTime}, 地点: ${classLocation}`;
-                document.getElementById("notificationContainer").appendChild(classItem);
+        if (taskToEdit) {
+            // 填充表单字段
+            document.getElementById("taskName").value = taskToEdit.name;
+            document.getElementById("startDate").value = taskToEdit.startDate;
+            document.getElementById("startTime").value = taskToEdit.startTime;
+            document.getElementById("endDate").value = taskToEdit.endDate;
+            document.getElementById("endTime").value = taskToEdit.endTime;
+            document.getElementById("priority").value = taskToEdit.priority;
+            document.getElementById("category").value = taskToEdit.category;
+            document.getElementById("location").value = taskToEdit.location;
 
-                // 存储课程到 localStorage
-                let classes = JSON.parse(localStorage.getItem("classes")) || [];
-                classes.push({ name: className, day: classDay, time: classTime, location: classLocation });
-                localStorage.setItem("classes", JSON.stringify(classes));
+            // 删除旧任务
+            deleteTask(taskElement, oldTaskName);
+        }
+    }
 
-                alert("课程添加成功！");
-            } else {
-                alert("请填写完整的课程信息！");
-            }
-        });
+    // 删除任务功能
+    function deleteTask(taskElement, taskName) {
+        // 从 DOM 中删除任务
+        taskElement.remove();
+
+        // 从 localStorage 中删除任务
+        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        tasks = tasks.filter(task => task.name !== taskName);
+        localStorage.setItem("tasks", JSON.stringify(tasks));
+
+        alert("任务已删除！");
     }
 
     // 加载任务信息
@@ -100,7 +117,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 deleteTask(taskItem, task.name);
             });
 
+            // 添加修改按钮
+            const editButton = document.createElement("button");
+            editButton.innerText = "修改";
+            editButton.classList.add("button", "edit-button");
+            editButton.addEventListener("click", function() {
+                editTask(taskItem, task.name);
+            });
+
             taskItem.appendChild(deleteButton);
+            taskItem.appendChild(editButton);
             document.getElementById("allTasks").appendChild(taskItem);
         });
     }
@@ -113,18 +139,5 @@ document.addEventListener("DOMContentLoaded", function() {
             classItem.innerText = `课程: ${cls.name}, 时间: ${cls.day} ${cls.time}, 地点: ${cls.location}`;
             document.getElementById("notificationContainer").appendChild(classItem);
         });
-    }
-
-    // 删除任务
-    function deleteTask(taskElement, taskName) {
-        // 从 DOM 中删除任务
-        taskElement.remove();
-
-        // 从 localStorage 中删除任务
-        let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        tasks = tasks.filter(task => task.name !== taskName);
-        localStorage.setItem("tasks", JSON.stringify(tasks));
-
-        alert("任务已删除！");
     }
 });
