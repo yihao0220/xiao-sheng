@@ -13,6 +13,9 @@ body {
 }
 
 .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 90%;
     max-width: 600px;
     margin: 20px auto;
@@ -39,6 +42,7 @@ input, select, button {
     padding: 10px;
     border-radius: 5px;
     border: 1px solid #ccc;
+    font-size: 16px;
 }
 
 .button {
@@ -86,11 +90,15 @@ input, select, button {
 @media (max-width: 768px) {
     .container {
         width: 95%;
+        padding: 15px;
     }
     h1, h2 {
         font-size: 1.5em;
     }
     .button {
-        padding: 15px;
+        padding: 12px;
+    }
+    input, select, button {
+        font-size: 16px;
     }
 }
