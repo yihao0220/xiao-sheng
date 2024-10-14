@@ -47,14 +47,6 @@ function addEventListeners() {
         });
     }
 
-    const uploadScheduleButton = document.getElementById('uploadScheduleButton');
-    if (uploadScheduleButton) {
-        uploadScheduleButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            handleScheduleUpload();
-        });
-    }
-
     const addClassButton = document.getElementById('addClassButton');
     if (addClassButton) {
         addClassButton.addEventListener('click', function(e) {
@@ -110,50 +102,6 @@ function showNotification(message, type = 'success') {
         notification.style.display = 'none';
         notification.remove();
     }, 3000);
-}
-
-// 加载任务
-function loadTasks() {
-    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    displayTasks(tasks);
-}
-
-// 显示任务
-function displayTasks(tasks) {
-    const taskList = document.getElementById('allTasks');
-    if (taskList) {
-        taskList.innerHTML = '';
-
-        if (tasks.length === 0) {
-            taskList.innerHTML += '<li>没有找到匹配的任务</li>';
-        } else {
-            tasks.forEach(task => {
-                const li = document.createElement('li');
-                li.className = `priority-${task.priority}`;
-                const startDateTime = new Date(task.startDateTime);
-                const endDateTime = new Date(task.endDateTime);
-                let taskInfo = `
-                    <div class="task-info">
-                        <strong>${task.name}</strong><br>
-                        开始: ${startDateTime.toLocaleString()}<br>
-                        结束: ${endDateTime.toLocaleString()}<br>
-                        优先级: ${task.priority}
-                        ${task.category ? `<br>分类: ${task.category}` : ''}
-                        ${task.location ? `<br>地点: ${task.location}` : ''}
-                    </div>
-                `;
-
-                li.innerHTML = `
-                    ${taskInfo}
-                    <div class="task-actions">
-                        <button class="edit-btn button" onclick="editTask(${task.id})">编辑</button>
-                        <button class="delete-btn button" onclick="deleteTask(${task.id})">删除</button>
-                    </div>
-                `;
-                taskList.appendChild(li);
-            });
-        }
-    }
 }
 
 // 添加课程信息
