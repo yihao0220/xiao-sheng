@@ -31,7 +31,7 @@ h2, h3 {
     text-align: center;
 }
 
-input[type="text"], input[type="password"], input[type="file"] {
+input[type="text"], input[type="password"], input[type="file"], input[type="time"], input[type="date"], select {
     width: calc(100% - 20px);
     padding: 10px;
     margin: 10px 0;
