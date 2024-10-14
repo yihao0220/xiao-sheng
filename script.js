@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
     init();
 });
 
-// 初始化函数
 function init() {
     console.log("Initializing application...");
     addEventListeners();
@@ -19,7 +18,6 @@ function init() {
     }
 }
 
-// 添加事件监听器
 function addEventListeners() {
     console.log("Adding event listeners");
 
@@ -56,7 +54,6 @@ function addEventListeners() {
     }
 }
 
-// 登录功能
 function login() {
     const username = document.getElementById('loginUsername').value;
     const password = document.getElementById('loginPassword').value;
@@ -75,19 +72,16 @@ function login() {
     }
 }
 
-// 显示元素
 function showElement(id) {
     const element = document.getElementById(id);
     if (element) element.style.display = 'block';
 }
 
-// 隐藏元素
 function hideElement(id) {
     const element = document.getElementById(id);
     if (element) element.style.display = 'none';
 }
 
-// 显示通知
 function showNotification(message, type = 'success') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
@@ -104,7 +98,47 @@ function showNotification(message, type = 'success') {
     }, 3000);
 }
 
-// 添加课程信息
+function addTask() {
+    const taskName = document.getElementById('taskName').value;
+    const startDate = document.getElementById('startDate').value;
+    const startTime = document.getElementById('startTime').value;
+    const endDate = document.getElementById('endDate').value;
+    const endTime = document.getElementById('endTime').value;
+    const priority = document.getElementById('priority').value;
+    const category = document.getElementById('category').value;
+    const location = document.getElementById('location').value;
+
+    if (taskName && startDate && endDate) {
+        const task = {
+            id: Date.now(),
+            name: taskName,
+            startDateTime: startTime ? `${startDate}T${startTime}` : `${startDate}T00:00`,
+            endDateTime: endTime ? `${endDate}T${endTime}` : `${endDate}T23:59`,
+            priority,
+            category: category || null,
+            location: location || null
+        };
+        const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.push(task);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        // 清空表单
+        document.getElementById('taskName').value = '';
+        document.getElementById('startDate').value = '';
+        document.getElementById('startTime').value = '';
+        document.getElementById('endDate').value = '';
+        document.getElementById('endTime').value = '';
+        document.getElementById('priority').value = 'low';
+        document.getElementById('category').value = '';
+        document.getElementById('location').value = '';
+        // 重新加载任务列表
+        loadTasks();
+        // 显示成功消息
+        showNotification('任务添加成功！');
+    } else {
+        showNotification('请填写任务名称、开始日期和结束日期！', 'error');
+    }
+}
+
 function addClass() {
     const className = document.getElementById('className').value;
     const classDay = document.getElementById('classDay').value;
@@ -135,7 +169,6 @@ function addClass() {
     }
 }
 
-// 提醒当天课程
 function remindTodayClasses() {
     const classSchedule = JSON.parse(localStorage.getItem('classSchedule')) || [];
     const today = new Date().toLocaleString('zh-CN', { weekday: 'long' });
@@ -148,5 +181,47 @@ function remindTodayClasses() {
             message += `${cls.name} - 时间: ${cls.time} - 地点: ${cls.location}\n`;
         });
         showNotification(message, 'info');
+    }
+}
+
+function loadTasks() {
+    const tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+    displayTasks(tasks);
+}
+
+function displayTasks(tasks) {
+    const taskList = document.getElementById('allTasks');
+    if (taskList) {
+        taskList.innerHTML = '';
+
+        if (tasks.length === 0) {
+            taskList.innerHTML += '<li>没有找到匹配的任务</li>';
+        } else {
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = `priority-${task.priority}`;
+                const startDateTime = new Date(task.startDateTime);
+                const endDateTime = new Date(task.endDateTime);
+                let taskInfo = `
+                    <div class="task-info">
+                        <strong>${task.name}</strong><br>
+                        开始: ${startDateTime.toLocaleString()}<br>
+                        结束: ${endDateTime.toLocaleString()}<br>
+                        优先级: ${task.priority}
+                        ${task.category ? `<br>分类: ${task.category}` : ''}
+                        ${task.location ? `<br>地点: ${task.location}` : ''}
+                    </div>
+                `;
+
+                li.innerHTML = `
+                    ${taskInfo}
+                    <div class="task-actions">
+                        <button class="edit-btn button" onclick="editTask(${task.id})">编辑</button>
+                        <button class="delete-btn button" onclick="deleteTask(${task.id})">删除</button>
+                    </div>
+                `;
+                taskList.appendChild(li);
+            });
+        }
     }
 }
