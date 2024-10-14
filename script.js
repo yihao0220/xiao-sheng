@@ -32,26 +32,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
             if (taskName) {
                 const taskItem = document.createElement("li");
-                taskItem.innerText = `任务: ${taskName}, 开始: ${startDate} ${startTime}, 结束: ${endDate} ${endTime}, 优先级: ${priority}, 分类: ${category}, 地点: ${location}`;
+                taskItem.classList.add("task-item");
+                taskItem.innerHTML = `
+                    <strong>${taskName}</strong><br>
+                    开始: ${startDate} ${startTime}<br>
+                    结束: ${endDate} ${endTime}<br>
+                    优先级: ${priority}<br>
+                    <button class="edit-button button">编辑</button>
+                    <button class="delete-button button">删除</button>
+                `;
 
-                // 添加删除按钮
-                const deleteButton = document.createElement("button");
-                deleteButton.innerText = "删除";
-                deleteButton.classList.add("button", "delete-button");
-                deleteButton.addEventListener("click", function() {
+                // 添加删除按钮事件
+                taskItem.querySelector(".delete-button").addEventListener("click", function() {
                     deleteTask(taskItem, taskName);
                 });
 
-                // 添加修改按钮
-                const editButton = document.createElement("button");
-                editButton.innerText = "修改";
-                editButton.classList.add("button", "edit-button");
-                editButton.addEventListener("click", function() {
+                // 添加修改按钮事件
+                taskItem.querySelector(".edit-button").addEventListener("click", function() {
                     editTask(taskItem, taskName);
                 });
 
-                taskItem.appendChild(deleteButton);
-                taskItem.appendChild(editButton);
                 document.getElementById("allTasks").appendChild(taskItem);
 
                 // 存储任务到 localStorage
@@ -107,26 +107,26 @@ document.addEventListener("DOMContentLoaded", function() {
         const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
         tasks.forEach(task => {
             const taskItem = document.createElement("li");
-            taskItem.innerText = `任务: ${task.name}, 开始: ${task.startDate} ${task.startTime}, 结束: ${task.endDate} ${task.endTime}, 优先级: ${task.priority}, 分类: ${task.category}, 地点: ${task.location}`;
+            taskItem.classList.add("task-item");
+            taskItem.innerHTML = `
+                <strong>${task.name}</strong><br>
+                开始: ${task.startDate} ${task.startTime}<br>
+                结束: ${task.endDate} ${task.endTime}<br>
+                优先级: ${task.priority}<br>
+                <button class="edit-button button">编辑</button>
+                <button class="delete-button button">删除</button>
+            `;
 
-            // 添加删除按钮
-            const deleteButton = document.createElement("button");
-            deleteButton.innerText = "删除";
-            deleteButton.classList.add("button", "delete-button");
-            deleteButton.addEventListener("click", function() {
+            // 添加删除按钮事件
+            taskItem.querySelector(".delete-button").addEventListener("click", function() {
                 deleteTask(taskItem, task.name);
             });
 
-            // 添加修改按钮
-            const editButton = document.createElement("button");
-            editButton.innerText = "修改";
-            editButton.classList.add("button", "edit-button");
-            editButton.addEventListener("click", function() {
+            // 添加修改按钮事件
+            taskItem.querySelector(".edit-button").addEventListener("click", function() {
                 editTask(taskItem, task.name);
             });
 
-            taskItem.appendChild(deleteButton);
-            taskItem.appendChild(editButton);
             document.getElementById("allTasks").appendChild(taskItem);
         });
     }
