@@ -229,10 +229,10 @@ document.addEventListener("DOMContentLoaded", function() {
         }
 
         console.log("Script initialization completed"); // 添加这行
-    } catch (error) {
-        console.error("初始化过程中发生错误:", error);
-        alert("初始化过程中发生错误。请查看控制台以获取更多信息。");
-    }
-}); // 确保这里有一个闭合的圆括号和分号
 
-console.log("Script end"); // 添加这行
+        // 添加一个新的函数来清除任务表单
+        function clearTaskForm() {
+            document.getElementById("taskName").value = "";
+            document.getElementById("startDate").value = "";
+            document.getElementById("startTime").value = "";
+            document.getElementById("endDate").value = "";
