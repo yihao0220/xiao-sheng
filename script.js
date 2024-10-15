@@ -82,8 +82,21 @@
 
     <div id="notificationContainer"></div>
 
-    <script src="script.js"></script>
     <script>
+        // 显示未完成任务
+        function showUnfinishedTasks() {
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            const unfinishedTasks = tasks.filter(task => !task.completed);
+
+            if (unfinishedTasks.length > 0) {
+                let message = "您有以下未完成的任务:\n";
+                unfinishedTasks.forEach(task => {
+                    message += `- ${task.name}\n`;
+                });
+                alert(message);
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", function() {
             const authForm = document.getElementById("authForm");
             const taskManager = document.getElementById("taskManager");
@@ -119,20 +132,6 @@
                 authForm.style.display = "block";
                 taskManager.style.display = "none";
             });
-
-            // 显示未完成任务
-            function showUnfinishedTasks() {
-                const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-                const unfinishedTasks = tasks.filter(task => !task.completed);
-
-                if (unfinishedTasks.length > 0) {
-                    let message = "您有以下未完成的任务:\n";
-                    unfinishedTasks.forEach(task => {
-                        message += `- ${task.name}\n`;
-                    });
-                    alert(message);
-                }
-            }
         });
     </script>
 </body>
