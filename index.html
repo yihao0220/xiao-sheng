@@ -20,15 +20,7 @@
 
         <main class="content">
             <div id="authForm" style="display: none;">
-                <form id="loginForm" class="fade-in">
-                    <h2>登录</h2>
-                    <label for="loginUsername">用户名:</label>
-                    <input type="text" id="loginUsername" required><br>
-                    <label for="loginPassword">密码:</label>
-                    <input type="password" id="loginPassword" required><br>
-                    <button id="submitLoginButton" class="button">提交</button>
-                </form>
-                <a href="#" id="showRegisterLink">没有账号？注册新账户</a>
+                <!-- 表单内容 -->
             </div>
 
             <div id="taskManager" style="display: none;">
@@ -94,3 +86,11 @@
                     <input type="time" id="editStartTime">
                     <input type="date" id="editEndDate">
                     <input type="time" id="editEndTime">
+                    <select id="editPriority">
+                        <option value="low">低优先级</option>
+                        <option value="medium">中优先级</option>
+                        <option value="high">高优先级</option>
+                    </select>
+                    <input type="text" id="editCategory" placeholder="分类 (可选)">
+                    <input type="text" id="editLocation" placeholder="地点 (可选)">
+                    <button id="saveEditTaskButton" class="button">保存修改</button>
