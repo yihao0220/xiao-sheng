@@ -14,7 +14,7 @@
 
         <div class="content">
             <!-- 登录功能 -->
-            <div id="authForm" style="display: none;">
+            <div id="authForm">
                 <form id="loginForm">
                     <h2>登录</h2>
                     <label for="loginUsername">用户名:</label>
@@ -84,58 +84,54 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            try {
-                const authForm = document.getElementById("authForm");
-                const taskManager = document.getElementById("taskManager");
-                const loginUsername = document.getElementById("loginUsername");
-                const loginPassword = document.getElementById("loginPassword");
-                const loginButton = document.getElementById("loginButton");
-                const logoutButton = document.getElementById("logoutButton");
+            const authForm = document.getElementById("authForm");
+            const taskManager = document.getElementById("taskManager");
+            const loginUsername = document.getElementById("loginUsername");
+            const loginPassword = document.getElementById("loginPassword");
+            const loginButton = document.getElementById("loginButton");
+            const logoutButton = document.getElementById("logoutButton");
 
-                // 显示未完成任务
-                function showUnfinishedTasks() {
-                    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-                    const unfinishedTasks = tasks.filter(task => !task.completed);
+            // 显示未完成任务
+            function showUnfinishedTasks() {
+                const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+                const unfinishedTasks = tasks.filter(task => !task.completed);
 
-                    if (unfinishedTasks.length > 0) {
-                        let message = "您有以下未完成的任务:\n";
-                        unfinishedTasks.forEach(task => {
-                            message += `- ${task.name}\n`;
-                        });
-                        alert(message);
-                    }
+                if (unfinishedTasks.length > 0) {
+                    let message = "您有以下未完成的任务:\n";
+                    unfinishedTasks.forEach(task => {
+                        message += `- ${task.name}\n`;
+                    });
+                    alert(message);
                 }
+            }
 
-                // 检查本地存储中是否有登录信息
-                if (localStorage.getItem("isLoggedIn") === "true") {
+            // 检查本地存储中是否有登录信息
+            if (localStorage.getItem("isLoggedIn") === "true") {
+                authForm.style.display = "none";
+                taskManager.style.display = "block";
+                showUnfinishedTasks();
+            } else {
+                authForm.style.display = "block";
+                taskManager.style.display = "none";
+            }
+
+            // 登录按钮事件
+            loginButton.addEventListener("click", function(event) {
+                event.preventDefault();
+                if (loginUsername.value && loginPassword.value) {
+                    localStorage.setItem("isLoggedIn", "true");
                     authForm.style.display = "none";
                     taskManager.style.display = "block";
                     showUnfinishedTasks();
-                } else {
-                    authForm.style.display = "block";
-                    taskManager.style.display = "none";
                 }
+            });
 
-                // 登录按钮事件
-                loginButton.addEventListener("click", function(event) {
-                    event.preventDefault();
-                    if (loginUsername.value && loginPassword.value) {
-                        localStorage.setItem("isLoggedIn", "true");
-                        authForm.style.display = "none";
-                        taskManager.style.display = "block";
-                        showUnfinishedTasks();
-                    }
-                });
-
-                // 退出登录按钮事件
-                logoutButton.addEventListener("click", function() {
-                    localStorage.removeItem("isLoggedIn");
-                    authForm.style.display = "block";
-                    taskManager.style.display = "none";
-                });
-            } catch (error) {
-                console.error("发生错误:", error);
-            }
+            // 退出登录按钮事件
+            logoutButton.addEventListener("click", function() {
+                localStorage.removeItem("isLoggedIn");
+                authForm.style.display = "block";
+                taskManager.style.display = "none";
+            });
         });
     </script>
 </body>
