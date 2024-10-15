@@ -8,6 +8,9 @@ document.addEventListener("DOMContentLoaded", function() {
     const addTaskButton = document.getElementById("addTaskButton");
     const taskName = document.getElementById("taskName");
     const allTasks = document.getElementById("allTasks");
+    const showAddTaskFormButton = document.getElementById("showAddTaskFormButton");
+    const addTaskForm = document.getElementById("addTaskForm");
+    const cancelAddTaskButton = document.getElementById("cancelAddTaskButton");
 
     // 加载任务
     function loadTasks() {
@@ -28,10 +31,17 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
         if (taskName.value) {
             const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            tasks.push({ name: taskName.value, completed: false });
+            tasks.push({ 
+                name: taskName.value, 
+                completed: false,
+                // 可以添加其他字段，如开始时间、结束时间等
+            });
             localStorage.setItem("tasks", JSON.stringify(tasks));
             taskName.value = "";
             loadTasks();
+            // 隐藏表单，显示"设置任务"按钮
+            addTaskForm.style.display = "none";
+            showAddTaskFormButton.style.display = "block";
         }
     });
 
@@ -85,6 +95,27 @@ document.addEventListener("DOMContentLoaded", function() {
     logoutButton.addEventListener("click", function() {
         localStorage.removeItem("isLoggedIn");
         checkLoginStatus();
+    });
+
+    // 显示添加任务表单
+    showAddTaskFormButton.addEventListener("click", function() {
+        addTaskForm.style.display = "block";
+        showAddTaskFormButton.style.display = "none";
+    });
+
+    // 取消添加任务
+    cancelAddTaskButton.addEventListener("click", function() {
+        addTaskForm.style.display = "none";
+        showAddTaskFormButton.style.display = "block";
+        // 清空表单
+        document.getElementById("taskName").value = "";
+        document.getElementById("startDate").value = "";
+        document.getElementById("startTime").value = "";
+        document.getElementById("endDate").value = "";
+        document.getElementById("endTime").value = "";
+        document.getElementById("priority").value = "low";
+        document.getElementById("category").value = "";
+        document.getElementById("location").value = "";
     });
 
     // 初始化
