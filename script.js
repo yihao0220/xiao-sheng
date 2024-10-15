@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", function() {
         allTasks.innerHTML = "";
         tasks.forEach((task, index) => {
             const li = document.createElement("li");
+            li.className = "task-item slide-in";
             li.innerHTML = `
                 <span>${task.name}</span>
                 <button class="delete-button" data-index="${index}">删除</button>
@@ -30,18 +31,20 @@ document.addEventListener("DOMContentLoaded", function() {
     addTaskButton.addEventListener("click", function(event) {
         event.preventDefault();
         if (taskName.value) {
-            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-            tasks.push({ 
-                name: taskName.value, 
-                completed: false,
-                // 可以添加其他字段，如开始时间、结束时间等
-            });
-            localStorage.setItem("tasks", JSON.stringify(tasks));
-            taskName.value = "";
-            loadTasks();
-            // 隐藏表单，显示"设置任务"按钮
-            addTaskForm.style.display = "none";
-            showAddTaskFormButton.style.display = "block";
+            showLoading(this);
+            setTimeout(() => {
+                const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+                tasks.push({ 
+                    name: taskName.value, 
+                    completed: false,
+                });
+                localStorage.setItem("tasks", JSON.stringify(tasks));
+                taskName.value = "";
+                loadTasks();
+                addTaskForm.style.display = "none";
+                showAddTaskFormButton.style.display = "block";
+                hideLoading(this);
+            }, 500); // 模拟加载时间
         }
     });
 
@@ -100,6 +103,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // 显示添加任务表单
     showAddTaskFormButton.addEventListener("click", function() {
         addTaskForm.style.display = "block";
+        addTaskForm.classList.add("fade-in");
         showAddTaskFormButton.style.display = "none";
     });
 
@@ -118,7 +122,3 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("location").value = "";
     });
 
-    // 初始化
-    checkLoginStatus();
-    loadTasks();
-});
