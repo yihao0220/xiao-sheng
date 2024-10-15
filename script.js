@@ -64,7 +64,7 @@ function initializeApp() {
                     completed: false,
                 });
                 localStorage.setItem("tasks", JSON.stringify(tasks));
-                clearTaskForm(); // 调用清除表单的函数
+                clearTaskForm();
                 loadTasks();
                 addTaskForm.style.display = "none";
                 showAddTaskFormButton.style.display = "block";
@@ -81,10 +81,13 @@ function initializeApp() {
             tasks.splice(index, 1);
             localStorage.setItem("tasks", JSON.stringify(tasks));
             loadTasks();
+        } else if (event.target.classList.contains("edit-button")) {
+            const index = event.target.dataset.index;
+            editTask(index);
         }
     });
 
-    // 编辑任务函数
+    // 编辑任务
     function editTask(index) {
         const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
         const task = tasks[index];
@@ -132,66 +135,36 @@ function initializeApp() {
         taskManager.style.display = "block";
     });
 
-    // 显示未完成任务
-    function showUnfinishedTasks() {
-        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-        const unfinishedTasks = tasks.filter(task => !task.completed);
-
-        if (unfinishedTasks.length > 0) {
-            let message = "您有以下未完成的任务:\n";
-            unfinishedTasks.forEach(task => {
-                message += `- ${task.name}\n`;
-            });
-            alert(message);
-        }
-    }
-
     // 检查本地存储中是否有登录信息
     function checkLoginStatus() {
         console.log("checkLoginStatus called");
-        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-        console.log("isLoggedIn:", isLoggedIn);
-
-        if (isLoggedIn) {
-            console.log("User is logged in, showing task manager");
+        if (localStorage.getItem("isLoggedIn") === "true") {
             authForm.style.display = "none";
             taskManager.style.display = "block";
             loginButton.style.display = "none";
             logoutButton.style.display = "block";
-            editTaskForm.style.display = "none";
         } else {
-            console.log("User is not logged in, showing login button");
             authForm.style.display = "none";
             taskManager.style.display = "none";
             loginButton.style.display = "block";
             logoutButton.style.display = "none";
-            editTaskForm.style.display = "none";
         }
-
         document.querySelector('.container').style.display = 'block';
-        console.log("authForm display:", authForm.style.display);
-        console.log("taskManager display:", taskManager.style.display);
         console.log("Login status checked");
     }
 
     // 登录按钮事件
-    document.addEventListener("click", function(event) {
-        if (event.target.id === "loginButton") {
-            console.log("Login button clicked");
-            authForm.style.display = "block";
-            loginButton.style.display = "none";
-        }
+    loginButton.addEventListener("click", function() {
+        authForm.style.display = "block";
+        loginButton.style.display = "none";
     });
 
     // 提交登录表单事件
-    document.addEventListener("click", function(event) {
-        if (event.target.id === "submitLoginButton") {
-            event.preventDefault();
-            console.log("Submit login button clicked");
-            if (loginUsername.value && loginPassword.value) {
-                localStorage.setItem("isLoggedIn", "true");
-                checkLoginStatus();
-            }
+    submitLoginButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        if (loginUsername.value && loginPassword.value) {
+            localStorage.setItem("isLoggedIn", "true");
+            checkLoginStatus();
         }
     });
 
@@ -204,7 +177,6 @@ function initializeApp() {
     // 显示添加任务表单
     showAddTaskFormButton.addEventListener("click", function() {
         addTaskForm.style.display = "block";
-        addTaskForm.classList.add("fade-in");
         showAddTaskFormButton.style.display = "none";
     });
 
@@ -212,8 +184,20 @@ function initializeApp() {
     cancelAddTaskButton.addEventListener("click", function() {
         addTaskForm.style.display = "none";
         showAddTaskFormButton.style.display = "block";
-        clearTaskForm(); // 调用清除表单的函数
+        clearTaskForm();
     });
+
+    // 清除任务表单
+    function clearTaskForm() {
+        document.getElementById("taskName").value = "";
+        document.getElementById("startDate").value = "";
+        document.getElementById("startTime").value = "";
+        document.getElementById("endDate").value = "";
+        document.getElementById("endTime").value = "";
+        document.getElementById("priority").value = "low";
+        document.getElementById("category").value = "";
+        document.getElementById("location").value = "";
+    }
 
     // 添加加载动画函数
     function showLoading(element) {
@@ -229,19 +213,11 @@ function initializeApp() {
         }
     }
 
-    console.log("Script initialization completed"); // 添加这行
+    // 初始化
+    checkLoginStatus();
+    loadTasks();
 
-    // 添加一个新的函数来清除任务表单
-    function clearTaskForm() {
-        document.getElementById("taskName").value = "";
-        document.getElementById("startDate").value = "";
-        document.getElementById("startTime").value = "";
-        document.getElementById("endDate").value = "";
-        document.getElementById("endTime").value = "";
-        document.getElementById("priority").value = "low";
-        document.getElementById("category").value = "";
-        document.getElementById("location").value = "";
-    }
+    console.log("App initialized");
 }
 
 document.addEventListener("DOMContentLoaded", initializeApp);
