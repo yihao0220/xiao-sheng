@@ -21,12 +21,16 @@ body {
     margin-bottom: 30px;
     position: relative;
     padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .header h1 {
     font-size: 28px;
     font-weight: 700;
     color: #1d1d1f;
+    flex-grow: 1;
 }
 
 .content {
@@ -131,6 +135,19 @@ body {
         width: 100%;
         margin-bottom: 10px;
     }
+
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header h1 {
+        margin-bottom: 10px;
+    }
+
+    .auth-buttons {
+        justify-content: flex-end;
+    }
 }
 
 /* 添加到现有的 styles.css 文件末尾 */
@@ -214,7 +231,7 @@ h1, h2, p, label, input, select, button {
     color: #333;
 }
 
-/* 添加一些调试��式 */
+/* 添加一些调试式 */
 .debug-outline {
     border: 1px solid red;
 }
@@ -227,20 +244,3 @@ h1, h2, p, label, input, select, button {
 /* 暂时注释掉或删除有动画相关的CSS */
 /*
 .fade-in {
-    animation: fadeIn 0.5s ease-out;
-}
-
-.slide-in {
-    animation: slideIn 0.5s ease-out;
-}
-*/
-
-.auth-buttons {
-    position: absolute;
-    top: 0;
-    right: 0;
-}
-
-.auth-buttons .button {
-    margin-left: 10px;
-}
