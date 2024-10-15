@@ -5,6 +5,46 @@ document.addEventListener("DOMContentLoaded", function() {
     const loginPassword = document.getElementById("loginPassword");
     const loginButton = document.getElementById("loginButton");
     const logoutButton = document.getElementById("logoutButton");
+    const addTaskButton = document.getElementById("addTaskButton");
+    const taskName = document.getElementById("taskName");
+    const allTasks = document.getElementById("allTasks");
+
+    // 加载任务
+    function loadTasks() {
+        const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        allTasks.innerHTML = "";
+        tasks.forEach((task, index) => {
+            const li = document.createElement("li");
+            li.innerHTML = `
+                <span>${task.name}</span>
+                <button class="delete-button" data-index="${index}">删除</button>
+            `;
+            allTasks.appendChild(li);
+        });
+    }
+
+    // 添加任务
+    addTaskButton.addEventListener("click", function(event) {
+        event.preventDefault();
+        if (taskName.value) {
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks.push({ name: taskName.value, completed: false });
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            taskName.value = "";
+            loadTasks();
+        }
+    });
+
+    // 删除任务
+    allTasks.addEventListener("click", function(event) {
+        if (event.target.classList.contains("delete-button")) {
+            const index = event.target.dataset.index;
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks.splice(index, 1);
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            loadTasks();
+        }
+    });
 
     // 显示未完成任务
     function showUnfinishedTasks() {
@@ -47,6 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
         checkLoginStatus();
     });
 
-    // 初始化检查登录状态
+    // 初始化
     checkLoginStatus();
+    loadTasks();
 });
