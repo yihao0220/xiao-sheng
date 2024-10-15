@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const loginUsername = document.getElementById("loginUsername");
         const loginPassword = document.getElementById("loginPassword");
         const loginButton = document.getElementById("loginButton");
+        const submitLoginButton = document.getElementById("submitLoginButton");
         const logoutButton = document.getElementById("logoutButton");
         const addTaskButton = document.getElementById("addTaskButton");
         const taskName = document.getElementById("taskName");
@@ -85,14 +86,29 @@ document.addEventListener("DOMContentLoaded", function() {
         // 检查本地存储中是否有登录信息
         function checkLoginStatus() {
             console.log("checkLoginStatus called");
-            authForm.style.display = "block";
-            taskManager.style.display = "none";
+            if (localStorage.getItem("isLoggedIn") === "true") {
+                authForm.style.display = "none";
+                taskManager.style.display = "block";
+                loginButton.style.display = "none";
+                logoutButton.style.display = "inline-block";
+            } else {
+                authForm.style.display = "none";
+                taskManager.style.display = "none";
+                loginButton.style.display = "inline-block";
+                logoutButton.style.display = "none";
+            }
             document.querySelector('.container').style.display = 'block';
             console.log("Login status checked");
         }
 
         // 登录按钮事件
-        loginButton.addEventListener("click", function(event) {
+        loginButton.addEventListener("click", function() {
+            authForm.style.display = "block";
+            loginButton.style.display = "none";
+        });
+
+        // 提交登录表单事件
+        submitLoginButton.addEventListener("click", function(event) {
             event.preventDefault();
             if (loginUsername.value && loginPassword.value) {
                 localStorage.setItem("isLoggedIn", "true");
@@ -106,19 +122,3 @@ document.addEventListener("DOMContentLoaded", function() {
             checkLoginStatus();
         });
 
-        // 显示添加任务表单
-        showAddTaskFormButton.addEventListener("click", function() {
-            addTaskForm.style.display = "block";
-            addTaskForm.classList.add("fade-in");
-            showAddTaskFormButton.style.display = "none";
-        });
-
-        // 取消添加任务
-        cancelAddTaskButton.addEventListener("click", function() {
-            addTaskForm.style.display = "none";
-            showAddTaskFormButton.style.display = "block";
-            // 清空表单
-            document.getElementById("taskName").value = "";
-            document.getElementById("startDate").value = "";
-            document.getElementById("startTime").value = "";
-            document.getElementById("endDate").value = "";
