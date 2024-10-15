@@ -22,6 +22,10 @@ document.addEventListener("DOMContentLoaded", function() {
         const showAddTaskFormButton = document.getElementById("showAddTaskFormButton");
         const addTaskForm = document.getElementById("addTaskForm");
         const cancelAddTaskButton = document.getElementById("cancelAddTaskButton");
+        const editTaskForm = document.getElementById("editTaskForm");
+        const saveEditTaskButton = document.getElementById("saveEditTaskButton");
+        const cancelEditTaskButton = document.getElementById("cancelEditTaskButton");
+        let currentEditingTaskIndex = -1;
 
         // 加载任务
         function loadTasks() {
@@ -33,7 +37,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 li.className = "task-item slide-in";
                 li.innerHTML = `
                     <span>${task.name}</span>
-                    <button class="delete-button" data-index="${index}">删除</button>
+                    <div>
+                        <button class="edit-button" data-index="${index}">编辑</button>
+                        <button class="delete-button" data-index="${index}">删除</button>
+                    </div>
                 `;
                 allTasks.appendChild(li);
             });
@@ -78,6 +85,54 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
 
+        // 编辑任务函数
+        function editTask(index) {
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            const task = tasks[index];
+            currentEditingTaskIndex = index;
+
+            document.getElementById("editTaskName").value = task.name;
+            document.getElementById("editStartDate").value = task.startDate;
+            document.getElementById("editStartTime").value = task.startTime;
+            document.getElementById("editEndDate").value = task.endDate;
+            document.getElementById("editEndTime").value = task.endTime;
+            document.getElementById("editPriority").value = task.priority;
+            document.getElementById("editCategory").value = task.category;
+            document.getElementById("editLocation").value = task.location;
+
+            editTaskForm.style.display = "block";
+            taskManager.style.display = "none";
+        }
+
+        // 保存编辑的任务
+        saveEditTaskButton.addEventListener("click", function(event) {
+            event.preventDefault();
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            
+            tasks[currentEditingTaskIndex] = {
+                name: document.getElementById("editTaskName").value,
+                startDate: document.getElementById("editStartDate").value,
+                startTime: document.getElementById("editStartTime").value,
+                endDate: document.getElementById("editEndDate").value,
+                endTime: document.getElementById("editEndTime").value,
+                priority: document.getElementById("editPriority").value,
+                category: document.getElementById("editCategory").value,
+                location: document.getElementById("editLocation").value,
+                completed: tasks[currentEditingTaskIndex].completed
+            };
+
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            editTaskForm.style.display = "none";
+            taskManager.style.display = "block";
+            loadTasks();
+        });
+
+        // 取消编辑任务
+        cancelEditTaskButton.addEventListener("click", function() {
+            editTaskForm.style.display = "none";
+            taskManager.style.display = "block";
+        });
+
         // 显示未完成任务
         function showUnfinishedTasks() {
             const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
@@ -104,12 +159,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 taskManager.style.display = "block";
                 loginButton.style.display = "none";
                 logoutButton.style.display = "block";
+                editTaskForm.style.display = "none";
             } else {
                 console.log("User is not logged in, showing login button");
                 authForm.style.display = "none";
                 taskManager.style.display = "none";
                 loginButton.style.display = "block";
                 logoutButton.style.display = "none";
+                editTaskForm.style.display = "none";
             }
 
             document.querySelector('.container').style.display = 'block';
