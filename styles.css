@@ -130,3 +130,79 @@ body {
         margin-bottom: 10px;
     }
 }
+
+/* 添加到现有的 styles.css 文件末尾 */
+
+/* 添加过渡效果 */
+.button,
+input,
+select {
+    transition: all 0.3s ease;
+}
+
+/* 优化表单控件 */
+input,
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    border: 1px solid #d2d2d7;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 16px;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: #0071e3;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+}
+
+/* 添加动画效果 */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+
+/* 优化任务列表项样式 */
+.task-item {
+    transition: all 0.3s ease;
+}
+
+.task-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 添加加载动画 */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
