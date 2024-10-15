@@ -214,15 +214,15 @@ h1, h2, p, label, input, select, button {
     color: #333;
 }
 
-/* 添加一些调试样式 */
+/* 添加一些调试��式 */
 .debug-outline {
     border: 1px solid red;
 }
 
 /* 临时添加以下样式用于调试 */
-#authForm, #taskManager {
+/* #authForm, #taskManager {
     display: block !important;
-}
+} */
 
 /* 暂时注释掉或删除有动画相关的CSS */
 /*
