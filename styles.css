@@ -33,7 +33,7 @@ body {
     position: relative;
     padding-top: var(--spacing-unit);
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     flex-wrap: wrap;
 }
@@ -42,7 +42,6 @@ body {
     font-size: 1.75rem;
     font-weight: 700;
     color: #1d1d1f;
-    flex-grow: 1;
     margin-bottom: var(--spacing-unit);
 }
 
@@ -139,11 +138,26 @@ body {
     display: flex;
     align-items: center;
     gap: 0.625rem;
+    position: relative;
 }
 
 .auth-buttons .button {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
+}
+
+.circular-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.75rem;
+    position: absolute;
+    top: 10px;
+    right: 10px;
 }
 
 @media (max-width: 768px) {
@@ -167,7 +181,7 @@ body {
 
     .header {
         flex-direction: column;
-        align-items: stretch;
+        align-items: center;
     }
 
     .header h1 {
@@ -175,7 +189,13 @@ body {
     }
 
     .auth-buttons {
-        justify-content: flex-end;
+        margin-top: var(--spacing-unit);
+    }
+
+    .circular-button {
+        position: fixed;
+        top: 10px;
+        right: 10px;
     }
 }
 
