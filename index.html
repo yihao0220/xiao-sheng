@@ -85,12 +85,12 @@
                         <button id="addClassButton" class="button">添加课程</button>
                     </form>
                 </section>
-            </div>
-        </main>
-    </div>
 
-    <div id="notificationContainer"></div>
-
-    <script src="./script.js"></script>
-</body>
-</html>
+                <!-- 在 <ul id="allTasks" class="task-list"></ul> 之前添加以下内容 -->
+                <div id="editTaskForm" class="task-form" style="display: none;">
+                    <h2>编辑任务</h2>
+                    <input type="text" id="editTaskName" placeholder="任务名称">
+                    <input type="date" id="editStartDate">
+                    <input type="time" id="editStartTime">
+                    <input type="date" id="editEndDate">
+                    <input type="time" id="editEndTime">
