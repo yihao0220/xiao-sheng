@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大学任务提醒</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
     <div class="main-grid">
@@ -28,8 +28,10 @@
 
             <!-- 任务管理器功能 -->
             <div id="taskManager" style="display: none;">
-                <h2>添加新任务</h2>
-                <div id="addTaskForm" class="task-form">
+                <button id="showAddTaskFormButton" class="button">设置任务</button>
+                
+                <div id="addTaskForm" class="task-form" style="display: none;">
+                    <h2>添加新任务</h2>
                     <input type="text" id="taskName" placeholder="任务名称">
                     <input type="date" id="startDate">
                     <input type="time" id="startTime">
@@ -43,6 +45,7 @@
                     <input type="text" id="category" placeholder="分类 (可选)">
                     <input type="text" id="location" placeholder="地点 (可选)">
                     <button id="addTaskButton" class="button">添加任务</button>
+                    <button id="cancelAddTaskButton" class="button">取消</button>
                 </div>
 
                 <h2>任务列表</h2>
@@ -82,6 +85,6 @@
 
     <div id="notificationContainer"></div>
 
-    <script src="script.js"></script>
+    <script src="./script.js"></script>
 </body>
 </html>
