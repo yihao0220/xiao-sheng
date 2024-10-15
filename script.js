@@ -47,11 +47,18 @@ document.addEventListener("DOMContentLoaded", function() {
                 setTimeout(() => {
                     const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
                     tasks.push({ 
-                        name: taskName.value, 
+                        name: taskName.value,
+                        startDate: document.getElementById("startDate").value,
+                        startTime: document.getElementById("startTime").value,
+                        endDate: document.getElementById("endDate").value,
+                        endTime: document.getElementById("endTime").value,
+                        priority: document.getElementById("priority").value,
+                        category: document.getElementById("category").value,
+                        location: document.getElementById("location").value,
                         completed: false,
                     });
                     localStorage.setItem("tasks", JSON.stringify(tasks));
-                    taskName.value = "";
+                    clearTaskForm(); // 调用清除表单的函数
                     loadTasks();
                     addTaskForm.style.display = "none";
                     showAddTaskFormButton.style.display = "block";
@@ -143,15 +150,7 @@ document.addEventListener("DOMContentLoaded", function() {
         cancelAddTaskButton.addEventListener("click", function() {
             addTaskForm.style.display = "none";
             showAddTaskFormButton.style.display = "block";
-            // 清空表单
-            document.getElementById("taskName").value = "";
-            document.getElementById("startDate").value = "";
-            document.getElementById("startTime").value = "";
-            document.getElementById("endDate").value = "";
-            document.getElementById("endTime").value = "";
-            document.getElementById("priority").value = "low";
-            document.getElementById("category").value = "";
-            document.getElementById("location").value = "";
+            clearTaskForm(); // 调用清除表单的函数
         });
 
         // 初始化
