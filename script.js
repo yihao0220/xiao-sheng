@@ -4,6 +4,8 @@ window.onerror = function(message, source, lineno, colno, error) {
     alert("抱歉，发生了一个错误。请查看控制台以获取更多信息。");
 };
 
+console.log("Script started"); // 添加这行
+
 document.addEventListener("DOMContentLoaded", function() {
     console.log("DOMContentLoaded event fired");
     try {
@@ -86,18 +88,26 @@ document.addEventListener("DOMContentLoaded", function() {
         // 检查本地存储中是否有登录信息
         function checkLoginStatus() {
             console.log("checkLoginStatus called");
-            if (localStorage.getItem("isLoggedIn") === "true") {
+            const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+            console.log("isLoggedIn:", isLoggedIn);
+
+            if (isLoggedIn) {
+                console.log("User is logged in, showing task manager");
                 authForm.style.display = "none";
                 taskManager.style.display = "block";
                 loginButton.style.display = "none";
                 logoutButton.style.display = "inline-block";
             } else {
+                console.log("User is not logged in, showing auth form");
                 authForm.style.display = "block";
                 taskManager.style.display = "none";
                 loginButton.style.display = "inline-block";
                 logoutButton.style.display = "none";
             }
+
             document.querySelector('.container').style.display = 'block';
+            console.log("authForm display:", authForm.style.display);
+            console.log("taskManager display:", taskManager.style.display);
             console.log("Login status checked");
         }
 
@@ -122,3 +132,51 @@ document.addEventListener("DOMContentLoaded", function() {
             checkLoginStatus();
         });
 
+        // 显示添加任务表单
+        showAddTaskFormButton.addEventListener("click", function() {
+            addTaskForm.style.display = "block";
+            addTaskForm.classList.add("fade-in");
+            showAddTaskFormButton.style.display = "none";
+        });
+
+        // 取消添加任务
+        cancelAddTaskButton.addEventListener("click", function() {
+            addTaskForm.style.display = "none";
+            showAddTaskFormButton.style.display = "block";
+            // 清空表单
+            document.getElementById("taskName").value = "";
+            document.getElementById("startDate").value = "";
+            document.getElementById("startTime").value = "";
+            document.getElementById("endDate").value = "";
+            document.getElementById("endTime").value = "";
+            document.getElementById("priority").value = "low";
+            document.getElementById("category").value = "";
+            document.getElementById("location").value = "";
+        });
+
+        // 初始化
+        checkLoginStatus();
+        loadTasks();
+
+        // 添加加载动画函数
+        function showLoading(element) {
+            const loadingSpinner = document.createElement("div");
+            loadingSpinner.className = "loading";
+            element.appendChild(loadingSpinner);
+        }
+
+        function hideLoading(element) {
+            const loadingSpinner = element.querySelector(".loading");
+            if (loadingSpinner) {
+                loadingSpinner.remove();
+            }
+        }
+
+        console.log("Script initialization completed"); // 添加这行
+    } catch (error) {
+        console.error("初始化过程中发生错误:", error);
+        alert("初始化过程中发生错误。请查看控制台以获取更多信息。");
+    }
+}); // 确保这里有一个闭合的圆括号和分号
+
+console.log("Script end"); // 添加这行
