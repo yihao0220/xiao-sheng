@@ -1,7 +1,16 @@
+:root {
+    --font-size-base: 16px;
+    --spacing-unit: 1rem;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+}
+
+html {
+    font-size: var(--font-size-base);
 }
 
 body {
@@ -9,43 +18,47 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #f5f5f7;
+    font-size: 1rem;
 }
 
 .container {
     max-width: 100%;
-    padding: 20px;
+    padding: var(--spacing-unit);
+    margin: 0 auto;
 }
 
 .header {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: calc(var(--spacing-unit) * 1.5);
     position: relative;
-    padding-top: 20px;
+    padding-top: var(--spacing-unit);
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .header h1 {
-    font-size: 28px;
+    font-size: 1.75rem;
     font-weight: 700;
     color: #1d1d1f;
     flex-grow: 1;
+    margin-bottom: var(--spacing-unit);
 }
 
 .content {
     background-color: #fff;
     border-radius: 18px;
-    padding: 25px;
+    padding: calc(var(--spacing-unit) * 1.5);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .button {
     display: inline-block;
-    padding: 12px 24px;
+    padding: 0.75rem 1.5rem;
     border: none;
     border-radius: 22px;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 400;
     text-align: center;
     cursor: pointer;
@@ -71,32 +84,32 @@ body {
 }
 
 .task-form {
-    margin-top: 20px;
+    margin-top: calc(var(--spacing-unit) * 1.25);
     background-color: #f5f5f7;
-    padding: 20px;
+    padding: calc(var(--spacing-unit) * 1.25);
     border-radius: 12px;
 }
 
 .task-form input,
 .task-form select {
     width: 100%;
-    padding: 12px;
-    margin-bottom: 15px;
+    padding: 0.75rem;
+    margin-bottom: 0.9375rem;
     border: 1px solid #d2d2d7;
     border-radius: 8px;
-    font-size: 16px;
+    font-size: 1rem;
 }
 
 .task-list-section,
 .class-info-section {
-    margin-top: 30px;
+    margin-top: calc(var(--spacing-unit) * 1.875);
 }
 
 .task-controls {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 0.625rem;
+    margin-bottom: calc(var(--spacing-unit) * 1.25);
 }
 
 .task-list {
@@ -107,8 +120,8 @@ body {
     background-color: #fff;
     border: 1px solid #d2d2d7;
     border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 15px;
+    padding: 0.9375rem;
+    margin-bottom: 0.9375rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -117,23 +130,39 @@ body {
 .delete-button {
     background-color: #ff3b30;
     color: #fff;
-    padding: 8px 16px;
+    padding: 0.5rem 1rem;
     border-radius: 18px;
-    font-size: 14px;
+    font-size: 0.875rem;
+}
+
+.auth-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+}
+
+.auth-buttons .button {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
 }
 
 @media (max-width: 768px) {
+    :root {
+        --font-size-base: 14px;
+        --spacing-unit: 0.875rem;
+    }
+
     .container {
-        padding: 15px;
+        padding: var(--spacing-unit);
     }
 
     .content {
-        padding: 20px;
+        padding: calc(var(--spacing-unit) * 1.25);
     }
 
     .button {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 0.625rem;
     }
 
     .header {
@@ -142,13 +171,30 @@ body {
     }
 
     .header h1 {
-        margin-bottom: 10px;
+        margin-bottom: var(--spacing-unit);
     }
 
     .auth-buttons {
         justify-content: flex-end;
     }
 }
+
+@media (max-width: 480px) {
+    :root {
+        --font-size-base: 12px;
+        --spacing-unit: 0.75rem;
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .task-controls {
+        flex-direction: column;
+    }
+}
+
+/* 保留之前的动画和其他样式 */
 
 /* 添加到现有的 styles.css 文件末尾 */
 
@@ -244,3 +290,10 @@ h1, h2, p, label, input, select, button {
 /* 暂时注释掉或删除有动画相关的CSS */
 /*
 .fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+*/
