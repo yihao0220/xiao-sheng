@@ -19,6 +19,8 @@ body {
 .header {
     text-align: center;
     margin-bottom: 30px;
+    position: relative;
+    padding-top: 20px;
 }
 
 .header h1 {
@@ -222,7 +224,7 @@ h1, h2, p, label, input, select, button {
     display: block !important;
 }
 
-/* 暂时注释掉或删除��有动画相关的CSS */
+/* 暂时注释掉或删除有动画相关的CSS */
 /*
 .fade-in {
     animation: fadeIn 0.5s ease-out;
@@ -232,3 +234,13 @@ h1, h2, p, label, input, select, button {
     animation: slideIn 0.5s ease-out;
 }
 */
+
+.auth-buttons {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.auth-buttons .button {
+    margin-left: 10px;
+}
