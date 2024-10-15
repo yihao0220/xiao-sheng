@@ -3,10 +3,9 @@
     display: grid;
     grid-template-areas:
         "header header"
-        "sidebar content"
-        "footer footer";
-    grid-template-columns: 200px 1fr;
-    grid-template-rows: auto 1fr auto;
+        "content content";
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
     gap: 20px;
 }
 
@@ -18,23 +17,9 @@
     text-align: center;
 }
 
-.sidebar {
-    grid-area: sidebar;
-    background-color: #f4f4f4;
-    padding: 10px;
-}
-
 .content {
     grid-area: content;
     padding: 20px;
-}
-
-.footer {
-    grid-area: footer;
-    background-color: #333;
-    color: white;
-    padding: 10px;
-    text-align: center;
 }
 
 .task-form {
@@ -95,11 +80,7 @@
         grid-template-columns: 1fr;
         grid-template-areas:
             "header"
-            "content"
-            "footer";
-    }
-    .sidebar {
-        display: none;
+            "content";
     }
     .button {
         padding: 15px;
