@@ -155,6 +155,7 @@ function initializeApp() {
 
     // 登录按钮事件
     loginButton.addEventListener("click", function() {
+        console.log("Login button clicked");
         authForm.style.display = "block";
         loginButton.style.display = "none";
     });
@@ -223,3 +224,12 @@ function initializeApp() {
 document.addEventListener("DOMContentLoaded", initializeApp);
 
 console.log("Script end");
+
+console.log("authForm:", authForm);
+console.log("loginButton:", loginButton);
+
+window.addEventListener('load', function() {
+    console.log("Window fully loaded");
+    console.log("loginButton:", document.getElementById("loginButton"));
+    console.log("authForm:", document.getElementById("authForm"));
+});
