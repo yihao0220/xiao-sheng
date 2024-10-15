@@ -206,3 +206,29 @@ select:focus {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+/* 确保所有文本元素都有颜色 */
+h1, h2, p, label, input, select, button {
+    color: #333;
+}
+
+/* 添加一些调试样式 */
+.debug-outline {
+    border: 1px solid red;
+}
+
+/* 临时添加以下样式用于调试 */
+#authForm, #taskManager {
+    display: block !important;
+}
+
+/* 暂时注释掉或删除��有动画相关的CSS */
+/*
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.slide-in {
+    animation: slideIn 0.5s ease-out;
+}
+*/
