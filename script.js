@@ -95,13 +95,13 @@ document.addEventListener("DOMContentLoaded", function() {
                 console.log("User is logged in, showing task manager");
                 authForm.style.display = "none";
                 taskManager.style.display = "block";
-                submitLoginButton.style.display = "none";
+                loginButton.style.display = "none";
                 logoutButton.style.display = "block";
             } else {
-                console.log("User is not logged in, showing auth form");
+                console.log("User is not logged in, showing login button");
                 authForm.style.display = "none";
                 taskManager.style.display = "none";
-                submitLoginButton.style.display = "block";
+                loginButton.style.display = "block";
                 logoutButton.style.display = "none";
             }
 
@@ -111,14 +111,14 @@ document.addEventListener("DOMContentLoaded", function() {
             console.log("Login status checked");
         }
 
-        // 登录按钮事件（现在是提交按钮）
-        submitLoginButton.addEventListener("click", function() {
+        // 登录按钮事件
+        loginButton.addEventListener("click", function() {
             authForm.style.display = "block";
-            submitLoginButton.style.display = "none";
+            loginButton.style.display = "none";
         });
 
-        // 提交登录表单事件（现在是登录按钮）
-        loginButton.addEventListener("click", function(event) {
+        // 提交登录表单事件
+        submitLoginButton.addEventListener("click", function(event) {
             event.preventDefault();
             if (loginUsername.value && loginPassword.value) {
                 localStorage.setItem("isLoggedIn", "true");
