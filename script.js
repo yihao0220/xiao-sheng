@@ -7,7 +7,7 @@ window.onerror = function(message, source, lineno, colno, error) {
 console.log("Script started");
 
 function initializeApp() {
-    console.log("Initializing app");
+    console.log("initializeApp started");
     const authForm = document.getElementById("authForm");
     const taskManager = document.getElementById("taskManager");
     const loginUsername = document.getElementById("loginUsername");
@@ -49,31 +49,27 @@ function initializeApp() {
     addTaskButton.addEventListener("click", function(event) {
         event.preventDefault();
         if (taskName.value) {
-            showLoading(this);
-            setTimeout(() => {
-                const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-                tasks.push({ 
-                    name: taskName.value,
-                    startDate: document.getElementById("startDate").value,
-                    startTime: document.getElementById("startTime").value,
-                    endDate: document.getElementById("endDate").value,
-                    endTime: document.getElementById("endTime").value,
-                    priority: document.getElementById("priority").value,
-                    category: document.getElementById("category").value,
-                    location: document.getElementById("location").value,
-                    completed: false,
-                });
-                localStorage.setItem("tasks", JSON.stringify(tasks));
-                clearTaskForm();
-                loadTasks();
-                addTaskForm.style.display = "none";
-                showAddTaskFormButton.style.display = "block";
-                hideLoading(this);
-            }, 500); // 模拟加载时间
+            const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+            tasks.push({ 
+                name: taskName.value,
+                startDate: document.getElementById("startDate").value,
+                startTime: document.getElementById("startTime").value,
+                endDate: document.getElementById("endDate").value,
+                endTime: document.getElementById("endTime").value,
+                priority: document.getElementById("priority").value,
+                category: document.getElementById("category").value,
+                location: document.getElementById("location").value,
+                completed: false,
+            });
+            localStorage.setItem("tasks", JSON.stringify(tasks));
+            clearTaskForm();
+            loadTasks();
+            addTaskForm.style.display = "none";
+            showAddTaskFormButton.style.display = "block";
         }
     });
 
-    // 删除任务
+    // 删除和编辑任务
     allTasks.addEventListener("click", function(event) {
         if (event.target.classList.contains("delete-button")) {
             const index = event.target.dataset.index;
@@ -135,22 +131,24 @@ function initializeApp() {
         taskManager.style.display = "block";
     });
 
-    // 检查本地存储中是否有登录信息
+    // 检查登录状态
     function checkLoginStatus() {
         console.log("checkLoginStatus called");
-        if (localStorage.getItem("isLoggedIn") === "true") {
+        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+        console.log("isLoggedIn:", isLoggedIn);
+
+        if (isLoggedIn) {
             authForm.style.display = "none";
             taskManager.style.display = "block";
             loginButton.style.display = "none";
             logoutButton.style.display = "block";
         } else {
-            authForm.style.display = "none";
+            authForm.style.display = "block";
             taskManager.style.display = "none";
             loginButton.style.display = "block";
             logoutButton.style.display = "none";
         }
         document.querySelector('.container').style.display = 'block';
-        console.log("Login status checked");
     }
 
     // 登录按钮事件
@@ -200,25 +198,11 @@ function initializeApp() {
         document.getElementById("location").value = "";
     }
 
-    // 添加加载动画函数
-    function showLoading(element) {
-        const loadingSpinner = document.createElement("div");
-        loadingSpinner.className = "loading";
-        element.appendChild(loadingSpinner);
-    }
-
-    function hideLoading(element) {
-        const loadingSpinner = element.querySelector(".loading");
-        if (loadingSpinner) {
-            loadingSpinner.remove();
-        }
-    }
-
     // 初始化
     checkLoginStatus();
     loadTasks();
 
-    console.log("App initialized");
+    console.log("initializeApp completed");
 }
 
 document.addEventListener("DOMContentLoaded", initializeApp);
