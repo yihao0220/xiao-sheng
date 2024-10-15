@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 loginButton.style.display = "none";
                 logoutButton.style.display = "inline-block";
             } else {
-                authForm.style.display = "none";
+                authForm.style.display = "block";
                 taskManager.style.display = "none";
                 loginButton.style.display = "inline-block";
                 logoutButton.style.display = "none";
