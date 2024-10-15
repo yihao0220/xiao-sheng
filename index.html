@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大学任务提醒</title>
     <link rel="stylesheet" href="./styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="main-grid">
+    <div class="container">
         <header class="header">
             <h1>大学任务提醒</h1>
         </header>
 
-        <div class="content">
-            <!-- 登录功能 -->
+        <main class="content">
             <div id="authForm" style="display: none;">
                 <form id="loginForm">
                     <h2>登录</h2>
@@ -26,9 +26,8 @@
                 <a href="#" id="showRegisterLink">没有账号？注册新账户</a>
             </div>
 
-            <!-- 任务管理器功能 -->
             <div id="taskManager" style="display: none;">
-                <button id="showAddTaskFormButton" class="button">设置任务</button>
+                <button id="showAddTaskFormButton" class="button primary-button">设置任务</button>
                 
                 <div id="addTaskForm" class="task-form" style="display: none;">
                     <h2>添加新任务</h2>
@@ -48,39 +47,43 @@
                     <button id="cancelAddTaskButton" class="button">取消</button>
                 </div>
 
-                <h2>任务列表</h2>
-                <div class="task-controls">
-                    <label for="sortBy">排序方式:</label>
-                    <select id="sortBy">
-                        <option value="startDate">开始日期</option>
-                        <option value="endDate">结束日期</option>
-                        <option value="priority">优先级</option>
-                    </select>
-                    <input type="text" id="searchInput" placeholder="搜索任务...">
-                    <button id="clearSearchButton" class="button">清除搜索</button>
-                </div>
-                <ul id="allTasks" class="task-list"></ul>
-                <button id="logoutButton" class="button">退出登录</button>
+                <section class="task-list-section">
+                    <h2>任务列表</h2>
+                    <div class="task-controls">
+                        <label for="sortBy">排序方式:</label>
+                        <select id="sortBy">
+                            <option value="startDate">开始日期</option>
+                            <option value="endDate">结束日期</option>
+                            <option value="priority">优先级</option>
+                        </select>
+                        <input type="text" id="searchInput" placeholder="搜索任务...">
+                        <button id="clearSearchButton" class="button">清除搜索</button>
+                    </div>
+                    <ul id="allTasks" class="task-list"></ul>
+                </section>
 
-                <!-- 课程管理功能 -->
-                <h2>添加课程信息</h2>
-                <form id="classForm" class="task-form">
-                    <input type="text" id="className" placeholder="课程名称">
-                    <select id="classDay">
-                        <option value="周一">周一</option>
-                        <option value="周二">周二</option>
-                        <option value="周三">周三</option>
-                        <option value="周四">周四</option>
-                        <option value="周五">周五</option>
-                        <option value="周六">周六</option>
-                        <option value="周日">周日</option>
-                    </select>
-                    <input type="time" id="classTime">
-                    <input type="text" id="classLocation" placeholder="上课地点 (可选)">
-                    <button id="addClassButton" class="button">添加课程</button>
-                </form>
+                <section class="class-info-section">
+                    <h2>添加课程信息</h2>
+                    <form id="classForm" class="task-form">
+                        <input type="text" id="className" placeholder="课程名称">
+                        <select id="classDay">
+                            <option value="周一">周一</option>
+                            <option value="周二">周二</option>
+                            <option value="周三">周三</option>
+                            <option value="周四">周四</option>
+                            <option value="周五">周五</option>
+                            <option value="周六">周六</option>
+                            <option value="周日">周日</option>
+                        </select>
+                        <input type="time" id="classTime">
+                        <input type="text" id="classLocation" placeholder="上课地点 (可选)">
+                        <button id="addClassButton" class="button">添加课程</button>
+                    </form>
+                </section>
+
+                <button id="logoutButton" class="button secondary-button">退出登录</button>
             </div>
-        </div>
+        </main>
     </div>
 
     <div id="notificationContainer"></div>
