@@ -87,3 +87,19 @@
         font-size: 16px;
     }
 }
+
+#showAddTaskFormButton {
+    margin-bottom: 20px;
+}
+
+#addTaskForm {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+#cancelAddTaskButton {
+    background-color: #ccc;
+    margin-left: 10px;
+}
