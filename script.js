@@ -197,6 +197,7 @@ function initializeApp() {
             localStorage.setItem("isLoggedIn", "true");
             localStorage.setItem("currentUser", loginUsername.value);
             checkLoginStatus();
+            showUnfinishedTasks(); // 添加这行
         }
     });
 
@@ -270,6 +271,20 @@ function initializeApp() {
         loginButtonDisplay: loginButton.style.display,
         logoutButtonDisplay: logoutButton.style.display
     });
+}
+
+function showUnfinishedTasks() {
+    console.log("Checking for unfinished tasks");
+    const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+    const unfinishedTasks = tasks.filter(task => !task.completed);
+
+    if (unfinishedTasks.length > 0) {
+        let message = "您有以下未完成的任务:\n";
+        unfinishedTasks.forEach(task => {
+            message += `- ${task.name}\n`;
+        });
+        alert(message);
+    }
 }
 
 document.addEventListener("DOMContentLoaded", function() {
