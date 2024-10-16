@@ -286,3 +286,23 @@ function initializeApp() {
 
     console.log("Initial state:", {
         authFormDisplay: authForm.style.display,
+        taskManagerDisplay: taskManager.style.display,
+        loginButtonDisplay: loginButton.style.display,
+        logoutButtonDisplay: logoutButton.style.display
+    });
+
+    console.log("Final state:", {
+        authFormDisplay: authForm.style.display,
+        taskManagerDisplay: taskManager.style.display,
+        loginButtonDisplay: loginButton.style.display,
+        logoutButtonDisplay: logoutButton.style.display
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOMContentLoaded event fired");
+    initializeApp();
+    checkLoginStatus(); // 确保在初始化后调用
+});
+
+console.log("Script end");
