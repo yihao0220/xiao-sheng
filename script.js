@@ -66,8 +66,15 @@ function initializeApp() {
             const li = document.createElement("li");
             li.className = "task-item slide-in";
             li.innerHTML = `
-                <span>${task.name}</span>
-                <div>
+                <div class="task-details">
+                    <h3>${task.name}</h3>
+                    <p>开始: ${task.startDate} ${task.startTime}</p>
+                    <p>结束: ${task.endDate} ${task.endTime}</p>
+                    <p>优先级: ${task.priority}</p>
+                    ${task.category ? `<p>分类: ${task.category}</p>` : ''}
+                    ${task.location ? `<p>地点: ${task.location}</p>` : ''}
+                </div>
+                <div class="task-actions">
                     <button class="edit-button" data-index="${index}">编辑</button>
                     <button class="delete-button" data-index="${index}">删除</button>
                 </div>
