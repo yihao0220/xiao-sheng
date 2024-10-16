@@ -23,15 +23,19 @@ const TaskManager = {
     },
 
     addClass: (classInfo) => {
+        console.log("Adding class:", classInfo);
         const classes = Storage.getItem('classes') || [];
         classes.push(classInfo);
         Storage.setItem('classes', classes);
         UI.updateClassList(classes);
+        console.log("Classes after adding:", classes);
     },
 
     loadClasses: () => {
+        console.log("Loading classes");
         const classes = Storage.getItem('classes') || [];
         UI.updateClassList(classes);
+        console.log("Loaded classes:", classes);
     },
 
     getClassesForToday: () => {
