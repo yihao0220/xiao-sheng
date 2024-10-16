@@ -26,5 +26,40 @@ const UI = {
             });
             alert(message);
         }
+    },
+
+    updateClassList: (classes) => {
+        const classList = document.getElementById('classList');
+        classList.innerHTML = '';
+        classes.forEach((classInfo, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span>${classInfo.name} - ${classInfo.day} ${classInfo.time} ${classInfo.location}</span>
+                <img src="${classInfo.photo}" alt="${classInfo.name}" style="max-width: 100px; max-height: 100px;">
+            `;
+            classList.appendChild(li);
+        });
+    },
+
+    showMorningReminder: () => {
+        const todayClasses = TaskManager.getClassesForToday();
+        if (todayClasses.length > 0) {
+            let message = "今天需要预习的课程：\n";
+            todayClasses.forEach(classInfo => {
+                message += `- ${classInfo.name} (${classInfo.time})\n`;
+            });
+            alert(message);
+        }
+    },
+
+    showAfternoonReminder: () => {
+        const morningClasses = TaskManager.getMorningClasses();
+        if (morningClasses.length > 0) {
+            let message = "上午上过的课程，请记得完成作业：\n";
+            morningClasses.forEach(classInfo => {
+                message += `- ${classInfo.name}\n`;
+            });
+            alert(message);
+        }
     }
 };
