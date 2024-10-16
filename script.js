@@ -6,7 +6,6 @@ window.onerror = function(message, source, lineno, colno, error) {
 
 console.log("Script started");
 
-// 将 checkLoginStatus 函数移到这里
 function checkLoginStatus() {
     console.log("checkLoginStatus called");
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -276,7 +275,7 @@ function initializeApp() {
 document.addEventListener("DOMContentLoaded", function() {
     console.log("DOMContentLoaded event fired");
     initializeApp();
-    // 不需要在这里调用 checkLoginStatus，因为它已经在 initializeApp 中调用了
+    checkLoginStatus(); // 确保在初始化后调用
 });
 
 console.log("Script end");
