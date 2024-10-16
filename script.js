@@ -138,6 +138,11 @@ function initializeApp() {
         const currentUser = localStorage.getItem("currentUser");
         console.log("isLoggedIn:", isLoggedIn, "currentUser:", currentUser);
 
+        console.log("Before update - authForm:", authForm.style.display);
+        console.log("Before update - taskManager:", taskManager.style.display);
+        console.log("Before update - loginButton:", loginButton.style.display);
+        console.log("Before update - logoutButton:", logoutButton.style.display);
+
         if (isLoggedIn) {
             authForm.style.display = "none";
             taskManager.style.display = "block";
@@ -149,32 +154,37 @@ function initializeApp() {
             loginButton.style.display = "block";
             logoutButton.style.display = "none";
         }
-        document.querySelector('.container').style.display = 'block';
-        console.log("After checkLoginStatus:", {
-            authFormDisplay: authForm.style.display,
-            taskManagerDisplay: taskManager.style.display,
-            loginButtonDisplay: loginButton.style.display,
-            logoutButtonDisplay: logoutButton.style.display
-        });
+
+        console.log("After update - authForm:", authForm.style.display);
+        console.log("After update - taskManager:", taskManager.style.display);
+        console.log("After update - loginButton:", loginButton.style.display);
+        console.log("After update - logoutButton:", logoutButton.style.display);
     }
 
     // 登录按钮事件
     loginButton.addEventListener("click", function() {
         console.log("Login button clicked");
+        console.log("authForm before:", authForm.style.display);
         authForm.style.display = "block";
+        console.log("authForm after:", authForm.style.display);
+        console.log("loginButton before:", loginButton.style.display);
         loginButton.style.display = "none";
-        console.log("authForm display:", authForm.style.display);
-        console.log("loginButton display:", loginButton.style.display);
+        console.log("loginButton after:", loginButton.style.display);
     });
 
     // 提交登录表单事件
     submitLoginButton.addEventListener("click", function(event) {
         event.preventDefault();
         console.log("Submit login button clicked");
+        console.log("Username:", loginUsername.value);
+        console.log("Password:", loginPassword.value);
         if (loginUsername.value && loginPassword.value) {
             localStorage.setItem("isLoggedIn", "true");
             localStorage.setItem("currentUser", loginUsername.value);
+            console.log("Login data set in localStorage");
             checkLoginStatus();
+        } else {
+            console.log("Username or password is empty");
         }
     });
 
@@ -231,3 +241,19 @@ function initializeApp() {
     });
 
     console.log("authForm:", authForm);
+    console.log("loginButton:", loginButton);
+
+    console.log("Initial state:", {
+        authFormDisplay: authForm.style.display,
+        taskManagerDisplay: taskManager.style.display,
+        loginButtonDisplay: loginButton.style.display,
+        logoutButtonDisplay: logoutButton.style.display
+    });
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOMContentLoaded event fired");
+    initializeApp();
+});
+
+console.log("Script end");
