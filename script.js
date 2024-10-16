@@ -138,33 +138,35 @@ function initializeApp() {
         console.log("isLoggedIn:", isLoggedIn);
 
         if (isLoggedIn) {
+            console.log("User is logged in");
             authForm.style.display = "none";
             taskManager.style.display = "block";
             loginButton.style.display = "none";
             logoutButton.style.display = "inline-block";
         } else {
+            console.log("User is not logged in");
             authForm.style.display = "none";
             taskManager.style.display = "none";
             loginButton.style.display = "inline-block";
             logoutButton.style.display = "none";
         }
-        console.log("After checkLoginStatus:", {
-            authFormDisplay: authForm.style.display,
-            taskManagerDisplay: taskManager.style.display,
-            loginButtonDisplay: loginButton.style.display,
-            logoutButtonDisplay: logoutButton.style.display
+        console.log("Element visibility:", {
+            authForm: authForm.style.display,
+            taskManager: taskManager.style.display,
+            loginButton: loginButton.style.display,
+            logoutButton: logoutButton.style.display
         });
     }
 
     // 登录按钮事件
-    loginButton.onclick = function() {
+    loginButton.addEventListener("click", function() {
         console.log("Login button clicked");
         authForm.style.display = "block";
         loginButton.style.display = "none";
-    };
+    });
 
     // 提交登录表单事件
-    submitLoginButton.onclick = function(event) {
+    submitLoginButton.addEventListener("click", function(event) {
         event.preventDefault();
         console.log("Submit login button clicked");
         if (loginUsername.value && loginPassword.value) {
@@ -172,9 +174,9 @@ function initializeApp() {
             localStorage.setItem("currentUser", loginUsername.value);
             checkLoginStatus();
         }
-    };
+    });
 
-    // 退出登录按钮事件
+    // 出登录按钮事件
     logoutButton.onclick = function() {
         console.log("Logout button clicked");
         localStorage.removeItem("isLoggedIn");
@@ -239,6 +241,9 @@ function initializeApp() {
     });
 }
 
-document.addEventListener("DOMContentLoaded", initializeApp);
+document.addEventListener("DOMContentLoaded", function() {
+    initializeApp();
+    checkLoginStatus();
+});
 
 console.log("Script end");
