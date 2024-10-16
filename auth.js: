@@ -6,6 +6,7 @@ const Auth = {
         UI.hideElement('authForm');
         UI.showElement('taskManager');
         TaskManager.loadTasks();
+        UI.showUnfinishedTasks(); // 添加这行
     },
     logout: () => {
         // 实现登出逻辑
@@ -16,5 +17,18 @@ const Auth = {
     },
     checkLoginStatus: () => {
         // 实现检查登录状态的逻辑
+        const isLoggedIn = Storage.getItem('isLoggedIn');
+        if (isLoggedIn) {
+            UI.hideElement('authForm');
+            UI.showElement('taskManager');
+            UI.hideElement('loginButton');
+            UI.showElement('logoutButton');
+            TaskManager.loadTasks();
+            UI.showUnfinishedTasks(); // 添加这行
+        } else {
+            UI.hideElement('taskManager');
+            UI.showElement('loginButton');
+            UI.hideElement('logoutButton');
+        }
     }
 };
