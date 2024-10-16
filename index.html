@@ -20,7 +20,15 @@
 
         <main class="content">
             <div id="authForm" style="display: none;">
-                <!-- 表单内容 -->
+                <form id="loginForm" class="fade-in">
+                    <h2>登录</h2>
+                    <label for="loginUsername">用户名:</label>
+                    <input type="text" id="loginUsername" required><br>
+                    <label for="loginPassword">密码:</label>
+                    <input type="password" id="loginPassword" required><br>
+                    <button id="submitLoginButton" class="button">提交</button>
+                </form>
+                <a href="#" id="showRegisterLink">没有账号？注册新账户</a>
             </div>
 
             <div id="taskManager" style="display: none;">
