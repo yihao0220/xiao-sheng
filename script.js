@@ -179,7 +179,7 @@ function initializeApp() {
         showAddTaskFormButton.style.display = "none";
     });
 
-    // 取消添加任务
+    // 取消添加��务
     cancelAddTaskButton.addEventListener("click", function() {
         addTaskForm.style.display = "none";
         showAddTaskFormButton.style.display = "block";
