@@ -182,33 +182,6 @@ function initializeApp() {
         taskManager.style.display = "block";
     });
 
-    // 检查登录状态
-    function checkLoginStatus() {
-        console.log("checkLoginStatus called");
-        const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-        console.log("isLoggedIn:", isLoggedIn);
-
-        if (isLoggedIn) {
-            console.log("User is logged in");
-            authForm.style.display = "none";
-            taskManager.style.display = "block";
-            loginButton.style.display = "none";
-            logoutButton.style.display = "inline-block";
-        } else {
-            console.log("User is not logged in");
-            authForm.style.display = "none";
-            taskManager.style.display = "none";
-            loginButton.style.display = "inline-block";
-            logoutButton.style.display = "none";
-        }
-        console.log("Element visibility:", {
-            authForm: authForm.style.display,
-            taskManager: taskManager.style.display,
-            loginButton: loginButton.style.display,
-            logoutButton: logoutButton.style.display
-        });
-    }
-
     // 登录按钮事件
     loginButton.addEventListener("click", function() {
         console.log("Login button clicked");
@@ -227,13 +200,13 @@ function initializeApp() {
         }
     });
 
-    // 出登录按钮事件
-    logoutButton.onclick = function() {
+    // 退出登录按钮事件
+    logoutButton.addEventListener("click", function() {
         console.log("Logout button clicked");
         localStorage.removeItem("isLoggedIn");
         localStorage.removeItem("currentUser");
         checkLoginStatus();
-    };
+    });
 
     // 显示添加任务表单
     showAddTaskFormButton.addEventListener("click", function() {
@@ -302,7 +275,6 @@ function initializeApp() {
 document.addEventListener("DOMContentLoaded", function() {
     console.log("DOMContentLoaded event fired");
     initializeApp();
-    checkLoginStatus(); // 确保在初始化后调用
 });
 
 console.log("Script end");
