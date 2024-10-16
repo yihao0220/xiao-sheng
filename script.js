@@ -4,6 +4,10 @@ window.onerror = function(message, source, lineno, colno, error) {
     alert("抱歉，发生了一个错误。请查看控制台以获取更多信息。");
 };
 
+window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled promise rejection:', event.reason);
+});
+
 console.log("Script started");
 
 function checkLoginStatus() {
@@ -61,8 +65,10 @@ function initializeApp() {
     function loadTasks() {
         console.log("loadTasks called");
         const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
+        console.log("Tasks from localStorage:", tasks);
         allTasks.innerHTML = "";
         tasks.forEach((task, index) => {
+            console.log("Creating task element for index:", index);
             const li = document.createElement("li");
             li.className = "task-item slide-in";
             li.innerHTML = `
@@ -81,6 +87,7 @@ function initializeApp() {
             `;
             allTasks.appendChild(li);
         });
+        console.log("Tasks loaded and displayed");
     }
 
     // 添加任务
@@ -107,7 +114,7 @@ function initializeApp() {
         }
     });
 
-    // 删除和编辑任务
+    // 删和编辑任务
     allTasks.addEventListener("click", function(event) {
         if (event.target.classList.contains("delete-button")) {
             const index = event.target.dataset.index;
@@ -123,8 +130,10 @@ function initializeApp() {
 
     // 编辑任
     function editTask(index) {
+        console.log("Editing task at index:", index);
         const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
         const task = tasks[index];
+        console.log("Task to edit:", task);
         currentEditingTaskIndex = index;
 
         document.getElementById("editTaskName").value = task.name;
@@ -138,11 +147,13 @@ function initializeApp() {
 
         editTaskForm.style.display = "block";
         taskManager.style.display = "none";
+        console.log("Edit form displayed");
     }
 
     // 保存编辑的任务
     saveEditTaskButton.addEventListener("click", function(event) {
         event.preventDefault();
+        console.log("Saving edited task");
         const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
         
         tasks[currentEditingTaskIndex] = {
@@ -158,9 +169,11 @@ function initializeApp() {
         };
 
         localStorage.setItem("tasks", JSON.stringify(tasks));
+        console.log("Tasks saved to localStorage");
         editTaskForm.style.display = "none";
         taskManager.style.display = "block";
         loadTasks();
+        console.log("Tasks reloaded");
     });
 
     // 取消编辑任务
@@ -273,16 +286,3 @@ function initializeApp() {
 
     console.log("Initial state:", {
         authFormDisplay: authForm.style.display,
-        taskManagerDisplay: taskManager.style.display,
-        loginButtonDisplay: loginButton.style.display,
-        logoutButtonDisplay: logoutButton.style.display
-    });
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOMContentLoaded event fired");
-    initializeApp();
-    checkLoginStatus(); // 确保在初始化后调用
-});
-
-console.log("Script end");
