@@ -29,16 +29,22 @@ const UI = {
     },
 
     updateClassList: (classes) => {
+        console.log("Updating class list:", classes);
         const classList = document.getElementById('classList');
+        if (!classList) {
+            console.error("classList element not found");
+            return;
+        }
         classList.innerHTML = '';
         classes.forEach((classInfo, index) => {
             const li = document.createElement('li');
             li.innerHTML = `
                 <span>${classInfo.name} - ${classInfo.day} ${classInfo.time} ${classInfo.location}</span>
-                <img src="${classInfo.photo}" alt="${classInfo.name}" style="max-width: 100px; max-height: 100px;">
+                ${classInfo.photo ? `<img src="${classInfo.photo}" alt="${classInfo.name}" style="max-width: 100px; max-height: 100px;">` : ''}
             `;
             classList.appendChild(li);
         });
+        console.log("Class list updated");
     },
 
     showMorningReminder: () => {
