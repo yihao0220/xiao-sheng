@@ -156,6 +156,8 @@ function initializeApp() {
         console.log("Login button clicked");
         authForm.style.display = "block";
         loginButton.style.display = "none";
+        console.log("authForm display:", authForm.style.display);
+        console.log("loginButton display:", loginButton.style.display);
     });
 
     // 提交登录表单事件
@@ -179,7 +181,7 @@ function initializeApp() {
         showAddTaskFormButton.style.display = "none";
     });
 
-    // 取消添加��务
+    // 取消添加任务
     cancelAddTaskButton.addEventListener("click", function() {
         addTaskForm.style.display = "none";
         showAddTaskFormButton.style.display = "block";
@@ -203,17 +205,29 @@ function initializeApp() {
     loadTasks();
 
     console.log("initializeApp completed");
+
+    console.log("DOM elements:", {
+        authForm,
+        taskManager,
+        loginButton,
+        submitLoginButton,
+        logoutButton
+    });
+
+    console.log("After checkLoginStatus:", {
+        authFormDisplay: authForm.style.display,
+        taskManagerDisplay: taskManager.style.display,
+        loginButtonDisplay: loginButton.style.display,
+        logoutButtonDisplay: logoutButton.style.display
+    });
+
+    console.log("authForm:", authForm);
+    console.log("loginButton:", loginButton);
 }
 
-document.addEventListener("DOMContentLoaded", initializeApp);
+document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOMContentLoaded event fired");
+    initializeApp();
+});
 
 console.log("Script end");
-
-console.log("authForm:", authForm);
-console.log("loginButton:", loginButton);
-
-window.addEventListener('load', function() {
-    console.log("Window fully loaded");
-    console.log("loginButton:", document.getElementById("loginButton"));
-    console.log("authForm:", document.getElementById("authForm"));
-});
