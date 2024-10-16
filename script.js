@@ -83,7 +83,7 @@ function initializeApp() {
         }
     });
 
-    // 编辑任务
+    // 编辑任
     function editTask(index) {
         const tasks = JSON.parse(localStorage.getItem("tasks")) || [];
         const task = tasks[index];
@@ -135,7 +135,8 @@ function initializeApp() {
     function checkLoginStatus() {
         console.log("checkLoginStatus called");
         const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
-        console.log("isLoggedIn:", isLoggedIn);
+        const currentUser = localStorage.getItem("currentUser");
+        console.log("isLoggedIn:", isLoggedIn, "currentUser:", currentUser);
 
         if (isLoggedIn) {
             authForm.style.display = "none";
@@ -149,6 +150,12 @@ function initializeApp() {
             logoutButton.style.display = "none";
         }
         document.querySelector('.container').style.display = 'block';
+        console.log("After checkLoginStatus:", {
+            authFormDisplay: authForm.style.display,
+            taskManagerDisplay: taskManager.style.display,
+            loginButtonDisplay: loginButton.style.display,
+            logoutButtonDisplay: logoutButton.style.display
+        });
     }
 
     // 登录按钮事件
@@ -163,8 +170,10 @@ function initializeApp() {
     // 提交登录表单事件
     submitLoginButton.addEventListener("click", function(event) {
         event.preventDefault();
+        console.log("Submit login button clicked");
         if (loginUsername.value && loginPassword.value) {
             localStorage.setItem("isLoggedIn", "true");
+            localStorage.setItem("currentUser", loginUsername.value);
             checkLoginStatus();
         }
     });
@@ -222,12 +231,3 @@ function initializeApp() {
     });
 
     console.log("authForm:", authForm);
-    console.log("loginButton:", loginButton);
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("DOMContentLoaded event fired");
-    initializeApp();
-});
-
-console.log("Script end");
