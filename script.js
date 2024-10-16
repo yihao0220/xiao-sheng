@@ -6,6 +6,38 @@ window.onerror = function(message, source, lineno, colno, error) {
 
 console.log("Script started");
 
+// 将 checkLoginStatus 函数移到这里
+function checkLoginStatus() {
+    console.log("checkLoginStatus called");
+    const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
+    console.log("isLoggedIn:", isLoggedIn);
+
+    const authForm = document.getElementById("authForm");
+    const taskManager = document.getElementById("taskManager");
+    const loginButton = document.getElementById("loginButton");
+    const logoutButton = document.getElementById("logoutButton");
+
+    if (isLoggedIn) {
+        console.log("User is logged in");
+        authForm.style.display = "none";
+        taskManager.style.display = "block";
+        loginButton.style.display = "none";
+        logoutButton.style.display = "inline-block";
+    } else {
+        console.log("User is not logged in");
+        authForm.style.display = "none";
+        taskManager.style.display = "none";
+        loginButton.style.display = "inline-block";
+        logoutButton.style.display = "none";
+    }
+    console.log("Element visibility:", {
+        authForm: authForm.style.display,
+        taskManager: taskManager.style.display,
+        loginButton: loginButton.style.display,
+        logoutButton: logoutButton.style.display
+    });
+}
+
 function initializeApp() {
     console.log("initializeApp started");
     const authForm = document.getElementById("authForm");
@@ -242,8 +274,9 @@ function initializeApp() {
 }
 
 document.addEventListener("DOMContentLoaded", function() {
+    console.log("DOMContentLoaded event fired");
     initializeApp();
-    checkLoginStatus();
+    // 不需要在这里调用 checkLoginStatus，因为它已经在 initializeApp 中调用了
 });
 
 console.log("Script end");
