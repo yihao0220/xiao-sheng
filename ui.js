@@ -1,9 +1,27 @@
 const UI = {
-    showElement: (elementId) => document.getElementById(elementId).style.display = 'block',
-    hideElement: (elementId) => document.getElementById(elementId).style.display = 'none',
+    showElement: (elementId) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.style.display = 'block';
+        } else {
+            console.error(`Element with id ${elementId} not found`);
+        }
+    },
+    hideElement: (elementId) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.style.display = 'none';
+        } else {
+            console.error(`Element with id ${elementId} not found`);
+        }
+    },
     updateTaskList: (tasks) => {
-        // 实现更新任务列表的逻辑
+        console.log("Updating task list:", tasks);
         const allTasks = document.getElementById('allTasks');
+        if (!allTasks) {
+            console.error("allTasks element not found");
+            return;
+        }
         allTasks.innerHTML = '';
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
@@ -15,6 +33,7 @@ const UI = {
             `;
             allTasks.appendChild(li);
         });
+        console.log("Task list updated");
     },
     showUnfinishedTasks: () => {
         const tasks = Storage.getItem('tasks') || [];
@@ -27,7 +46,6 @@ const UI = {
             alert(message);
         }
     },
-
     updateClassList: (classes) => {
         console.log("Updating class list:", classes);
         const classList = document.getElementById('classList');
@@ -46,26 +64,8 @@ const UI = {
         });
         console.log("Class list updated");
     },
-
     showMorningReminder: () => {
         const todayClasses = TaskManager.getClassesForToday();
         if (todayClasses.length > 0) {
             let message = "今天需要预习的课程：\n";
             todayClasses.forEach(classInfo => {
-                message += `- ${classInfo.name} (${classInfo.time})\n`;
-            });
-            alert(message);
-        }
-    },
-
-    showAfternoonReminder: () => {
-        const morningClasses = TaskManager.getMorningClasses();
-        if (morningClasses.length > 0) {
-            let message = "上午上过的课程，请记得完成作业：\n";
-            morningClasses.forEach(classInfo => {
-                message += `- ${classInfo.name}\n`;
-            });
-            alert(message);
-        }
-    }
-};
