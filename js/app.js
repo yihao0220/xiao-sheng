@@ -28,43 +28,42 @@ function loadAuth() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM content loaded");
     logDeviceInfo();
     checkLocalStorage();
 
-    try {
-        await loadAuth();
-        console.log("Auth.js loaded successfully");
-        // 初始化应用
-        Auth.checkLoginStatus();
-        
-        // 设置事件监听器
-        document.getElementById('loginButton').addEventListener('click', () => {
-            console.log("Login button clicked");
-            UI.showElement('authForm');
-        });
-        document.getElementById('submitLoginButton').addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log("Submit login button clicked");
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            Auth.login(username, password);
-        });
-        document.getElementById('logoutButton').addEventListener('click', Auth.logout);
-        
-        // 加载现有的课程和任务
-        TaskManager.loadClasses();
-        TaskManager.loadTasks();
-
-        // 检查未完成的任务并显示提醒
-        UI.showUnfinishedTasks();
-
-        console.log("Event listeners set up");
-    } catch (error) {
-        console.error("Failed to load Auth:", error);
+    if (typeof Auth === 'undefined') {
+        console.error("Auth object is not defined. Make sure auth.js is loaded correctly.");
         alert("An error occurred while loading the application. Please check the console for more information.");
+        return;
     }
+
+    // 初始化应用
+    Auth.checkLoginStatus();
+    
+    // 设置事件监听器
+    document.getElementById('loginButton').addEventListener('click', () => {
+        console.log("Login button clicked");
+        UI.showElement('authForm');
+    });
+    document.getElementById('submitLoginButton').addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log("Submit login button clicked");
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        Auth.login(username, password);
+    });
+    document.getElementById('logoutButton').addEventListener('click', Auth.logout);
+    
+    // 加载现有的课程和任务
+    TaskManager.loadClasses();
+    TaskManager.loadTasks();
+
+    // 检查未完成的任务并显示提醒
+    UI.showUnfinishedTasks();
+
+    console.log("Event listeners set up");
 });
 
 window.onerror = function(message, source, lineno, colno, error) {
