@@ -1,5 +1,13 @@
 console.log("App script loaded");
 
+if (typeof UI === 'undefined') {
+    console.error("UI object is not defined. Make sure ui.js is loaded before app.js");
+}
+
+if (typeof Auth === 'undefined') {
+    console.error("Auth object is not defined. Make sure auth.js is loaded before app.js");
+}
+
 function logDeviceInfo() {
     console.log("User Agent:", navigator.userAgent);
     console.log("Screen Width:", screen.width);
