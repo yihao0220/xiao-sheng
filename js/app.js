@@ -70,7 +70,16 @@ function initializeApp() {
     const loginButton = document.getElementById('loginButton');
     const authForm = document.getElementById('authForm');
     
-    if (!loginButton) console.error("Login button not found");
+    if (loginButton) {
+        loginButton.addEventListener('click', () => {
+            console.log("Login button clicked");
+            UI.showElement('authForm');
+            console.log("authForm display:", authForm ? authForm.style.display : "authForm not found");
+        });
+    } else {
+        console.error("Login button not found");
+    }
+
     if (!authForm) console.error("Auth form not found");
     
     logDeviceInfo();
@@ -80,11 +89,6 @@ function initializeApp() {
     Auth.checkLoginStatus();
     
     // 设置事件监听器
-    loginButton.addEventListener('click', () => {
-        console.log("Login button clicked");
-        UI.showElement('authForm');
-        console.log("authForm display:", document.getElementById('authForm').style.display);
-    });
     document.getElementById('submitLoginButton').addEventListener('click', (e) => {
         e.preventDefault();
         console.log("Submit login button clicked");
