@@ -75,6 +75,54 @@ function initializeApp() {
     // 检查未完成的任务并显示提醒
     UI.showUnfinishedTasks();
 
+    // 添加任务相关的事件监听器
+    const showAddTaskFormButton = document.getElementById('showAddTaskFormButton');
+    const addTaskForm = document.getElementById('addTaskForm');
+    const addTaskButton = document.getElementById('addTaskButton');
+    const cancelAddTaskButton = document.getElementById('cancelAddTaskButton');
+
+    showAddTaskFormButton.addEventListener('click', () => {
+        addTaskForm.style.display = 'block';
+        showAddTaskFormButton.style.display = 'none';
+    });
+
+    addTaskButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const taskName = document.getElementById('taskName').value;
+        const startDate = document.getElementById('startDate').value;
+        const startTime = document.getElementById('startTime').value;
+        const endDate = document.getElementById('endDate').value;
+        const endTime = document.getElementById('endTime').value;
+        const priority = document.getElementById('priority').value;
+        const category = document.getElementById('category').value;
+        const location = document.getElementById('location').value;
+
+        if (taskName) {
+            const newTask = {
+                name: taskName,
+                startDate,
+                startTime,
+                endDate,
+                endTime,
+                priority,
+                category,
+                location,
+                completed: false
+            };
+            TaskManager.addTask(newTask);
+            addTaskForm.style.display = 'none';
+            showAddTaskFormButton.style.display = 'block';
+            // 清空表单
+            document.getElementById('taskName').value = '';
+            // ... 清空其他输入字段 ...
+        }
+    });
+
+    cancelAddTaskButton.addEventListener('click', () => {
+        addTaskForm.style.display = 'none';
+        showAddTaskFormButton.style.display = 'block';
+    });
+
     console.log("Event listeners set up");
 }
 
