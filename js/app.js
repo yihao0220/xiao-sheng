@@ -72,8 +72,15 @@ function initializeApp() {
     TaskManager.loadClasses();
     TaskManager.loadTasks();
 
-    // 检查未完成的任务并显示提醒
-    UI.showUnfinishedTasks();
+    // 检查今天的课程并显示提醒
+    const todayClasses = TaskManager.getClassesForToday();
+    if (todayClasses && todayClasses.length > 0) {
+        let message = "今天的课程：\n";
+        todayClasses.forEach(classInfo => {
+            message += `- ${classInfo.name} (${classInfo.time} at ${classInfo.location})\n`;
+        });
+        alert(message);
+    }
 
     // 添加任务相关的事件监听器
     const showAddTaskFormButton = document.getElementById('showAddTaskFormButton');
@@ -121,6 +128,31 @@ function initializeApp() {
     cancelAddTaskButton.addEventListener('click', () => {
         addTaskForm.style.display = 'none';
         showAddTaskFormButton.style.display = 'block';
+    });
+
+    // 添加课程相关的事件监听器
+    const addClassButton = document.getElementById('addClassButton');
+    const classForm = document.getElementById('classForm');
+
+    addClassButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const className = document.getElementById('className').value;
+        const classDay = document.getElementById('classDay').value;
+        const classTime = document.getElementById('classTime').value;
+        const classLocation = document.getElementById('classLocation').value;
+        const classPhoto = document.getElementById('classPhoto').files[0];
+
+        if (className && classDay && classTime) {
+            const newClass = {
+                name: className,
+                day: classDay,
+                time: classTime,
+                location: classLocation,
+                photo: classPhoto ? URL.createObjectURL(classPhoto) : null
+            };
+            TaskManager.addClass(newClass);
+            classForm.reset();
+        }
     });
 
     console.log("Event listeners set up");
