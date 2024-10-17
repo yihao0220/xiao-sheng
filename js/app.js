@@ -148,10 +148,17 @@ function initializeApp() {
                 day: classDay,
                 time: classTime,
                 location: classLocation,
-                photo: classPhoto ? URL.createObjectURL(classPhoto) : null
+                photo: classPhoto
             };
-            TaskManager.addClass(newClass);
-            classForm.reset();
+            TaskManager.addClass(newClass)
+                .then(() => {
+                    classForm.reset();
+                    console.log("Class added successfully");
+                })
+                .catch((error) => {
+                    console.error("Error adding class:", error);
+                    alert("添加课程时出错，请稍后再试。");
+                });
         }
     });
 
@@ -209,6 +216,28 @@ function initializeApp() {
     });
 
     console.log("Event listeners set up");
+
+    // 删除原有的添加课程相关代码，添加上传课表照片的代码
+    const uploadScheduleButton = document.getElementById('uploadScheduleButton');
+    const schedulePhoto = document.getElementById('schedulePhoto');
+
+    uploadScheduleButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const file = schedulePhoto.files[0];
+        if (file) {
+            TaskManager.recognizeSchedule(file)
+                .then(() => {
+                    console.log("Schedule recognized and saved successfully");
+                    alert("课表已成功识别并保存");
+                })
+                .catch((error) => {
+                    console.error("Error recognizing schedule:", error);
+                    alert("识别课表时出错，请稍后再试。");
+                });
+        } else {
+            alert("请选择一张课表照片");
+        }
+    });
 }
 
 console.log("App.js end");
