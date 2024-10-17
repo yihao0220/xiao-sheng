@@ -49,10 +49,23 @@ const TaskManager = {
         try {
             console.log("Adding class:", classInfo);
             const classes = Storage.getItem('classes') || [];
-            classes.push(classInfo);
-            Storage.setItem('classes', classes);
-            UI.updateClassList(classes);
-            console.log("Classes after adding:", classes);
+            // 如果有照片，将其转换为 base64 字符串
+            if (classInfo.photo) {
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    classInfo.photo = reader.result;
+                    classes.push(classInfo);
+                    Storage.setItem('classes', classes);
+                    UI.updateClassList(classes);
+                    console.log("Classes after adding:", classes);
+                }
+                reader.readAsDataURL(classInfo.photo);
+            } else {
+                classes.push(classInfo);
+                Storage.setItem('classes', classes);
+                UI.updateClassList(classes);
+                console.log("Classes after adding:", classes);
+            }
         } catch (error) {
             console.error("Error adding class:", error);
             alert("添加课程时出错，请稍后再试。");
@@ -74,7 +87,7 @@ const TaskManager = {
     getClassesForToday: () => {
         try {
             const classes = Storage.getItem('classes') || [];
-            const today = new Date().toLocaleString('zh-CN', {sweekday: 'long'});
+            const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
             return classes.filter(classInfo => classInfo.day === today);
         } catch (error) {
             console.error("Error getting classes for today:", error);
@@ -95,4 +108,3 @@ const TaskManager = {
         }
     }
 };
-s
