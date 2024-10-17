@@ -160,12 +160,13 @@ function initializeApp() {
                 if (file) {
                     TaskManager.recognizeSchedule(file)
                         .then(() => {
-                            console.log("Schedule recognized and saved successfully");
-                            alert("课表已成功识别并保存");
+                            console.log("Schedule uploaded successfully");
+                            alert("课表已成功上传");
+                            showTodayClasses();
                         })
                         .catch((error) => {
-                            console.error("Error recognizing schedule:", error);
-                            alert("识别课表时出错，请稍后再试。");
+                            console.error("Error uploading schedule:", error);
+                            alert("上传课表时出错，请稍后再试。");
                         });
                 } else {
                     alert("请选择一张课表照片");
@@ -266,5 +267,21 @@ function addEventListenerSafely(id, event, handler) {
         console.log(`Event listener added to ${id}`);
     } else {
         console.warn(`Element ${id} not found. Event listener not added.`);
+    }
+}
+
+// 添加这个新函数来显示今天的课程
+function showTodayClasses() {
+    const todayClasses = TaskManager.getClassesForToday();
+    if (todayClasses && todayClasses.length > 0) {
+        let message = "今天的课程：\n";
+        todayClasses.forEach(classInfo => {
+            message += `- ${classInfo.name}\n`;
+            message += "  需要预习的内容：[在这里添加预习内容]\n";
+            message += "  需要复习的内容：[在这里添加复习内容]\n";
+        });
+        alert(message);
+    } else {
+        alert("今天没有课程。");
     }
 }
