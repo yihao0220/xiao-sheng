@@ -190,17 +190,11 @@ function initializeApp() {
     TaskManager.loadClasses();
     TaskManager.loadTasks();
 
-    // 检查今天的课程并显示提醒
-    const todayClasses = TaskManager.getClassesForToday();
-    if (todayClasses && todayClasses.length > 0) {
-        let message = "今天的课程：\n";
-        todayClasses.forEach(classInfo => {
-            message += `- ${classInfo.name} (${classInfo.time} at ${classInfo.location})\n`;
-        });
-        alert(message);
-    }
+    // 显示今天的课程信息
+    const classes = Storage.getItem('classes') || [];
+    showTodayClasses(classes);
 
-    // 修改编辑任务相关的代码
+    // 修改编码任务相关的代码
     const allTasks = document.getElementById('allTasks');
     const editTaskForm = document.getElementById('editTaskForm');
     const saveEditTaskButton = document.getElementById('saveEditTaskButton');
@@ -276,9 +270,11 @@ function showTodayClasses(classes) {
     const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
     const todayClasses = classes.filter(c => c.day === today);
     if (todayClasses.length > 0) {
-        let message = `今天（${today}）的课程：\n`;
+        let message = `今天（${today}）的课程：\n\n`;
         todayClasses.forEach(classInfo => {
-            message += `- ${classInfo.name} (${classInfo.startTime}-${classInfo.endTime}) 地点：${classInfo.location || '未知'}\n`;
+            message += `课程：${classInfo.name}\n`;
+            message += `时间：${classInfo.startTime} - ${classInfo.endTime}\n`;
+            message += `地点：${classInfo.location || '未知'}\n\n`;
         });
         alert(message);
     } else {
