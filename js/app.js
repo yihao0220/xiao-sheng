@@ -198,7 +198,7 @@ function initializeApp() {
         alert(message);
     }
 
-    // 添加任务相关的事件监听器
+    // 修改编辑任务相关的代码
     const allTasks = document.getElementById('allTasks');
     const editTaskForm = document.getElementById('editTaskForm');
     const saveEditTaskButton = document.getElementById('saveEditTaskButton');
@@ -224,7 +224,7 @@ function initializeApp() {
 
             // 显示编辑表单
             editTaskForm.style.display = 'block';
-            document.getElementById('taskManager').style.display = 'none';
+            document.getElementById('taskManager').style.display = 'block'; // 修改这里，保持taskManager可见
         }
     });
 
@@ -243,12 +243,12 @@ function initializeApp() {
         };
         TaskManager.editTask(currentEditingTaskIndex, updatedTask);
         editTaskForm.style.display = 'none';
-        document.getElementById('taskManager').style.display = 'block';
+        // 不需要改变taskManager的显示状态，因为它应该一直保持可见
     });
 
     cancelEditTaskButton.addEventListener('click', () => {
         editTaskForm.style.display = 'none';
-        document.getElementById('taskManager').style.display = 'block';
+        // 不需要改变taskManager的显示状态，因为它应该一直保持可见
     });
 
     console.log("Event listeners set up");
