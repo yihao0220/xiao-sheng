@@ -1,7 +1,7 @@
 console.log("Auth.js start");
 
 if (typeof UI === 'undefined') {
-    console.error("UI object is not defined. Make sure ui.js is loaded before auth.js");
+    console.error("UI object is not defined. Make sure ui.js is loaded before this script.");
 }
 
 if (typeof Auth === 'undefined') {
