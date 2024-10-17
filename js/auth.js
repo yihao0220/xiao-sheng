@@ -4,6 +4,10 @@ if (typeof UI === 'undefined') {
     console.error("UI object is not defined. Make sure ui.js is loaded before this script.");
 }
 
+if (typeof TaskManager === 'undefined') {
+    console.error("TaskManager object is not defined. Make sure taskManager.js is loaded before this script.");
+}
+
 if (typeof Auth === 'undefined') {
     const Auth = {
         login: (username, password) => {
