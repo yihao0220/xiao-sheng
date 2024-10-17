@@ -33,6 +33,13 @@ function loadAuth() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log("DOM content loaded");
+    
+    const loginButton = document.getElementById('loginButton');
+    const authForm = document.getElementById('authForm');
+    
+    if (!loginButton) console.error("Login button not found");
+    if (!authForm) console.error("Auth form not found");
+    
     logDeviceInfo();
     checkLocalStorage();
 
@@ -42,9 +49,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         Auth.checkLoginStatus();
         
         // 设置事件监听器
-        document.getElementById('loginButton').addEventListener('click', () => {
+        loginButton.addEventListener('click', () => {
             console.log("Login button clicked");
             UI.showElement('authForm');
+            console.log("authForm display:", document.getElementById('authForm').style.display);
         });
         document.getElementById('submitLoginButton').addEventListener('click', (e) => {
             e.preventDefault();
@@ -72,3 +80,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 window.onerror = function(message, source, lineno, colno, error) {
     console.error("Global error:", message, "at", source, ":", lineno);
     alert("An error occurred. Please check the console for more information.");
+};
+
+console.log("App.js end");
