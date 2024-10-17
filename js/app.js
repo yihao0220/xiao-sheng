@@ -155,6 +155,59 @@ function initializeApp() {
         }
     });
 
+    // 添加编辑任务相关的事件监听器
+    const allTasks = document.getElementById('allTasks');
+    const editTaskForm = document.getElementById('editTaskForm');
+    const saveEditTaskButton = document.getElementById('saveEditTaskButton');
+    const cancelEditTaskButton = document.getElementById('cancelEditTaskButton');
+    let currentEditingTaskIndex = -1;
+
+    allTasks.addEventListener('click', (e) => {
+        if (e.target.classList.contains('edit-button')) {
+            const index = parseInt(e.target.dataset.index);
+            currentEditingTaskIndex = index;
+            const tasks = Storage.getItem('tasks') || [];
+            const task = tasks[index];
+            
+            // 填充编辑表单
+            document.getElementById('editTaskName').value = task.name;
+            document.getElementById('editStartDate').value = task.startDate;
+            document.getElementById('editStartTime').value = task.startTime;
+            document.getElementById('editEndDate').value = task.endDate;
+            document.getElementById('editEndTime').value = task.endTime;
+            document.getElementById('editPriority').value = task.priority;
+            document.getElementById('editCategory').value = task.category;
+            document.getElementById('editLocation').value = task.location;
+
+            // 显示编辑表单
+            editTaskForm.style.display = 'block';
+            document.getElementById('taskManager').style.display = 'none';
+        }
+    });
+
+    saveEditTaskButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        const updatedTask = {
+            name: document.getElementById('editTaskName').value,
+            startDate: document.getElementById('editStartDate').value,
+            startTime: document.getElementById('editStartTime').value,
+            endDate: document.getElementById('editEndDate').value,
+            endTime: document.getElementById('editEndTime').value,
+            priority: document.getElementById('editPriority').value,
+            category: document.getElementById('editCategory').value,
+            location: document.getElementById('editLocation').value,
+            completed: false // 假设编辑时不改变完成状态
+        };
+        TaskManager.editTask(currentEditingTaskIndex, updatedTask);
+        editTaskForm.style.display = 'none';
+        document.getElementById('taskManager').style.display = 'block';
+    });
+
+    cancelEditTaskButton.addEventListener('click', () => {
+        editTaskForm.style.display = 'none';
+        document.getElementById('taskManager').style.display = 'block';
+    });
+
     console.log("Event listeners set up");
 }
 
