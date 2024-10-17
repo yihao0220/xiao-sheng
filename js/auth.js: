@@ -2,20 +2,20 @@ console.log("Auth.js start");
 
 const Auth = {
     login: (username, password) => {
-        Storage.setItem('isLoggedIn', true);
-        Storage.setItem('currentUser', username);
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('currentUser', username);
         UI.hideElement('authForm');
         UI.showElement('taskManager');
         TaskManager.loadTasks();
     },
     logout: () => {
-        Storage.removeItem('isLoggedIn');
-        Storage.removeItem('currentUser');
+        localStorage.removeItem('isLoggedIn');
+        localStorage.removeItem('currentUser');
         UI.showElement('loginButton');
         UI.hideElement('taskManager');
     },
     checkLoginStatus: () => {
-        const isLoggedIn = Storage.getItem('isLoggedIn');
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
         if (isLoggedIn) {
             UI.hideElement('authForm');
             UI.showElement('taskManager');
