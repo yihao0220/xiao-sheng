@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
+    console.log("DOM content loaded");
+
     // 初始化应用
     Auth.checkLoginStatus();
     
@@ -40,7 +42,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 检查是否需要显示提醒
+    // 加载现有的课程
+    TaskManager.loadClasses();
+
+    // 检查未完成的任务并显示提醒
+    UI.showUnfinishedTasks();
+
+    // 检查是否需要显示课程提醒
+    checkClassReminders();
+});
+
+function checkClassReminders() {
     const now = new Date();
     const hour = now.getHours();
 
@@ -49,31 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (hour >= 13) {
         UI.showAfternoonReminder();
     }
-
-    // 加载现有的课程
-    TaskManager.loadClasses();
-});
-
-// 在文件末尾添加以下代码
-
-function checkReminders() {
-    const now = new Date();
-    const hour = now.getHours();
-    const lastCheckDate = localStorage.getItem('lastCheckDate');
-    const today = now.toDateString();
-
-    if (lastCheckDate !== today) {
-        if (hour < 12) {
-            UI.showMorningReminder();
-        } else if (hour >= 13) {
-            UI.showAfternoonReminder();
-        }
-        localStorage.setItem('lastCheckDate', today);
-    }
 }
 
-// 每小时检查一次
-setInterval(checkReminders, 3600000);
-
-// 页面加载时立即检查一次
-checkReminders();
+// 每小时检查一次课程提醒
+setInterval(checkClassReminders, 3600000);
