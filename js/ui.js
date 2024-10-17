@@ -1,3 +1,4 @@
+console.log("UI.js start");
 const UI = {
     showElement: (elementId) => {
         const element = document.getElementById(elementId);
@@ -69,3 +70,20 @@ const UI = {
         if (todayClasses.length > 0) {
             let message = "今天需要预习的课程：\n";
             todayClasses.forEach(classInfo => {
+                message += `- ${classInfo.name} (${classInfo.time})\n`;
+            });
+            alert(message);
+        }
+    },
+    showAfternoonReminder: () => {
+        const morningClasses = TaskManager.getMorningClasses();
+        if (morningClasses.length > 0) {
+            let message = "上午上过的课程，请记得完成作业：\n";
+            morningClasses.forEach(classInfo => {
+                message += `- ${classInfo.name}\n`;
+            });
+            alert(message);
+        }
+    }
+};
+console.log("UI.js end");
