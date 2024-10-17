@@ -15,6 +15,19 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log("App script loaded");
 
+    // 检查所有需要的 DOM 元素
+    const elements = [
+        'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
+        'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
+        'uploadScheduleButton', 'schedulePhoto', 'allTasks', 'editTaskForm',
+        'saveEditTaskButton', 'cancelEditTaskButton'
+    ];
+
+    elements.forEach(id => {
+        const element = document.getElementById(id);
+        console.log(`Element ${id}: ${element ? 'Found' : 'Not found'}`);
+    });
+
     if (typeof UI === 'undefined') {
         console.error("UI object is not defined. Make sure ui.js is loaded before app.js");
         return;
@@ -34,13 +47,6 @@ function initializeApp() {
         console.error("Storage object is not defined. Make sure storage.js is loaded before app.js");
         return;
     }
-
-    // 检查所有需要的 DOM 元素
-    const elements = [
-        'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
-        'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
-        'uploadScheduleButton', 'schedulePhoto'
-    ];
 
     const missingElements = elements.filter(id => !document.getElementById(id));
     if (missingElements.length > 0) {
@@ -91,7 +97,7 @@ function initializeApp() {
     // 检查并添加事件监听器
     const eventListeners = {
         'submitLoginButton': () => {
-            document.getElementById('submitLoginButton').addEventListener('click', (e) => {
+            addEventListenerSafely('submitLoginButton', 'click', (e) => {
                 e.preventDefault();
                 console.log("Submit login button clicked");
                 const username = document.getElementById('loginUsername').value;
@@ -100,16 +106,16 @@ function initializeApp() {
             });
         },
         'logoutButton': () => {
-            document.getElementById('logoutButton').addEventListener('click', Auth.logout);
+            addEventListenerSafely('logoutButton', 'click', Auth.logout);
         },
         'showAddTaskFormButton': () => {
-            document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
+            addEventListenerSafely('showAddTaskFormButton', 'click', () => {
                 document.getElementById('addTaskForm').style.display = 'block';
                 document.getElementById('showAddTaskFormButton').style.display = 'none';
             });
         },
         'addTaskButton': () => {
-            document.getElementById('addTaskButton').addEventListener('click', (e) => {
+            addEventListenerSafely('addTaskButton', 'click', (e) => {
                 e.preventDefault();
                 const taskName = document.getElementById('taskName').value;
                 const startDate = document.getElementById('startDate').value;
@@ -142,13 +148,13 @@ function initializeApp() {
             });
         },
         'cancelAddTaskButton': () => {
-            document.getElementById('cancelAddTaskButton').addEventListener('click', () => {
+            addEventListenerSafely('cancelAddTaskButton', 'click', () => {
                 document.getElementById('addTaskForm').style.display = 'none';
                 document.getElementById('showAddTaskFormButton').style.display = 'block';
             });
         },
         'uploadScheduleButton': () => {
-            document.getElementById('uploadScheduleButton').addEventListener('click', (e) => {
+            addEventListenerSafely('uploadScheduleButton', 'click', (e) => {
                 e.preventDefault();
                 const file = document.getElementById('schedulePhoto').files[0];
                 if (file) {
@@ -252,3 +258,13 @@ function initializeApp() {
 
     console.log("App.js end");
 } // Add this closing brace to properly close the initializeApp function
+
+function addEventListenerSafely(id, event, handler) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.addEventListener(event, handler);
+        console.log(`Event listener added to ${id}`);
+    } else {
+        console.warn(`Element ${id} not found. Event listener not added.`);
+    }
+}
