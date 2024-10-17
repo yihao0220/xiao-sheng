@@ -158,15 +158,16 @@ function initializeApp() {
                 e.preventDefault();
                 const file = document.getElementById('schedulePhoto').files[0];
                 if (file) {
+                    alert("正在识别课表，请稍候...");
                     TaskManager.recognizeSchedule(file)
-                        .then(() => {
-                            console.log("Schedule uploaded successfully");
-                            alert("课表已成功上传");
-                            showTodayClasses();
+                        .then((classes) => {
+                            console.log("Schedule recognized and saved successfully");
+                            alert("课表已成功识别并保存");
+                            showTodayClasses(classes);
                         })
                         .catch((error) => {
-                            console.error("Error uploading schedule:", error);
-                            alert("上传课表时出错，请稍后再试。");
+                            console.error("Error recognizing schedule:", error);
+                            alert("识别课表时出错，请稍后再试。");
                         });
                 } else {
                     alert("请选择一张课表照片");
@@ -271,17 +272,16 @@ function addEventListenerSafely(id, event, handler) {
 }
 
 // 添加这个新函数来显示今天的课程
-function showTodayClasses() {
-    const todayClasses = TaskManager.getClassesForToday();
-    if (todayClasses && todayClasses.length > 0) {
-        let message = "今天的课程：\n";
+function showTodayClasses(classes) {
+    const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
+    const todayClasses = classes.filter(c => c.day === today);
+    if (todayClasses.length > 0) {
+        let message = `今天（${today}）的课程：\n`;
         todayClasses.forEach(classInfo => {
-            message += `- ${classInfo.name}\n`;
-            message += "  需要预习的内容：[在这里添加预习内容]\n";
-            message += "  需要复习的内容：[在这里添加复习内容]\n";
+            message += `- ${classInfo.name} (${classInfo.startTime}-${classInfo.endTime}) 地点：${classInfo.location || '未知'}\n`;
         });
         alert(message);
     } else {
-        alert("今天没有课程。");
+        alert(`今天（${today}）没有课程。`);
     }
 }
