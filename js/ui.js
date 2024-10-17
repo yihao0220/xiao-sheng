@@ -87,3 +87,6 @@ const UI = {
             alert(message);
         }
     }
+};
+window.UI = UI;  // 将 UI 对象添加到全局作用域
+console.log("UI.js end");
