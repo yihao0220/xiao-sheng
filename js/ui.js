@@ -69,7 +69,7 @@ const UI = {
         classes.forEach((classInfo, index) => {
             const li = document.createElement('li');
             li.innerHTML = `
-                <span>${classInfo.name} - ${classInfo.day} ${classInfo.time} ${classInfo.location}</span>
+                <span>${classInfo.name} - ${classInfo.day} ${classInfo.time} ${classInfo.location || ''}</span>
                 ${classInfo.photo ? `<img src="${classInfo.photo}" alt="${classInfo.name}" style="max-width: 100px; max-height: 100px;">` : ''}
             `;
             classList.appendChild(li);
