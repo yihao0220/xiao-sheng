@@ -13,10 +13,12 @@ const TaskManager = {
     },
     editTask: (index, updatedTask) => {
         try {
+            console.log("Editing task at index:", index, "with data:", updatedTask);
             const tasks = Storage.getItem('tasks') || [];
             tasks[index] = updatedTask;
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
+            console.log("Task edited successfully");
         } catch (error) {
             console.error("Error editing task:", error);
             alert("编辑任务时出错，请稍后再试。");
@@ -72,7 +74,7 @@ const TaskManager = {
     getClassesForToday: () => {
         try {
             const classes = Storage.getItem('classes') || [];
-            const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
+            const today = new Date().toLocaleString('zh-CN', {sweekday: 'long'});
             return classes.filter(classInfo => classInfo.day === today);
         } catch (error) {
             console.error("Error getting classes for today:", error);
@@ -93,3 +95,4 @@ const TaskManager = {
         }
     }
 };
+s
