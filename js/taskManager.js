@@ -112,43 +112,42 @@ const TaskManager = {
 
     recognizeSchedule: (file) => {
         return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                // 这里我们假设直接保存图片，而不是进行OCR识别
-                const classes = [{
-                    name: "课表图片",
-                    day: new Date().toLocaleString('zh-CN', {weekday: 'long'}),
-                    photo: e.target.result
-                }];
-                Storage.setItem('classes', classes);
-                UI.updateClassList(classes);
-                resolve(classes);
-            };
-            reader.onerror = (error) => {
-                console.error("Error reading file:", error);
-                reject(error);
-            };
-            reader.readAsDataURL(file);
+            Tesseract.recognize(file, 'chi_sim')
+                .then(({ data: { text } }) => {
+                    console.log("Recognized text:", text);
+                    const classes = TaskManager.parseSchedule(text);
+                    Storage.setItem('classes', classes);
+                    UI.updateClassList(classes);
+                    resolve(classes);
+                })
+                .catch((error) => {
+                    console.error("Error recognizing schedule:", error);
+                    reject(error);
+                });
         });
     },
 
     parseSchedule: (text) => {
-        // 这里需要根据您的课表格式来解析文本
-        // 这是一个简单的示例，您可能需要根据实际情况调整
         const classes = [];
         const lines = text.split('\n');
+        const dayMap = {
+            '一': '周一', '二': '周二', '三': '周三', '四': '周四', '五': '周五', '六': '周六', '日': '周日'
+        };
+
         for (let line of lines) {
-            const match = line.match(/(.+)周(.)\s*(\d{1,2}:\d{2})-(\d{1,2}:\d{2})\s*(.+)/);
+            // 匹配格式：课程名 星期 时间 地点
+            const match = line.match(/(.+)\s+(.)?\s*(\d{1,2}:\d{2})[-~](\d{1,2}:\d{2})\s*(.+)?/);
             if (match) {
                 classes.push({
                     name: match[1].trim(),
-                    day: match[2],
+                    day: dayMap[match[2]] || match[2] || '',
                     startTime: match[3],
                     endTime: match[4],
-                    location: match[5].trim()
+                    location: (match[5] || '').trim()
                 });
             }
         }
+        console.log("Parsed classes:", classes);
         return classes;
     }
 };
