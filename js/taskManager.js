@@ -152,3 +152,6 @@ const TaskManager = {
         return classes;
     }
 };
+
+// 将 TaskManager 对象添加到全局作用域
+window.TaskManager = TaskManager;
