@@ -1,9 +1,11 @@
 console.log("UI.js start");
 const UI = {
     showElement: (elementId) => {
+        console.log(`Attempting to show element: ${elementId}`);
         const element = document.getElementById(elementId);
         if (element) {
             element.style.display = 'block';
+            console.log(`Element ${elementId} display set to block`);
         } else {
             console.error(`Element with id ${elementId} not found`);
         }
@@ -85,5 +87,3 @@ const UI = {
             alert(message);
         }
     }
-};
-console.log("UI.js end");
