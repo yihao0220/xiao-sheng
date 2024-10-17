@@ -23,6 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
     logDeviceInfo();
     checkLocalStorage();
 
+    if (typeof Auth === 'undefined') {
+        console.error("Auth object is not defined. Make sure auth.js is loaded correctly.");
+        alert("An error occurred while loading the application. Please check the console for more information.");
+        return;
+    }
+
     // 初始化应用
     Auth.checkLoginStatus();
     
