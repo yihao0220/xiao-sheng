@@ -2,7 +2,6 @@ console.log("Auth.js start");
 
 const Auth = {
     login: (username, password) => {
-        // 实现登录逻辑
         Storage.setItem('isLoggedIn', true);
         Storage.setItem('currentUser', username);
         UI.hideElement('authForm');
@@ -10,14 +9,12 @@ const Auth = {
         TaskManager.loadTasks();
     },
     logout: () => {
-        // 实现登出逻辑
         Storage.removeItem('isLoggedIn');
         Storage.removeItem('currentUser');
         UI.showElement('loginButton');
         UI.hideElement('taskManager');
     },
     checkLoginStatus: () => {
-        // 实现检查登录状态的逻辑
         const isLoggedIn = Storage.getItem('isLoggedIn');
         if (isLoggedIn) {
             UI.hideElement('authForm');
@@ -32,3 +29,5 @@ const Auth = {
         }
     }
 };
+
+console.log("Auth.js end");
