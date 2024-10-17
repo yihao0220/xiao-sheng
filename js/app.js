@@ -155,7 +155,7 @@ function initializeApp() {
         }
     });
 
-    // 添加编辑任务相关的事件监听器
+    // 修改编辑任务相关的事件监听器
     const allTasks = document.getElementById('allTasks');
     const editTaskForm = document.getElementById('editTaskForm');
     const saveEditTaskButton = document.getElementById('saveEditTaskButton');
@@ -176,8 +176,8 @@ function initializeApp() {
             document.getElementById('editEndDate').value = task.endDate;
             document.getElementById('editEndTime').value = task.endTime;
             document.getElementById('editPriority').value = task.priority;
-            document.getElementById('editCategory').value = task.category;
-            document.getElementById('editLocation').value = task.location;
+            document.getElementById('editCategory').value = task.category || '';
+            document.getElementById('editLocation').value = task.location || '';
 
             // 显示编辑表单
             editTaskForm.style.display = 'block';
