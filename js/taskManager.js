@@ -136,7 +136,7 @@ const TaskManager = {
 
         for (let line of lines) {
             // 匹配格式：课程名 星期 时间 地点
-            const match = line.match(/(.+)\s+(.)?\s*(\d{1,2}:\d{2})[-~](\d{1,2}:\d{2})\s*(.+)?/);
+            const match = line.match(/(.+?)\s+(.)?\s*(\d{1,2}:\d{2})[-~](\d{1,2}:\d{2})\s*(.+)?/);
             if (match) {
                 classes.push({
                     name: match[1].trim(),
