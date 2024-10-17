@@ -15,6 +15,26 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log("App script loaded");
 
+    if (typeof UI === 'undefined') {
+        console.error("UI object is not defined. Make sure ui.js is loaded before app.js");
+        return;
+    }
+
+    if (typeof Auth === 'undefined') {
+        console.error("Auth object is not defined. Make sure auth.js is loaded before app.js");
+        return;
+    }
+
+    if (typeof TaskManager === 'undefined') {
+        console.error("TaskManager object is not defined. Make sure taskManager.js is loaded before app.js");
+        return;
+    }
+
+    if (typeof Storage === 'undefined') {
+        console.error("Storage object is not defined. Make sure storage.js is loaded before app.js");
+        return;
+    }
+
     // 检查所有需要的 DOM 元素
     const elements = [
         'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
@@ -27,14 +47,6 @@ function initializeApp() {
         console.error("Missing DOM elements:", missingElements);
         alert("页面加载出错，请刷新重试。");
         return;
-    }
-
-    if (typeof UI === 'undefined') {
-        console.error("UI object is not defined. Make sure ui.js is loaded before app.js");
-    }
-
-    if (typeof Auth === 'undefined') {
-        console.error("Auth object is not defined. Make sure auth.js is loaded before app.js");
     }
 
     function logDeviceInfo() {
@@ -217,7 +229,7 @@ function initializeApp() {
             priority: document.getElementById('editPriority').value,
             category: document.getElementById('editCategory').value,
             location: document.getElementById('editLocation').value,
-            completed: false // 假���编辑时不改变完成状态
+            completed: false // 假设编辑时不改变完成状态
         };
         TaskManager.editTask(currentEditingTaskIndex, updatedTask);
         editTaskForm.style.display = 'none';
