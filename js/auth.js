@@ -7,11 +7,17 @@ if (typeof UI === 'undefined') {
 if (typeof Auth === 'undefined') {
     const Auth = {
         login: (username, password) => {
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('currentUser', username);
-            UI.hideElement('authForm');
-            UI.showElement('taskManager');
-            TaskManager.loadTasks();
+            try {
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('currentUser', username);
+                UI.hideElement('authForm');
+                UI.showElement('taskManager');
+                TaskManager.loadTasks();
+                console.log("User logged in successfully:", username);
+            } catch (error) {
+                console.error("Error during login:", error);
+                alert("登录时出错，请稍后再试。");
+            }
         },
         logout: () => {
             localStorage.removeItem('isLoggedIn');
