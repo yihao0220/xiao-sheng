@@ -22,53 +22,53 @@ function loadAuth() {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
         script.src = 'js/auth.js';
-        script.onload = () => resolve();
+        script.onload = () => {
+            console.log('auth.js loaded successfully');
+            resolve();
+        };
         script.onerror = () => reject(new Error('Failed to load auth.js'));
         document.head.appendChild(script);
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log("DOM content loaded");
     logDeviceInfo();
     checkLocalStorage();
 
-    if (typeof Auth === 'undefined') {
-        console.error("Auth object is not defined. Make sure auth.js is loaded correctly.");
+    try {
+        await loadAuth();
+        // 初始化应用
+        Auth.checkLoginStatus();
+        
+        // 设置事件监听器
+        document.getElementById('loginButton').addEventListener('click', () => {
+            console.log("Login button clicked");
+            UI.showElement('authForm');
+        });
+        document.getElementById('submitLoginButton').addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("Submit login button clicked");
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            Auth.login(username, password);
+        });
+        document.getElementById('logoutButton').addEventListener('click', Auth.logout);
+        
+        // 加载现有的课程和任务
+        TaskManager.loadClasses();
+        TaskManager.loadTasks();
+
+        // 检查未完成的任务并显示提醒
+        UI.showUnfinishedTasks();
+
+        console.log("Event listeners set up");
+    } catch (error) {
+        console.error("Failed to load Auth:", error);
         alert("An error occurred while loading the application. Please check the console for more information.");
-        return;
     }
-
-    // 初始化应用
-    Auth.checkLoginStatus();
-    
-    // 设置事件监听器
-    document.getElementById('loginButton').addEventListener('click', () => {
-        console.log("Login button clicked");
-        UI.showElement('authForm');
-    });
-    document.getElementById('submitLoginButton').addEventListener('click', (e) => {
-        e.preventDefault();
-        console.log("Submit login button clicked");
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        Auth.login(username, password);
-    });
-    document.getElementById('logoutButton').addEventListener('click', Auth.logout);
-    
-    // 加载现有的课程和任务
-    TaskManager.loadClasses();
-    TaskManager.loadTasks();
-
-    // 检查未完成的任务并显示提醒
-    UI.showUnfinishedTasks();
-
-    console.log("Event listeners set up");
 });
 
 window.onerror = function(message, source, lineno, colno, error) {
     console.error("Global error:", message, "at", source, ":", lineno);
     alert("An error occurred. Please check the console for more information.");
-};
-
-console.log("App.js end");
