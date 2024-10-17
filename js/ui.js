@@ -51,7 +51,7 @@ const UI = {
         const tasks = Storage.getItem('tasks') || [];
         const unfinishedTasks = tasks.filter(task => !task.completed);
         if (unfinishedTasks.length > 0) {
-            let message = "您有以下未完成的任务:\n";
+            let message = "您有以下完成的任务:\n";
             unfinishedTasks.forEach(task => {
                 message += `- ${task.name}\n`;
             });
@@ -66,11 +66,10 @@ const UI = {
             return;
         }
         classList.innerHTML = '';
-        classes.forEach((classInfo, index) => {
+        classes.forEach((classInfo) => {
             const li = document.createElement('li');
             li.innerHTML = `
-                <span>${classInfo.name} - ${classInfo.day} ${classInfo.time} ${classInfo.location || ''}</span>
-                ${classInfo.photo ? `<img src="${classInfo.photo}" alt="${classInfo.name}" style="max-width: 100px; max-height: 100px;">` : ''}
+                <span>${classInfo.name} - 周${classInfo.day} ${classInfo.startTime}-${classInfo.endTime} ${classInfo.location}</span>
             `;
             classList.appendChild(li);
         });
