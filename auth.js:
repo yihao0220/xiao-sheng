@@ -6,7 +6,7 @@ const Auth = {
         UI.hideElement('authForm');
         UI.showElement('taskManager');
         TaskManager.loadTasks();
-        UI.showUnfinishedTasks(); // 添加这行
+        // 移除了 UI.showUnfinishedTasks() 调用
     },
     logout: () => {
         // 实现登出逻辑
@@ -24,7 +24,7 @@ const Auth = {
             UI.hideElement('loginButton');
             UI.showElement('logoutButton');
             TaskManager.loadTasks();
-            UI.showUnfinishedTasks(); // 添加这行
+            // 移除了 UI.showUnfinishedTasks() 调用
         } else {
             UI.hideElement('taskManager');
             UI.showElement('loginButton');
