@@ -1,34 +1,46 @@
-console.log("App script loaded");
+window.onerror = function(message, source, lineno, colno, error) {
+    console.error("发生错误:", message, "在", source, "行号:", lineno);
+    alert("抱歉，发生了一个错误。请查看控制台以获取更多信息。");
+};
 
-if (typeof UI === 'undefined') {
-    console.error("UI object is not defined. Make sure ui.js is loaded before app.js");
-}
+window.addEventListener('unhandledrejection', function(event) {
+    console.error('Unhandled promise rejection:', event.reason);
+});
 
-if (typeof Auth === 'undefined') {
-    console.error("Auth object is not defined. Make sure auth.js is loaded before app.js");
-}
-
-function logDeviceInfo() {
-    console.log("User Agent:", navigator.userAgent);
-    console.log("Screen Width:", screen.width);
-    console.log("Screen Height:", screen.height);
-    console.log("Window Inner Width:", window.innerWidth);
-    console.log("Window Inner Height:", window.innerHeight);
-}
-
-function checkLocalStorage() {
-    try {
-        localStorage.setItem('test', 'test');
-        localStorage.removeItem('test');
-        console.log("Local storage is working");
-    } catch(e) {
-        console.error("Local storage is not available:", e);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM content loaded");
-    
+    initializeApp();
+});
+
+function initializeApp() {
+    console.log("App script loaded");
+
+    if (typeof UI === 'undefined') {
+        console.error("UI object is not defined. Make sure ui.js is loaded before app.js");
+    }
+
+    if (typeof Auth === 'undefined') {
+        console.error("Auth object is not defined. Make sure auth.js is loaded before app.js");
+    }
+
+    function logDeviceInfo() {
+        console.log("User Agent:", navigator.userAgent);
+        console.log("Screen Width:", screen.width);
+        console.log("Screen Height:", screen.height);
+        console.log("Window Inner Width:", window.innerWidth);
+        console.log("Window Inner Height:", window.innerHeight);
+    }
+
+    function checkLocalStorage() {
+        try {
+            localStorage.setItem('test', 'test');
+            localStorage.removeItem('test');
+            console.log("Local storage is working");
+        } catch(e) {
+            console.error("Local storage is not available:", e);
+        }
+    }
+
     const loginButton = document.getElementById('loginButton');
     const authForm = document.getElementById('authForm');
     
@@ -64,11 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
     UI.showUnfinishedTasks();
 
     console.log("Event listeners set up");
-});
-
-window.onerror = function(message, source, lineno, colno, error) {
-    console.error("Global error:", message, "at", source, ":", lineno);
-    alert("An error occurred. Please check the console for more information.");
-};
+}
 
 console.log("App.js end");
