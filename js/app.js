@@ -15,6 +15,20 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log("App script loaded");
 
+    // 检查所有需要的 DOM 元素
+    const elements = [
+        'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
+        'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
+        'uploadScheduleButton', 'schedulePhoto'
+    ];
+
+    const missingElements = elements.filter(id => !document.getElementById(id));
+    if (missingElements.length > 0) {
+        console.error("Missing DOM elements:", missingElements);
+        alert("页面加载出错，请刷新重试。");
+        return;
+    }
+
     if (typeof UI === 'undefined') {
         console.error("UI object is not defined. Make sure ui.js is loaded before app.js");
     }
@@ -203,7 +217,7 @@ function initializeApp() {
             priority: document.getElementById('editPriority').value,
             category: document.getElementById('editCategory').value,
             location: document.getElementById('editLocation').value,
-            completed: false // 假设编辑时不改变完成状态
+            completed: false // 假���编辑时不改变完成状态
         };
         TaskManager.editTask(currentEditingTaskIndex, updatedTask);
         editTaskForm.style.display = 'none';
