@@ -88,16 +88,96 @@ function initializeApp() {
     // 初始化应用
     Auth.checkLoginStatus();
     
-    // 设置事件监听器
-    document.getElementById('submitLoginButton').addEventListener('click', (e) => {
-        e.preventDefault();
-        console.log("Submit login button clicked");
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        Auth.login(username, password);
-    });
-    document.getElementById('logoutButton').addEventListener('click', Auth.logout);
-    
+    // 检查并添加事件监听器
+    const eventListeners = {
+        'submitLoginButton': () => {
+            document.getElementById('submitLoginButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log("Submit login button clicked");
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+                Auth.login(username, password);
+            });
+        },
+        'logoutButton': () => {
+            document.getElementById('logoutButton').addEventListener('click', Auth.logout);
+        },
+        'showAddTaskFormButton': () => {
+            document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
+                document.getElementById('addTaskForm').style.display = 'block';
+                document.getElementById('showAddTaskFormButton').style.display = 'none';
+            });
+        },
+        'addTaskButton': () => {
+            document.getElementById('addTaskButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                const taskName = document.getElementById('taskName').value;
+                const startDate = document.getElementById('startDate').value;
+                const startTime = document.getElementById('startTime').value;
+                const endDate = document.getElementById('endDate').value;
+                const endTime = document.getElementById('endTime').value;
+                const priority = document.getElementById('priority').value;
+                const category = document.getElementById('category').value;
+                const location = document.getElementById('location').value;
+
+                if (taskName) {
+                    const newTask = {
+                        name: taskName,
+                        startDate,
+                        startTime,
+                        endDate,
+                        endTime,
+                        priority,
+                        category,
+                        location,
+                        completed: false
+                    };
+                    TaskManager.addTask(newTask);
+                    document.getElementById('addTaskForm').style.display = 'none';
+                    document.getElementById('showAddTaskFormButton').style.display = 'block';
+                    // 清空表单
+                    document.getElementById('taskName').value = '';
+                    // ... 清空其他输入字段 ...
+                }
+            });
+        },
+        'cancelAddTaskButton': () => {
+            document.getElementById('cancelAddTaskButton').addEventListener('click', () => {
+                document.getElementById('addTaskForm').style.display = 'none';
+                document.getElementById('showAddTaskFormButton').style.display = 'block';
+            });
+        },
+        'uploadScheduleButton': () => {
+            document.getElementById('uploadScheduleButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                const file = document.getElementById('schedulePhoto').files[0];
+                if (file) {
+                    TaskManager.recognizeSchedule(file)
+                        .then(() => {
+                            console.log("Schedule recognized and saved successfully");
+                            alert("课表已成功识别并保存");
+                        })
+                        .catch((error) => {
+                            console.error("Error recognizing schedule:", error);
+                            alert("识别课表时出错，请稍后再试。");
+                        });
+                } else {
+                    alert("请选择一张课表照片");
+                }
+            });
+        }
+    };
+
+    // 为每个元素添加事件监听器，如果元素不存在则跳过
+    for (const [id, addListener] of Object.entries(eventListeners)) {
+        const element = document.getElementById(id);
+        if (element) {
+            addListener();
+        } else {
+            console.warn(`Element with id '${id}' not found. Skipping event listener.`);
+        }
+    }
+
     // 加载现有的课程和任务
     TaskManager.loadClasses();
     TaskManager.loadTasks();
@@ -113,86 +193,6 @@ function initializeApp() {
     }
 
     // 添加任务相关的事件监听器
-    const showAddTaskFormButton = document.getElementById('showAddTaskFormButton');
-    const addTaskForm = document.getElementById('addTaskForm');
-    const addTaskButton = document.getElementById('addTaskButton');
-    const cancelAddTaskButton = document.getElementById('cancelAddTaskButton');
-
-    showAddTaskFormButton.addEventListener('click', () => {
-        addTaskForm.style.display = 'block';
-        showAddTaskFormButton.style.display = 'none';
-    });
-
-    addTaskButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        const taskName = document.getElementById('taskName').value;
-        const startDate = document.getElementById('startDate').value;
-        const startTime = document.getElementById('startTime').value;
-        const endDate = document.getElementById('endDate').value;
-        const endTime = document.getElementById('endTime').value;
-        const priority = document.getElementById('priority').value;
-        const category = document.getElementById('category').value;
-        const location = document.getElementById('location').value;
-
-        if (taskName) {
-            const newTask = {
-                name: taskName,
-                startDate,
-                startTime,
-                endDate,
-                endTime,
-                priority,
-                category,
-                location,
-                completed: false
-            };
-            TaskManager.addTask(newTask);
-            addTaskForm.style.display = 'none';
-            showAddTaskFormButton.style.display = 'block';
-            // 清空表单
-            document.getElementById('taskName').value = '';
-            // ... 清空其他输入字段 ...
-        }
-    });
-
-    cancelAddTaskButton.addEventListener('click', () => {
-        addTaskForm.style.display = 'none';
-        showAddTaskFormButton.style.display = 'block';
-    });
-
-    // 添加课程相关的事件监听器
-    const addClassButton = document.getElementById('addClassButton');
-    const classForm = document.getElementById('classForm');
-
-    addClassButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        const className = document.getElementById('className').value;
-        const classDay = document.getElementById('classDay').value;
-        const classTime = document.getElementById('classTime').value;
-        const classLocation = document.getElementById('classLocation').value;
-        const classPhoto = document.getElementById('classPhoto').files[0];
-
-        if (className && classDay && classTime) {
-            const newClass = {
-                name: className,
-                day: classDay,
-                time: classTime,
-                location: classLocation,
-                photo: classPhoto
-            };
-            TaskManager.addClass(newClass)
-                .then(() => {
-                    classForm.reset();
-                    console.log("Class added successfully");
-                })
-                .catch((error) => {
-                    console.error("Error adding class:", error);
-                    alert("添加课程时出错，请稍后再试。");
-                });
-        }
-    });
-
-    // 修改编辑任务相关的事件监听器
     const allTasks = document.getElementById('allTasks');
     const editTaskForm = document.getElementById('editTaskForm');
     const saveEditTaskButton = document.getElementById('saveEditTaskButton');
@@ -248,26 +248,7 @@ function initializeApp() {
     console.log("Event listeners set up");
 
     // 删除原有的添加课程相关代码，添加上传课表照片的代码
-    const uploadScheduleButton = document.getElementById('uploadScheduleButton');
     const schedulePhoto = document.getElementById('schedulePhoto');
 
-    uploadScheduleButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        const file = schedulePhoto.files[0];
-        if (file) {
-            TaskManager.recognizeSchedule(file)
-                .then(() => {
-                    console.log("Schedule recognized and saved successfully");
-                    alert("课表已成功识别并保存");
-                })
-                .catch((error) => {
-                    console.error("Error recognizing schedule:", error);
-                    alert("识别课表时出错，请稍后再试。");
-                });
-        } else {
-            alert("请选择一张课表照片");
-        }
-    });
-}
-
-console.log("App.js end");
+    console.log("App.js end");
+} // Add this closing brace to properly close the initializeApp function
