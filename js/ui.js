@@ -70,6 +70,7 @@ const UI = {
             const li = document.createElement('li');
             li.innerHTML = `
                 <span>${classInfo.name} - 周${classInfo.day} ${classInfo.startTime}-${classInfo.endTime} ${classInfo.location}</span>
+                ${classInfo.photo ? `<img src="${classInfo.photo}" alt="${classInfo.name}" style="max-width: 100px; max-height: 100px;">` : ''}
             `;
             classList.appendChild(li);
         });
