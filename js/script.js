@@ -10,6 +10,8 @@ window.addEventListener('unhandledrejection', function(event) {
 
 console.log("Script started");
 
+console.log("[FileName] start");
+
 function checkLoginStatus() {
     console.log("checkLoginStatus called");
     const isLoggedIn = localStorage.getItem("isLoggedIn") === "true";
@@ -293,3 +295,5 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 console.log("Script end");
+
+console.log("[FileName] end");
