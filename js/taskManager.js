@@ -87,19 +87,14 @@ const TaskManager = {
             console.log("Loaded classes:", classes);
         } catch (error) {
             console.error("Error loading classes:", error);
-            alert("加载课程列表时出错，请稍��再试。");
+            alert("加载课程列表时出错，请稍再试。");
         }
     },
 
     getClassesForToday: () => {
-        try {
-            const classes = Storage.getItem('classes') || [];
-            const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
-            return classes.filter(classInfo => classInfo.day === today);
-        } catch (error) {
-            console.error("Error getting classes for today:", error);
-            alert("获取今天的班级列表时出错，请稍后再试。");
-        }
+        const classes = Storage.getItem('classes') || [];
+        const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
+        return classes.filter(classInfo => classInfo.day === today);
     },
 
     getMorningClasses: () => {
@@ -117,18 +112,23 @@ const TaskManager = {
 
     recognizeSchedule: (file) => {
         return new Promise((resolve, reject) => {
-            Tesseract.recognize(file, 'chi_sim')
-                .then(({ data: { text } }) => {
-                    console.log("Recognized text:", text);
-                    const classes = TaskManager.parseSchedule(text);
-                    Storage.setItem('classes', classes);
-                    UI.updateClassList(classes);
-                    resolve();
-                })
-                .catch((error) => {
-                    console.error("Error recognizing schedule:", error);
-                    reject(error);
-                });
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                // 这里我们假设直接保存图片，而不是进行OCR识别
+                const classes = [{
+                    name: "课表图片",
+                    day: new Date().toLocaleString('zh-CN', {weekday: 'long'}),
+                    photo: e.target.result
+                }];
+                Storage.setItem('classes', classes);
+                UI.updateClassList(classes);
+                resolve(classes);
+            };
+            reader.onerror = (error) => {
+                console.error("Error reading file:", error);
+                reject(error);
+            };
+            reader.readAsDataURL(file);
         });
     },
 
