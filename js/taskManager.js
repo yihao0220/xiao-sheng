@@ -53,7 +53,7 @@ const TaskManager = {
             console.log("Classes after adding:", classes);
         } catch (error) {
             console.error("Error adding class:", error);
-            alert("添加班级时出错，请稍后再试。");
+            alert("添加课程时出错，请稍后再试。");
         }
     },
 
@@ -65,7 +65,7 @@ const TaskManager = {
             console.log("Loaded classes:", classes);
         } catch (error) {
             console.error("Error loading classes:", error);
-            alert("加载班级列表时出错，请稍后再试。");
+            alert("加载课程列表时出错，请稍后再试。");
         }
     },
 
