@@ -2,6 +2,8 @@ const TaskManager = {
     addTask: (task) => {
         try {
             const tasks = Storage.getItem('tasks') || [];
+            // 确保新任务的 completed 属性被设置为 false
+            task.completed = false;
             tasks.push(task);
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
@@ -153,6 +155,19 @@ const TaskManager = {
         }
         console.log("Parsed classes:", classes);
         return classes;
+    },
+
+    toggleTaskCompletion: (index) => {
+        try {
+            const tasks = Storage.getItem('tasks') || [];
+            tasks[index].completed = !tasks[index].completed;
+            Storage.setItem('tasks', tasks);
+            UI.updateTaskList(tasks);
+            console.log("Task completion toggled:", tasks[index]);
+        } catch (error) {
+            console.error("Error toggling task completion:", error);
+            alert("更新任务状态时出错，请稍后再试。");
+        }
     }
 };
 
