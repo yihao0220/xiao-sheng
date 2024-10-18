@@ -20,7 +20,7 @@ function initializeApp() {
         'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
         'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
         'uploadScheduleButton', 'schedulePhoto', 'allTasks', 'editTaskForm',
-        'saveEditTaskButton', 'cancelEditTaskButton'
+        'saveEditTaskButton', 'cancelEditTaskButton', 'addWeeklyScheduleButton'
     ];
 
     elements.forEach(id => {
@@ -183,6 +183,56 @@ function initializeApp() {
                     alert("请选择一张课表照片");
                 }
             });
+        },
+        'addClassButton': () => {
+            addEventListenerSafely('addClassButton', 'click', (e) => {
+                e.preventDefault();
+                const className = document.getElementById('className').value;
+                const classDay = document.getElementById('classDay').value;
+                const classStartTime = document.getElementById('classStartTime').value;
+                const classEndTime = document.getElementById('classEndTime').value;
+                const classLocation = document.getElementById('classLocation').value;
+
+                if (className && classDay && classStartTime && classEndTime) {
+                    const newClass = {
+                        name: className,
+                        day: classDay,
+                        startTime: classStartTime,
+                        endTime: classEndTime,
+                        location: classLocation
+                    };
+                    TaskManager.addClass(newClass);
+                    // 清空表单
+                    document.getElementById('addClassForm').reset();
+                } else {
+                    alert("请填写所有必要的课程信息。");
+                }
+            });
+        },
+        'addWeeklyScheduleButton': () => {
+            addEventListenerSafely('addWeeklyScheduleButton', 'click', (e) => {
+                e.preventDefault();
+                const weeklySchedule = [];
+                const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+                
+                days.forEach(day => {
+                    const dayClasses = document.querySelectorAll(`.${day}-class`);
+                    dayClasses.forEach(classInput => {
+                        if (classInput.value.trim() !== '') {
+                            weeklySchedule.push({
+                                day: day,
+                                name: classInput.value,
+                                startTime: document.getElementById(`${day}-start-time`).value,
+                                endTime: document.getElementById(`${day}-end-time`).value,
+                                location: document.getElementById(`${day}-location`).value
+                            });
+                        }
+                    });
+                });
+
+                TaskManager.addWeeklySchedule(weeklySchedule);
+                alert('周课表已添加，学期课程表已生成！');
+            });
         }
     };
 
@@ -288,13 +338,10 @@ function addEventListenerSafely(id, event, handler) {
 
 // 添加这个新函数来显示今天的课程
 function showTodayClasses(classes) {
-    const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
-    console.log("Today is:", today);
-    console.log("All classes:", classes);
-    const todayClasses = classes.filter(c => c.day === today);
-    console.log("Today's classes:", todayClasses);
+    const today = new Date();
+    const todayClasses = TaskManager.getClassesForDate(today);
     if (todayClasses.length > 0) {
-        let message = `今天（${today}）的课程：\n\n`;
+        let message = `今天（${today.toLocaleDateString()}）的课程：\n\n`;
         todayClasses.forEach(classInfo => {
             message += `课程：${classInfo.name}\n`;
             message += `时间：${classInfo.startTime} - ${classInfo.endTime}\n`;
@@ -302,7 +349,7 @@ function showTodayClasses(classes) {
         });
         alert(message);
     } else {
-        alert(`今天（${today}）没有课程。`);
+        alert(`今天（${today.toLocaleDateString()}）没有课程。`);
     }
 }
 
