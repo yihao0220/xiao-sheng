@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     initializeApp();
 });
 
+// 在文件顶部定义 weeklySchedule
+let weeklySchedule = [];
+
 function initializeApp() {
     console.log("App script loaded");
 
@@ -181,8 +184,9 @@ function initializeApp() {
                 if (weeklySchedule.length > 0) {
                     TaskManager.addWeeklySchedule(weeklySchedule);
                     alert('周课表已保存！');
-                    weeklySchedule.length = 0; // 清空数组
+                    weeklySchedule = []; // 清空数组
                     updateWeeklyClassList();
+                    showTodayClasses(); // 立即更新今天的课程显示
                 } else {
                     alert('请先添加课程。');
                 }
@@ -205,8 +209,7 @@ function initializeApp() {
     TaskManager.loadTasks();
 
     // 显示今天的课程信息
-    const classes = Storage.getItem('classes') || [];
-    showTodayClasses(classes);
+    showTodayClasses();
 
     // 检查未完成的任务并显示提醒
     showUnfinishedTasks();
@@ -323,10 +326,10 @@ function addEventListenerSafely(id, event, handler) {
 }
 
 // 添加这个新函数来显示今天的课程
-function showTodayClasses(classes) {
+function showTodayClasses() {
     const today = new Date();
     const todayClasses = TaskManager.getClassesForDate(today);
-    if (todayClasses.length > 0) {
+    if (todayClasses && todayClasses.length > 0) {
         let message = `今天（${today.toLocaleDateString()}）的课程：\n\n`;
         todayClasses.forEach(classInfo => {
             message += `课程：${classInfo.name}\n`;
@@ -335,7 +338,8 @@ function showTodayClasses(classes) {
         });
         alert(message);
     } else {
-        alert(`今天${today.toLocaleDateString()}）没有课程。`);
+        console.log("No classes found for today");
+        // alert(`今天（${today.toLocaleDateString()}）没有课程。`);
     }
 }
 
@@ -365,7 +369,3 @@ if (saveWeeklyScheduleButton) {
         } else {
             alert('请先添加课程。');
         }
-    });
-} else {
-    console.error("Save weekly schedule button not found");
-}
