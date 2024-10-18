@@ -69,10 +69,22 @@
                 </section>
 
                 <section class="class-info-section fade-in">
-                    <h2>上传课表照片</h2>
-                    <form id="uploadScheduleForm" class="task-form">
-                        <input type="file" id="schedulePhoto" accept="image/*">
-                        <button id="uploadScheduleButton" class="button">上传并识别课表</button>
+                    <h2>添加新课程</h2>
+                    <form id="addClassForm" class="task-form">
+                        <input type="text" id="className" placeholder="课程名称" required>
+                        <select id="classDay" required>
+                            <option value="周一">周一</option>
+                            <option value="周二">周二</option>
+                            <option value="周三">周三</option>
+                            <option value="周四">周四</option>
+                            <option value="周五">周五</option>
+                            <option value="周六">周六</option>
+                            <option value="周日">周日</option>
+                        </select>
+                        <input type="time" id="classStartTime" required>
+                        <input type="time" id="classEndTime" required>
+                        <input type="text" id="classLocation" placeholder="上课地点">
+                        <button id="addClassButton" class="button">添加课程</button>
                     </form>
                 </section>
 
@@ -98,6 +110,24 @@
                 <section class="class-list-section fade-in">
                     <h2>课程列表</h2>
                     <ul id="classList"></ul>
+                </section>
+
+                <!-- 在 taskManager div 中添加以下内容 -->
+                <section class="weekly-schedule-section fade-in">
+                    <h2>添加周课表</h2>
+                    <form id="weeklyScheduleForm" class="weekly-schedule-form">
+                        <!-- 为每天创建输入字段 -->
+                        <div class="day-schedule">
+                            <h3>周一</h3>
+                            <input type="text" class="周一-class" placeholder="课程名称">
+                            <input type="time" id="周一-start-time">
+                            <input type="time" id="周一-end-time">
+                            <input type="text" id="周一-location" placeholder="上课地点">
+                            <button type="button" class="add-class-button" data-day="周一">添加课程</button>
+                        </div>
+                        <!-- 重复上面的 div 为周二到周日创建类似的输入字段 -->
+                        <button id="addWeeklyScheduleButton" class="button">保存周课表</button>
+                    </form>
                 </section>
             </div>
         </main>
