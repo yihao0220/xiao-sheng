@@ -12,10 +12,15 @@ let weeklySchedule = [];
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM content loaded");
-    initializeApp();
+    try {
+        initializeApp();
+    } catch (error) {
+        console.error("Error during app initialization:", error);
+    }
 });
 
 function initializeApp() {
+    console.log("initializeApp function called");
     console.log("App script loaded");
 
     const requiredElements = [
