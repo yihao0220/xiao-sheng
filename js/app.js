@@ -15,18 +15,19 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log("App script loaded");
 
-    // 修改检查的 DOM 元素列表，添加 'addWeeklyScheduleButton'
-    const elements = [
+    const requiredElements = [
         'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
         'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
         'allTasks', 'editTaskForm', 'saveEditTaskButton', 'cancelEditTaskButton', 
-        'addWeeklyScheduleButton', 'addClassButton', 'saveWeeklyScheduleButton'
+        'addClassButton', 'saveWeeklyScheduleButton', 'weeklyClassList'
     ];
 
-    elements.forEach(id => {
-        const element = document.getElementById(id);
-        console.log(`Element ${id}: ${element ? 'Found' : 'Not found'}`);
-    });
+    const missingElements = requiredElements.filter(id => !document.getElementById(id));
+    if (missingElements.length > 0) {
+        console.error("Missing required elements:", missingElements);
+        alert("页面加载出错，缺少必要元素。请刷新页面或联系管理员。");
+        return; // 如果缺少元素，停止初始化
+    }
 
     if (typeof UI === 'undefined') {
         console.error("UI object is not defined. Make sure ui.js is loaded before app.js");
@@ -45,13 +46,6 @@ function initializeApp() {
 
     if (typeof Storage === 'undefined') {
         console.error("Storage object is not defined. Make sure storage.js is loaded before app.js");
-        return;
-    }
-
-    const missingElements = elements.filter(id => !document.getElementById(id));
-    if (missingElements.length > 0) {
-        console.error("Missing DOM elements:", missingElements);
-        alert("页面加载出错，请刷新重试。");
         return;
     }
 
@@ -163,34 +157,40 @@ function initializeApp() {
                 document.getElementById('showAddTaskFormButton').style.display = 'block';
             });
         },
-        'addWeeklyScheduleButton': () => {
-            addEventListenerSafely('addWeeklyScheduleButton', 'click', (e) => {
+        'addClassButton': () => {
+            addEventListenerSafely('addClassButton', 'click', (e) => {
                 e.preventDefault();
-                const weeklySchedule = [];
-                const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-                
-                days.forEach(day => {
-                    const dayClasses = document.querySelectorAll(`.${day}-class`);
-                    dayClasses.forEach(classInput => {
-                        if (classInput.value.trim() !== '') {
-                            weeklySchedule.push({
-                                day: day,
-                                name: classInput.value,
-                                startTime: document.getElementById(`${day}-start-time`).value,
-                                endTime: document.getElementById(`${day}-end-time`).value,
-                                location: document.getElementById(`${day}-location`).value
-                            });
-                        }
-                    });
-                });
+                const day = document.getElementById('classDay').value;
+                const name = document.getElementById('className').value;
+                const startTime = document.getElementById('classStartTime').value;
+                const endTime = document.getElementById('classEndTime').value;
+                const location = document.getElementById('classLocation').value;
 
-                TaskManager.addWeeklySchedule(weeklySchedule);
-                alert('周课表已添加，学期课程表已生成！');
+                if (name && startTime && endTime) {
+                    weeklySchedule.push({ day, name, startTime, endTime, location });
+                    updateWeeklyClassList();
+                    clearClassForm();
+                } else {
+                    alert('请填写课程名称、开始时间和结束时间。');
+                }
+            });
+        },
+        'saveWeeklyScheduleButton': () => {
+            addEventListenerSafely('saveWeeklyScheduleButton', 'click', (e) => {
+                e.preventDefault();
+                if (weeklySchedule.length > 0) {
+                    TaskManager.addWeeklySchedule(weeklySchedule);
+                    alert('周课表已保存！');
+                    weeklySchedule.length = 0; // 清空数组
+                    updateWeeklyClassList();
+                } else {
+                    alert('请先添加课程。');
+                }
             });
         }
     };
 
-    // 为每个元素添加事件监听器，如果元素��则跳过
+    // 为每个元素添加事件监听器，如果元素则跳过
     for (const [id, addListener] of Object.entries(eventListeners)) {
         const element = document.getElementById(id);
         if (element) {
@@ -285,38 +285,8 @@ function initializeApp() {
     console.log("App.js end");
 
     // 添加周课表相关的代码
-    const addClassButton = document.getElementById('addClassButton');
-    const saveWeeklyScheduleButton = document.getElementById('saveWeeklyScheduleButton');
     const weeklyClassList = document.getElementById('weeklyClassList');
     const weeklySchedule = [];
-
-    addClassButton.addEventListener('click', () => {
-        const day = document.getElementById('classDay').value;
-        const name = document.getElementById('className').value;
-        const startTime = document.getElementById('classStartTime').value;
-        const endTime = document.getElementById('classEndTime').value;
-        const location = document.getElementById('classLocation').value;
-
-        if (name && startTime && endTime) {
-            weeklySchedule.push({ day, name, startTime, endTime, location });
-            updateWeeklyClassList();
-            clearClassForm();
-        } else {
-            alert('请填写课程名称、开始时间和结束时间。');
-        }
-    });
-
-    saveWeeklyScheduleButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (weeklySchedule.length > 0) {
-            TaskManager.addWeeklySchedule(weeklySchedule);
-            alert('周课表已保存！');
-            weeklySchedule.length = 0; // 清空数组
-            updateWeeklyClassList();
-        } else {
-            alert('请先添加课程。');
-        }
-    });
 
     function updateWeeklyClassList() {
         weeklyClassList.innerHTML = '';
