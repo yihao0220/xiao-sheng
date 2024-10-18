@@ -163,31 +163,6 @@ function initializeApp() {
                 document.getElementById('showAddTaskFormButton').style.display = 'block';
             });
         },
-        'addClassButton': () => {
-            addEventListenerSafely('addClassButton', 'click', (e) => {
-                e.preventDefault();
-                const className = document.getElementById('className').value;
-                const classDay = document.getElementById('classDay').value;
-                const classStartTime = document.getElementById('classStartTime').value;
-                const classEndTime = document.getElementById('classEndTime').value;
-                const classLocation = document.getElementById('classLocation').value;
-
-                if (className && classDay && classStartTime && classEndTime) {
-                    const newClass = {
-                        name: className,
-                        day: classDay,
-                        startTime: classStartTime,
-                        endTime: classEndTime,
-                        location: classLocation
-                    };
-                    TaskManager.addClass(newClass);
-                    // 清空表单
-                    document.getElementById('addClassForm').reset();
-                } else {
-                    alert("请填写所有必要的课程信息。");
-                }
-            });
-        },
         'addWeeklyScheduleButton': () => {
             addEventListenerSafely('addWeeklyScheduleButton', 'click', (e) => {
                 e.preventDefault();
