@@ -188,7 +188,7 @@ const TaskManager = {
     getClassesForDate: (date) => {
         const semesterClasses = Storage.getItem('semesterClasses') || [];
         return semesterClasses.filter(cls => 
-            cls.date.toDateString() === date.toDateString()
+            new Date(cls.date).toDateString() === date.toDateString()
         );
     }
 };
