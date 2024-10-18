@@ -19,7 +19,7 @@ function initializeApp() {
         'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
         'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
         'allTasks', 'editTaskForm', 'saveEditTaskButton', 'cancelEditTaskButton', 
-        'addClassButton', 'saveWeeklyScheduleButton', 'weeklyClassList'
+        'addClassButton', 'saveWeeklyScheduleButton', 'weeklyClassList'  // 这里改为 'saveWeeklyScheduleButton'
     ];
 
     const missingElements = requiredElements.filter(id => !document.getElementById(id));
@@ -350,4 +350,22 @@ function showUnfinishedTasks() {
         });
         alert(message);
     }
+}
+
+// 在文件末尾，确保我们使用正确的ID
+const saveWeeklyScheduleButton = document.getElementById('saveWeeklyScheduleButton');
+if (saveWeeklyScheduleButton) {
+    saveWeeklyScheduleButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (weeklySchedule.length > 0) {
+            TaskManager.addWeeklySchedule(weeklySchedule);
+            alert('周课表已保存！');
+            weeklySchedule.length = 0; // 清空数组
+            updateWeeklyClassList();
+        } else {
+            alert('请先添加课程。');
+        }
+    });
+} else {
+    console.error("Save weekly schedule button not found");
 }
