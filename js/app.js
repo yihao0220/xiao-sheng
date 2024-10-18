@@ -73,6 +73,28 @@ function initializeApp() {
         }
     }
 
+    // 修改登录按钮的事件监听器
+    addEventListenerSafely('loginButton', 'click', () => {
+        console.log("Login button clicked");
+        UI.showElement('authForm');
+        UI.hideElement('loginButton');
+    });
+
+    // 修改提交登录按钮的事件监听器
+    addEventListenerSafely('submitLoginButton', 'click', (e) => {
+        e.preventDefault();
+        console.log("Submit login button clicked");
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        Auth.login(username, password);
+    });
+
+    // 修改退出按钮的事件监听器
+    addEventListenerSafely('logoutButton', 'click', () => {
+        console.log("Logout button clicked");
+        Auth.logout();
+    });
+
     const loginButton = document.getElementById('loginButton');
     const authForm = document.getElementById('authForm');
     
@@ -96,18 +118,6 @@ function initializeApp() {
     
     // 检查并添加事件监听器
     const eventListeners = {
-        'submitLoginButton': () => {
-            addEventListenerSafely('submitLoginButton', 'click', (e) => {
-                e.preventDefault();
-                console.log("Submit login button clicked");
-                const username = document.getElementById('loginUsername').value;
-                const password = document.getElementById('loginPassword').value;
-                Auth.login(username, password);
-            });
-        },
-        'logoutButton': () => {
-            addEventListenerSafely('logoutButton', 'click', Auth.logout);
-        },
         'showAddTaskFormButton': () => {
             addEventListenerSafely('showAddTaskFormButton', 'click', () => {
                 document.getElementById('addTaskForm').style.display = 'block';
