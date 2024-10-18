@@ -49,6 +49,29 @@ const UI = {
         });
         console.log("Task list updated");
     },
+    showError: (message) => {
+        console.error(message);
+        alert(`错误: ${message}`);
+    },
+    showSuccess: (message) => {
+        console.log(message);
+        alert(message);
+    },
+    showTodayClasses: () => {
+        const today = new Date();
+        const todayClasses = TaskManager.getClassesForDate(today);
+        if (todayClasses && todayClasses.length > 0) {
+            let message = `今天（${today.toLocaleDateString()}）的课程：\n\n`;
+            todayClasses.forEach(classInfo => {
+                message += `课程：${classInfo.name}\n`;
+                message += `时间：${classInfo.startTime} - ${classInfo.endTime}\n`;
+                message += `地点：${classInfo.location || '未知'}\n\n`;
+            });
+            UI.showSuccess(message);
+        } else {
+            console.log("No classes found for today");
+        }
+    },
     showUnfinishedTasks: () => {
         const tasks = Storage.getItem('tasks') || [];
         const unfinishedTasks = tasks.filter(task => !task.completed);
@@ -57,7 +80,7 @@ const UI = {
             unfinishedTasks.forEach(task => {
                 message += `- ${task.name}\n`;
             });
-            alert(message);
+            UI.showSuccess(message);
         }
     },
     updateClassList: (classes) => {
