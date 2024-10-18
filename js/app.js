@@ -204,6 +204,9 @@ function initializeApp() {
     const classes = Storage.getItem('classes') || [];
     showTodayClasses(classes);
 
+    // 检查未完成的任务并显示提醒
+    showUnfinishedTasks();
+
     // 改编码任务相关的代码
     const allTasks = document.getElementById('allTasks');
     const editTaskForm = document.getElementById('editTaskForm');
@@ -231,6 +234,11 @@ function initializeApp() {
             // 显示编辑表单
             editTaskForm.style.display = 'block';
             document.getElementById('taskManager').style.display = 'block'; // 修改这里，保持taskManager可见
+        } else if (e.target.classList.contains('delete-button')) {
+            // ... 现有的删除任务代码 ...
+        } else if (e.target.classList.contains('complete-button')) {
+            const index = parseInt(e.target.dataset.index);
+            TaskManager.toggleTaskCompletion(index);
         }
     });
 
@@ -292,5 +300,18 @@ function showTodayClasses(classes) {
         alert(message);
     } else {
         alert(`今天（${today}）没有课程。`);
+    }
+}
+
+// 添加这个新函数来显示未完成的任务
+function showUnfinishedTasks() {
+    const tasks = Storage.getItem('tasks') || [];
+    const unfinishedTasks = tasks.filter(task => !task.completed);
+    if (unfinishedTasks.length > 0) {
+        let message = "您有以下未完成的任务:\n";
+        unfinishedTasks.forEach(task => {
+            message += `- ${task.name}\n`;
+        });
+        alert(message);
     }
 }
