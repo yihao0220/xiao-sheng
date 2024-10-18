@@ -33,6 +33,20 @@
                     <button id="showAddTaskFormButton" class="btn btn-primary"><i class="fas fa-plus"></i> 添加任务</button>
                     <div id="addTaskForm" class="task-form" style="display: none;">
                         <!-- 任务表单内容 -->
+                        <input type="text" id="taskName" placeholder="任务名称">
+                        <input type="date" id="startDate">
+                        <input type="time" id="startTime">
+                        <input type="date" id="endDate">
+                        <input type="time" id="endTime">
+                        <select id="priority">
+                            <option value="low">低优先级</option>
+                            <option value="medium">中优先级</option>
+                            <option value="high">高优先级</option>
+                        </select>
+                        <input type="text" id="category" placeholder="分类">
+                        <input type="text" id="location" placeholder="地点">
+                        <button id="addTaskButton" class="btn btn-primary">添加任务</button>
+                        <button id="cancelAddTaskButton" class="btn btn-secondary">取消</button>
                     </div>
                     <ul id="allTasks" class="task-list"></ul>
                 </section>
@@ -40,10 +54,42 @@
                 <section class="schedule-section">
                     <h2>课程表</h2>
                     <form id="weeklyScheduleForm" class="schedule-form">
-                        <!-- 周课表表单内容 -->
+                        <select id="classDay">
+                            <option value="周一">周一</option>
+                            <option value="周二">周二</option>
+                            <option value="周三">周三</option>
+                            <option value="周四">周四</option>
+                            <option value="周五">周五</option>
+                            <option value="周六">周六</option>
+                            <option value="周日">周日</option>
+                        </select>
+                        <input type="text" id="className" placeholder="课程名称">
+                        <input type="time" id="classStartTime">
+                        <input type="time" id="classEndTime">
+                        <input type="text" id="classLocation" placeholder="上课地点">
+                        <button id="addClassButton" class="btn btn-primary">添加课程</button>
+                        <button id="saveWeeklyScheduleButton" class="btn btn-primary">保存周课表</button>
                     </form>
                     <ul id="weeklyClassList" class="class-list"></ul>
                 </section>
+            </div>
+
+            <div id="editTaskForm" class="task-form" style="display: none;">
+                <h2>编辑任务</h2>
+                <input type="text" id="editTaskName" placeholder="任务名称">
+                <input type="date" id="editStartDate">
+                <input type="time" id="editStartTime">
+                <input type="date" id="editEndDate">
+                <input type="time" id="editEndTime">
+                <select id="editPriority">
+                    <option value="low">低优先级</option>
+                    <option value="medium">中优先级</option>
+                    <option value="high">高优先级</option>
+                </select>
+                <input type="text" id="editCategory" placeholder="分类">
+                <input type="text" id="editLocation" placeholder="地点">
+                <button id="saveEditTaskButton" class="btn btn-primary">保存修改</button>
+                <button id="cancelEditTaskButton" class="btn btn-secondary">取消</button>
             </div>
         </main>
     </div>
