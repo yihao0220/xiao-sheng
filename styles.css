@@ -1,11 +1,11 @@
 :root {
-    --color-primary: #4a90e2;
-    --color-secondary: #f5f7fa;
+    --color-primary: #4285f4;
+    --color-secondary: #f1f3f4;
     --color-background: #ffffff;
-    --color-text: #333333;
-    --color-border: #e1e4e8;
+    --color-text: #202124;
+    --color-border: #dadce0;
     --font-size-base: 16px;
-    --font-family-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    --font-family-main: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 /* 使用变量 */
@@ -14,11 +14,104 @@ body {
     font-size: var(--font-size-base);
     color: var(--color-text);
     background-color: var(--color-background);
+    margin: 0;
+    padding: 0;
+}
+
+.app-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.app-header h1 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
 }
 
 .btn-primary {
     background-color: var(--color-primary);
-    color: var(--color-background);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+}
+
+.full-width {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.task-section, .class-section {
+    background-color: var(--color-secondary);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.task-filters {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.task-filters select, .task-filters input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+.task-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.task-item {
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.class-form {
+    display: grid;
+    gap: 10px;
+}
+
+.class-form input, .class-form select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+@media (max-width: 480px) {
+    .app-container {
+        padding: 10px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+    }
 }
 
 /* ... 其他样式 ... */
