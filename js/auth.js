@@ -16,6 +16,8 @@ if (typeof Auth === 'undefined') {
                 localStorage.setItem('currentUser', username);
                 UI.hideElement('authForm');
                 UI.showElement('taskManager');
+                UI.hideElement('loginButton');
+                UI.showElement('logoutButton');
                 TaskManager.loadTasks();
                 console.log("User logged in successfully:", username);
             } catch (error) {
@@ -26,8 +28,10 @@ if (typeof Auth === 'undefined') {
         logout: () => {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('currentUser');
-            UI.showElement('loginButton');
             UI.hideElement('taskManager');
+            UI.showElement('loginButton');
+            UI.hideElement('logoutButton');
+            console.log("User logged out successfully");
         },
         checkLoginStatus: () => {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
