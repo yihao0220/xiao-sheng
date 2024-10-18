@@ -11,6 +11,7 @@ if (typeof TaskManager === 'undefined') {
 if (typeof Auth === 'undefined') {
     const Auth = {
         login: (username, password) => {
+            console.log("Login attempt:", username);
             try {
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('currentUser', username);
