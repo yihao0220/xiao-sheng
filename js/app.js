@@ -19,8 +19,8 @@ function initializeApp() {
     const elements = [
         'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
         'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
-        'uploadScheduleButton', 'schedulePhoto', 'allTasks', 'editTaskForm',
-        'saveEditTaskButton', 'cancelEditTaskButton', 'addWeeklyScheduleButton'
+        'allTasks', 'editTaskForm', 'saveEditTaskButton', 'cancelEditTaskButton', 
+        'addWeeklyScheduleButton'
     ];
 
     elements.forEach(id => {
@@ -163,27 +163,6 @@ function initializeApp() {
                 document.getElementById('showAddTaskFormButton').style.display = 'block';
             });
         },
-        'uploadScheduleButton': () => {
-            addEventListenerSafely('uploadScheduleButton', 'click', (e) => {
-                e.preventDefault();
-                const file = document.getElementById('schedulePhoto').files[0];
-                if (file) {
-                    alert("正在识别课表，请稍候...");
-                    TaskManager.recognizeSchedule(file)
-                        .then((classes) => {
-                            console.log("Schedule recognized and saved successfully");
-                            alert("课表已成功识别并保存");
-                            showTodayClasses(classes);
-                        })
-                        .catch((error) => {
-                            console.error("Error recognizing schedule:", error);
-                            alert("识别课表时出错，请稍后再试。");
-                        });
-                } else {
-                    alert("请选择一张课表照片");
-                }
-            });
-        },
         'addClassButton': () => {
             addEventListenerSafely('addClassButton', 'click', (e) => {
                 e.preventDefault();
@@ -320,8 +299,13 @@ function initializeApp() {
 
     console.log("Event listeners set up");
 
-    // 删除原有的添加课程相关代码，添加上传课表照片的代码
-    const schedulePhoto = document.getElementById('schedulePhoto');
+    // 删除或注释掉与 uploadScheduleButton 和 schedulePhoto 相关的代码
+    // 例如，删除或注释掉这样的代码：
+    /*
+    addEventListenerSafely('uploadScheduleButton', 'click', (e) => {
+        // ... 上传课表的代码 ...
+    });
+    */
 
     console.log("App.js end");
 } // Add this closing brace to properly close the initializeApp function
