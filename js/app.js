@@ -204,7 +204,7 @@ function initializeApp() {
     const classes = Storage.getItem('classes') || [];
     showTodayClasses(classes);
 
-    // ���改编码任务相关的代码
+    // 改编码任务相关的代码
     const allTasks = document.getElementById('allTasks');
     const editTaskForm = document.getElementById('editTaskForm');
     const saveEditTaskButton = document.getElementById('saveEditTaskButton');
