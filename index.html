@@ -68,26 +68,6 @@
                     <ul id="allTasks" class="task-list"></ul>
                 </section>
 
-                <section class="class-info-section fade-in">
-                    <h2>添加新课程</h2>
-                    <form id="addClassForm" class="task-form">
-                        <input type="text" id="className" placeholder="课程名称" required>
-                        <select id="classDay" required>
-                            <option value="周一">周一</option>
-                            <option value="周二">周二</option>
-                            <option value="周三">周三</option>
-                            <option value="周四">周四</option>
-                            <option value="周五">周五</option>
-                            <option value="周六">周六</option>
-                            <option value="周日">周日</option>
-                        </select>
-                        <input type="time" id="classStartTime" required>
-                        <input type="time" id="classEndTime" required>
-                        <input type="text" id="classLocation" placeholder="上课地点">
-                        <button id="addClassButton" class="button">添加课程</button>
-                    </form>
-                </section>
-
                 <!-- 在 <ul id="allTasks" class="task-list"></ul> 之前添加以下内容 -->
                 <div id="editTaskForm" class="task-form" style="display: none;">
                     <h2>编辑任务</h2>
@@ -135,7 +115,7 @@
 
     <div id="notificationContainer"></div>
 
-    <!-- 在 body 结束标签之前添加以���内容 -->
+    <!-- 在 body 结束标签之前添加以内容 -->
     <script src="js/storage.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/taskManager.js"></script>
