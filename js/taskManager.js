@@ -28,10 +28,12 @@ const TaskManager = {
     },
     deleteTask: (index) => {
         try {
+            console.log("Deleting task at index:", index);
             const tasks = Storage.getItem('tasks') || [];
             tasks.splice(index, 1);
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
+            console.log("Task deleted successfully");
         } catch (error) {
             console.error("Error deleting task:", error);
             alert("删除任务时出错，请稍后再试。");
