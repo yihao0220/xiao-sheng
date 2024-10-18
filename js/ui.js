@@ -53,7 +53,7 @@ const UI = {
         const tasks = Storage.getItem('tasks') || [];
         const unfinishedTasks = tasks.filter(task => !task.completed);
         if (unfinishedTasks.length > 0) {
-            let message = "您有以下完成的任务:\n";
+            let message = "您有以下未完成的任务:\n";
             unfinishedTasks.forEach(task => {
                 message += `- ${task.name}\n`;
             });
