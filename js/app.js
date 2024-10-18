@@ -1,371 +1,197 @@
-window.onerror = function(message, source, lineno, colno, error) {
-    console.error("发生错误:", message, "在", source, "行号:", lineno);
-    alert("抱歉，发生了一个错误。请查看控制台以获取更多信息。");
+const TaskManager = {
+    addTask: (task) => {
+        try {
+            const tasks = Storage.getItem('tasks') || [];
+            // 确保新任务的 completed 属性被设置为 false
+            task.completed = false;
+            tasks.push(task);
+            Storage.setItem('tasks', tasks);
+            UI.updateTaskList(tasks);
+            console.log("Task added successfully:", task);
+        } catch (error) {
+            console.error("Error adding task:", error);
+            alert("添加任务时出错，请稍后再试。");
+        }
+    },
+    editTask: (index, updatedTask) => {
+        try {
+            console.log("Editing task at index:", index, "with data:", updatedTask);
+            const tasks = Storage.getItem('tasks') || [];
+            tasks[index] = updatedTask;
+            Storage.setItem('tasks', tasks);
+            UI.updateTaskList(tasks);
+            console.log("Task edited successfully");
+        } catch (error) {
+            console.error("Error editing task:", error);
+            alert("编辑任务时出错，请稍后再试。");
+        }
+    },
+    deleteTask: (index) => {
+        try {
+            console.log("Deleting task at index:", index);
+            const tasks = Storage.getItem('tasks') || [];
+            tasks.splice(index, 1);
+            Storage.setItem('tasks', tasks);
+            UI.updateTaskList(tasks);
+            console.log("Task deleted successfully");
+        } catch (error) {
+            console.error("Error deleting task:", error);
+            alert("删除任务时出错，请稍后再试。");
+        }
+    },
+    loadTasks: () => {
+        try {
+            const tasks = Storage.getItem('tasks') || [];
+            UI.updateTaskList(tasks);
+        } catch (error) {
+            console.error("Error loading tasks:", error);
+            alert("加载任务列表时出错，请稍后再试。");
+        }
+    },
+
+    addClass: (classInfo) => {
+        try {
+            console.log("Adding class:", classInfo);
+            const classes = Storage.getItem('classes') || [];
+            classes.push(classInfo);
+            Storage.setItem('classes', classes);
+            UI.updateClassList(classes);
+            console.log("Class added successfully:", classInfo);
+        } catch (error) {
+            console.error("Error adding class:", error);
+            alert("添加课程时出错，请稍后再试。");
+        }
+    },
+
+    loadClasses: () => {
+        try {
+            console.log("Loading classes");
+            const classes = Storage.getItem('classes') || [];
+            UI.updateClassList(classes);
+            console.log("Loaded classes:", classes);
+        } catch (error) {
+            console.error("Error loading classes:", error);
+            alert("加载课程列表时出错，请稍后再试。");
+        }
+    },
+
+    getClassesForToday: () => {
+        const classes = Storage.getItem('classes') || [];
+        const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
+        console.log("Today is:", today);
+        const todayClasses = classes.filter(classInfo => classInfo.day === today);
+        console.log("Classes for today:", todayClasses);
+        return todayClasses;
+    },
+
+    getMorningClasses: () => {
+        try {
+            const todayClasses = TaskManager.getClassesForToday();
+            return todayClasses.filter(classInfo => {
+                const classTime = new Date(`2000-01-01T${classInfo.time}`);
+                return classTime < new Date(`2000-01-01T13:00:00`);
+            });
+        } catch (error) {
+            console.error("Error getting morning classes:", error);
+            alert("获取早上的班级列表时出错，请稍后再试。");
+        }
+    },
+
+    recognizeSchedule: (file) => {
+        return new Promise((resolve, reject) => {
+            Tesseract.recognize(file, 'chi_sim')
+                .then(({ data: { text } }) => {
+                    console.log("Recognized text:", text);
+                    const classes = TaskManager.parseSchedule(text);
+                    Storage.setItem('classes', classes);
+                    UI.updateClassList(classes);
+                    resolve(classes);
+                })
+                .catch((error) => {
+                    console.error("Error recognizing schedule:", error);
+                    reject(error);
+                });
+        });
+    },
+
+    parseSchedule: (text) => {
+        const classes = [];
+        const lines = text.split('\n');
+        const dayMap = {
+            '一': '周一', '二': '周二', '三': '周三', '四': '周四', '五': '周五', '六': '周六', '日': '周日',
+            '1': '周一', '2': '周二', '3': '周三', '4': '周四', '5': '周五', '6': '周六', '7': '周日'
+        };
+
+        for (let line of lines) {
+            // 匹配格式：课程名 星期 时间 地点
+            const match = line.match(/(.+?)\s+([\u4e00-\u9fa5一二三四五六日1-7])\s*(\d{1,2}:\d{2})[-~](\d{1,2}:\d{2})\s*(.+)?/);
+            if (match) {
+                classes.push({
+                    name: match[1].trim(),
+                    day: dayMap[match[2]] || match[2],
+                    startTime: match[3],
+                    endTime: match[4],
+                    location: (match[5] || '').trim()
+                });
+            }
+        }
+        console.log("Parsed classes:", classes);
+        return classes;
+    },
+
+    toggleTaskCompletion: (index) => {
+        try {
+            const tasks = Storage.getItem('tasks') || [];
+            tasks[index].completed = !tasks[index].completed;
+            Storage.setItem('tasks', tasks);
+            UI.updateTaskList(tasks);
+            console.log("Task completion toggled:", tasks[index]);
+        } catch (error) {
+            console.error("Error toggling task completion:", error);
+            alert("更新任务状态时出错，请稍后再试。");
+        }
+    },
+
+    addWeeklySchedule: (weeklySchedule) => {
+        try {
+            console.log("Adding weekly schedule:", weeklySchedule);
+            Storage.setItem('weeklySchedule', weeklySchedule);
+            TaskManager.generateSemesterSchedule(weeklySchedule);
+            console.log("Weekly schedule added successfully");
+        } catch (error) {
+            console.error("Error adding weekly schedule:", error);
+            alert("添加周课表时出错，请稍后再试。");
+        }
+    },
+
+    generateSemesterSchedule: (weeklySchedule) => {
+        const semesterStart = new Date('2024-02-26'); // 假设学期开始日期
+        const semesterEnd = new Date('2024-06-28');   // 假设学期结束日期
+        const semesterClasses = [];
+
+        for (let date = new Date(semesterStart); date <= semesterEnd; date.setDate(date.getDate() + 1)) {
+            const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'});
+            const dayClasses = weeklySchedule.filter(cls => cls.day === dayOfWeek);
+
+            dayClasses.forEach(cls => {
+                semesterClasses.push({
+                    ...cls,
+                    date: new Date(date)
+                });
+            });
+        }
+
+        Storage.setItem('semesterClasses', semesterClasses);
+        UI.updateClassList(semesterClasses);
+    },
+
+    getClassesForDate: (date) => {
+        const semesterClasses = Storage.getItem('semesterClasses') || [];
+        return semesterClasses.filter(cls => 
+            new Date(cls.date).toDateString() === date.toDateString()
+        );
+    }
 };
 
-window.addEventListener('unhandledrejection', function(event) {
-    console.error('Unhandled promise rejection:', event.reason);
-});
-
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM content loaded");
-    initializeApp();
-});
-
-// 在文件顶部定义 weeklySchedule
-let weeklySchedule = [];
-
-function initializeApp() {
-    console.log("App script loaded");
-
-    const requiredElements = [
-        'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
-        'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
-        'allTasks', 'editTaskForm', 'saveEditTaskButton', 'cancelEditTaskButton', 
-        'addClassButton', 'saveWeeklyScheduleButton', 'weeklyClassList'  // 这里改为 'saveWeeklyScheduleButton'
-    ];
-
-    const missingElements = requiredElements.filter(id => !document.getElementById(id));
-    if (missingElements.length > 0) {
-        console.error("Missing required elements:", missingElements);
-        alert("页面加载出错，缺少必要元素。请刷新页面或联系管理员。");
-        return; // 如果缺少元素，停止初始化
-    }
-
-    if (typeof UI === 'undefined') {
-        console.error("UI object is not defined. Make sure ui.js is loaded before app.js");
-        return;
-    }
-
-    if (typeof Auth === 'undefined') {
-        console.error("Auth object is not defined. Make sure auth.js is loaded before app.js");
-        return;
-    }
-
-    if (typeof TaskManager === 'undefined') {
-        console.error("TaskManager object is not defined. Make sure taskManager.js is loaded before app.js");
-        return;
-    }
-
-    if (typeof Storage === 'undefined') {
-        console.error("Storage object is not defined. Make sure storage.js is loaded before app.js");
-        return;
-    }
-
-    function logDeviceInfo() {
-        console.log("User Agent:", navigator.userAgent);
-        console.log("Screen Width:", screen.width);
-        console.log("Screen Height:", screen.height);
-        console.log("Window Inner Width:", window.innerWidth);
-        console.log("Window Inner Height:", window.innerHeight);
-    }
-
-    function checkLocalStorage() {
-        try {
-            localStorage.setItem('test', 'test');
-            localStorage.removeItem('test');
-            console.log("Local storage is working");
-        } catch(e) {
-            console.error("Local storage is not available:", e);
-        }
-    }
-
-    // 修改登录按钮的事件监听器
-    addEventListenerSafely('loginButton', 'click', () => {
-        console.log("Login button clicked");
-        UI.showElement('authForm');
-        UI.hideElement('loginButton');
-    });
-
-    // 修改提交登录按钮的事件监听器
-    addEventListenerSafely('submitLoginButton', 'click', (e) => {
-        e.preventDefault();
-        console.log("Submit login button clicked");
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        Auth.login(username, password);
-    });
-
-    // 修改退出按钮的事件监听器
-    addEventListenerSafely('logoutButton', 'click', () => {
-        console.log("Logout button clicked");
-        Auth.logout();
-    });
-
-    const loginButton = document.getElementById('loginButton');
-    const authForm = document.getElementById('authForm');
-    
-    if (loginButton) {
-        loginButton.addEventListener('click', () => {
-            console.log("Login button clicked");
-            UI.showElement('authForm');
-            console.log("authForm display:", authForm ? authForm.style.display : "authForm not found");
-        });
-    } else {
-        console.error("Login button not found");
-    }
-
-    if (!authForm) console.error("Auth form not found");
-    
-    logDeviceInfo();
-    checkLocalStorage();
-
-    // 初始化应用
-    Auth.checkLoginStatus();
-    
-    // 检查并添加事件监听器
-    const eventListeners = {
-        'showAddTaskFormButton': () => {
-            addEventListenerSafely('showAddTaskFormButton', 'click', () => {
-                document.getElementById('addTaskForm').style.display = 'block';
-                document.getElementById('showAddTaskFormButton').style.display = 'none';
-            });
-        },
-        'addTaskButton': () => {
-            addEventListenerSafely('addTaskButton', 'click', (e) => {
-                e.preventDefault();
-                const taskName = document.getElementById('taskName').value;
-                const startDate = document.getElementById('startDate').value;
-                const startTime = document.getElementById('startTime').value;
-                const endDate = document.getElementById('endDate').value;
-                const endTime = document.getElementById('endTime').value;
-                const priority = document.getElementById('priority').value;
-                const category = document.getElementById('category').value;
-                const location = document.getElementById('location').value;
-
-                if (taskName) {
-                    const newTask = {
-                        name: taskName,
-                        startDate,
-                        startTime,
-                        endDate,
-                        endTime,
-                        priority,
-                        category,
-                        location,
-                        completed: false
-                    };
-                    TaskManager.addTask(newTask);
-                    document.getElementById('addTaskForm').style.display = 'none';
-                    document.getElementById('showAddTaskFormButton').style.display = 'block';
-                    // 清空表单
-                    document.getElementById('taskName').value = '';
-                    // ... 清空其他输入字段 ...
-                }
-            });
-        },
-        'cancelAddTaskButton': () => {
-            addEventListenerSafely('cancelAddTaskButton', 'click', () => {
-                document.getElementById('addTaskForm').style.display = 'none';
-                document.getElementById('showAddTaskFormButton').style.display = 'block';
-            });
-        },
-        'addClassButton': () => {
-            addEventListenerSafely('addClassButton', 'click', (e) => {
-                e.preventDefault();
-                const day = document.getElementById('classDay').value;
-                const name = document.getElementById('className').value;
-                const startTime = document.getElementById('classStartTime').value;
-                const endTime = document.getElementById('classEndTime').value;
-                const location = document.getElementById('classLocation').value;
-
-                if (name && startTime && endTime) {
-                    weeklySchedule.push({ day, name, startTime, endTime, location });
-                    updateWeeklyClassList();
-                    clearClassForm();
-                } else {
-                    alert('请填写课程名称、开始时间和结束时间。');
-                }
-            });
-        },
-        'saveWeeklyScheduleButton': () => {
-            addEventListenerSafely('saveWeeklyScheduleButton', 'click', (e) => {
-                e.preventDefault();
-                if (weeklySchedule.length > 0) {
-                    TaskManager.addWeeklySchedule(weeklySchedule);
-                    alert('周课表已保存！');
-                    weeklySchedule = []; // 清空数组
-                    updateWeeklyClassList();
-                    showTodayClasses(); // 立即更新今天的课程显示
-                } else {
-                    alert('请先添加课程。');
-                }
-            });
-        }
-    };
-
-    // 为每个元素添加事件监听器，如果元素则跳过
-    for (const [id, addListener] of Object.entries(eventListeners)) {
-        const element = document.getElementById(id);
-        if (element) {
-            addListener();
-        } else {
-            console.warn(`Element with id '${id}' not found. Skipping event listener.`);
-        }
-    }
-
-    // 加载现有的课程和任务
-    TaskManager.loadClasses();
-    TaskManager.loadTasks();
-
-    // 显示今天的课程信息
-    showTodayClasses();
-
-    // 检查未完成的任务并显示提醒
-    showUnfinishedTasks();
-
-    // 改编码任务相关的代码
-    const allTasks = document.getElementById('allTasks');
-    const editTaskForm = document.getElementById('editTaskForm');
-    const saveEditTaskButton = document.getElementById('saveEditTaskButton');
-    const cancelEditTaskButton = document.getElementById('cancelEditTaskButton');
-    let currentEditingTaskIndex = -1;
-
-    allTasks.addEventListener('click', (e) => {
-        if (e.target.classList.contains('edit-button')) {
-            const index = parseInt(e.target.dataset.index);
-            currentEditingTaskIndex = index;
-            const tasks = Storage.getItem('tasks') || [];
-            const task = tasks[index];
-            
-            // 填充编辑表单
-            document.getElementById('editTaskName').value = task.name;
-            document.getElementById('editStartDate').value = task.startDate;
-            document.getElementById('editStartTime').value = task.startTime;
-            document.getElementById('editEndDate').value = task.endDate;
-            document.getElementById('editEndTime').value = task.endTime;
-            document.getElementById('editPriority').value = task.priority;
-            document.getElementById('editCategory').value = task.category || '';
-            document.getElementById('editLocation').value = task.location || '';
-
-            // 显示编辑表单
-            editTaskForm.style.display = 'block';
-            document.getElementById('taskManager').style.display = 'block'; // 修改这里，保持taskManager可见
-        } else if (e.target.classList.contains('delete-button')) {
-            const index = parseInt(e.target.dataset.index);
-            if (confirm('确定要删除这个任务吗？')) {
-                TaskManager.deleteTask(index);
-            }
-        } else if (e.target.classList.contains('complete-button')) {
-            const index = parseInt(e.target.dataset.index);
-            TaskManager.toggleTaskCompletion(index);
-        }
-    });
-
-    saveEditTaskButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        const updatedTask = {
-            name: document.getElementById('editTaskName').value,
-            startDate: document.getElementById('editStartDate').value,
-            startTime: document.getElementById('editStartTime').value,
-            endDate: document.getElementById('editEndDate').value,
-            endTime: document.getElementById('editEndTime').value,
-            priority: document.getElementById('editPriority').value,
-            category: document.getElementById('editCategory').value,
-            location: document.getElementById('editLocation').value,
-            completed: false // 假设编辑时不改变完成状态
-        };
-        TaskManager.editTask(currentEditingTaskIndex, updatedTask);
-        editTaskForm.style.display = 'none';
-        // 不需要改变taskManager的显示状态，因为它应该一直保持可见
-    });
-
-    cancelEditTaskButton.addEventListener('click', () => {
-        editTaskForm.style.display = 'none';
-        // 不需要改变taskManager的显示状态，因为它应该一直保持可见
-    });
-
-    console.log("Event listeners set up");
-
-    // 删除或注掉与 uploadScheduleButton 和 schedulePhoto 相关的代码
-    // 例如，删除或注释掉这样的代码：
-    /*
-    addEventListenerSafely('uploadScheduleButton', 'click', (e) => {
-        // ... 上传课表的代码 ...
-    });
-    */
-
-    console.log("App.js end");
-
-    // 添加周课表相关的代码
-    const weeklyClassList = document.getElementById('weeklyClassList');
-    const weeklySchedule = [];
-
-    function updateWeeklyClassList() {
-        weeklyClassList.innerHTML = '';
-        weeklySchedule.forEach((cls, index) => {
-            const li = document.createElement('li');
-            li.textContent = `${cls.day} ${cls.name} ${cls.startTime}-${cls.endTime} ${cls.location}`;
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = '删除';
-            deleteButton.onclick = () => {
-                weeklySchedule.splice(index, 1);
-                updateWeeklyClassList();
-            };
-            li.appendChild(deleteButton);
-            weeklyClassList.appendChild(li);
-        });
-    }
-
-    function clearClassForm() {
-        document.getElementById('className').value = '';
-        document.getElementById('classStartTime').value = '';
-        document.getElementById('classEndTime').value = '';
-        document.getElementById('classLocation').value = '';
-    }
-} // Add this closing brace to properly close the initializeApp function
-
-function addEventListenerSafely(id, event, handler) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.addEventListener(event, handler);
-        console.log(`Event listener added to ${id}`);
-    } else {
-        console.warn(`Element ${id} not found. Event listener not added.`);
-    }
-}
-
-// 添加这个新函数来显示今天的课程
-function showTodayClasses() {
-    const today = new Date();
-    const todayClasses = TaskManager.getClassesForDate(today);
-    if (todayClasses && todayClasses.length > 0) {
-        let message = `今天（${today.toLocaleDateString()}）的课程：\n\n`;
-        todayClasses.forEach(classInfo => {
-            message += `课程：${classInfo.name}\n`;
-            message += `时间：${classInfo.startTime} - ${classInfo.endTime}\n`;
-            message += `地点：${classInfo.location || '未知'}\n\n`;
-        });
-        alert(message);
-    } else {
-        console.log("No classes found for today");
-        // alert(`今天（${today.toLocaleDateString()}）没有课程。`);
-    }
-}
-
-// 添加这个新函数来显示未完成的任务
-function showUnfinishedTasks() {
-    const tasks = Storage.getItem('tasks') || [];
-    const unfinishedTasks = tasks.filter(task => !task.completed);
-    if (unfinishedTasks.length > 0) {
-        let message = "您有以下未完成的任务:\n";
-        unfinishedTasks.forEach(task => {
-            message += `- ${task.name}\n`;
-        });
-        alert(message);
-    }
-}
-
-// 在文件末尾，确保我们使用正确的ID
-const saveWeeklyScheduleButton = document.getElementById('saveWeeklyScheduleButton');
-if (saveWeeklyScheduleButton) {
-    saveWeeklyScheduleButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        if (weeklySchedule.length > 0) {
-            TaskManager.addWeeklySchedule(weeklySchedule);
-            alert('周课表已保存！');
-            weeklySchedule.length = 0; // 清空数组
-            updateWeeklyClassList();
-        } else {
-            alert('请先添加课程。');
-        }
+// 将 TaskManager 对象添加到全局作用域
+window.TaskManager = TaskManager;
