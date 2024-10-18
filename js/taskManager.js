@@ -188,10 +188,14 @@ const TaskManager = {
     getClassesForDate: (date) => {
         const semesterClasses = Storage.getItem('semesterClasses') || [];
         return semesterClasses.filter(cls => 
-            new Date(cls.date).toDateString() === date.toDateString()
+            TaskManager.formatDate(new Date(cls.date)) === TaskManager.formatDate(date)
         );
+    },
+
+    formatDate: (date) => {
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
     }
 };
 
-// 将 TaskManager 对象添加到全局作用域
+// 将 TaskManager 对象添加���全局作用域
 window.TaskManager = TaskManager;
