@@ -50,37 +50,17 @@ const TaskManager = {
     },
 
     addClass: (classInfo) => {
-        return new Promise((resolve, reject) => {
-            try {
-                console.log("Adding class:", classInfo);
-                const classes = Storage.getItem('classes') || [];
-                if (classInfo.photo instanceof File) {
-                    const reader = new FileReader();
-                    reader.onloadend = function() {
-                        classInfo.photo = reader.result;  // This will be a base64 string
-                        classes.push(classInfo);
-                        Storage.setItem('classes', classes);
-                        UI.updateClassList(classes);
-                        console.log("Classes after adding:", classes);
-                        resolve();
-                    };
-                    reader.onerror = function(error) {
-                        console.error("Error reading file:", error);
-                        reject(error);
-                    };
-                    reader.readAsDataURL(classInfo.photo);
-                } else {
-                    classes.push(classInfo);
-                    Storage.setItem('classes', classes);
-                    UI.updateClassList(classes);
-                    console.log("Classes after adding:", classes);
-                    resolve();
-                }
-            } catch (error) {
-                console.error("Error adding class:", error);
-                reject(error);
-            }
-        });
+        try {
+            console.log("Adding class:", classInfo);
+            const classes = Storage.getItem('classes') || [];
+            classes.push(classInfo);
+            Storage.setItem('classes', classes);
+            UI.updateClassList(classes);
+            console.log("Class added successfully:", classInfo);
+        } catch (error) {
+            console.error("Error adding class:", error);
+            alert("添加课程时出错，请稍后再试。");
+        }
     },
 
     loadClasses: () => {
@@ -170,6 +150,46 @@ const TaskManager = {
             console.error("Error toggling task completion:", error);
             alert("更新任务状态时出错，请稍后再试。");
         }
+    },
+
+    addWeeklySchedule: (weeklySchedule) => {
+        try {
+            console.log("Adding weekly schedule:", weeklySchedule);
+            Storage.setItem('weeklySchedule', weeklySchedule);
+            TaskManager.generateSemesterSchedule(weeklySchedule);
+            console.log("Weekly schedule added successfully");
+        } catch (error) {
+            console.error("Error adding weekly schedule:", error);
+            alert("添加周课表时出错，请稍后再试。");
+        }
+    },
+
+    generateSemesterSchedule: (weeklySchedule) => {
+        const semesterStart = new Date('2024-02-26'); // 假设学期开始日期
+        const semesterEnd = new Date('2024-06-28');   // 假设学期结束日期
+        const semesterClasses = [];
+
+        for (let date = new Date(semesterStart); date <= semesterEnd; date.setDate(date.getDate() + 1)) {
+            const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'});
+            const dayClasses = weeklySchedule.filter(cls => cls.day === dayOfWeek);
+
+            dayClasses.forEach(cls => {
+                semesterClasses.push({
+                    ...cls,
+                    date: new Date(date)
+                });
+            });
+        }
+
+        Storage.setItem('semesterClasses', semesterClasses);
+        UI.updateClassList(semesterClasses);
+    },
+
+    getClassesForDate: (date) => {
+        const semesterClasses = Storage.getItem('semesterClasses') || [];
+        return semesterClasses.filter(cls => 
+            cls.date.toDateString() === date.toDateString()
+        );
     }
 };
 
