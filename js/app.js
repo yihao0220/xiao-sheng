@@ -21,7 +21,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function initializeApp() {
     console.log("initializeApp function called");
-    console.log("App script loaded");
 
     const requiredElements = [
         'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
@@ -44,47 +43,27 @@ function initializeApp() {
         return;
     }
 
-    function logDeviceInfo() {
-        console.log("User Agent:", navigator.userAgent);
-        console.log("Screen Width:", screen.width);
-        console.log("Screen Height:", screen.height);
-        console.log("Window Inner Width:", window.innerWidth);
-        console.log("Window Inner Height:", window.innerHeight);
-    }
-
-    function checkLocalStorage() {
-        try {
-            localStorage.setItem('test', 'test');
-            localStorage.removeItem('test');
-            console.log("Local storage is working");
-        } catch(e) {
-            console.error("Local storage is not available:", e);
-        }
-    }
-
     // 设置事件监听器
-    addEventListenerSafely('loginButton', 'click', () => {
-        console.log("Login button clicked");
+    document.getElementById('loginButton').addEventListener('click', () => {
         UI.showElement('authForm');
         UI.hideElement('loginButton');
     });
 
-    addEventListenerSafely('submitLoginButton', 'click', (e) => {
+    document.getElementById('submitLoginButton').addEventListener('click', (e) => {
         e.preventDefault();
-        console.log("Submit login button clicked");
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
         Auth.login(username, password);
     });
 
-    addEventListenerSafely('logoutButton', 'click', Auth.logout);
+    document.getElementById('logoutButton').addEventListener('click', Auth.logout);
 
-    addEventListenerSafely('showAddTaskFormButton', 'click', () => {
-        document.getElementById('addTaskForm').style.display = 'block';
-        document.getElementById('showAddTaskFormButton').style.display = 'none';
+    document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
+        UI.showElement('addTaskForm');
+        UI.hideElement('showAddTaskFormButton');
     });
 
-    addEventListenerSafely('addTaskButton', 'click', (e) => {
+    document.getElementById('addTaskButton').addEventListener('click', (e) => {
         e.preventDefault();
         const taskName = document.getElementById('taskName').value;
         const startDate = document.getElementById('startDate').value;
@@ -98,50 +77,47 @@ function initializeApp() {
         if (taskName) {
             const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
             TaskManager.addTask(newTask);
-            document.getElementById('addTaskForm').style.display = 'none';
-            document.getElementById('showAddTaskFormButton').style.display = 'block';
-            document.getElementById('taskName').value = '';
-            // 清空其他输入字段...
+            UI.hideElement('addTaskForm');
+            UI.showElement('showAddTaskFormButton');
+            clearTaskForm();
+        } else {
+            alert("请输入任务名称");
         }
     });
 
-    addEventListenerSafely('cancelAddTaskButton', 'click', () => {
-        document.getElementById('addTaskForm').style.display = 'none';
-        document.getElementById('showAddTaskFormButton').style.display = 'block';
+    document.getElementById('cancelAddTaskButton').addEventListener('click', (e) => {
+        e.preventDefault();
+        UI.hideElement('addTaskForm');
+        UI.showElement('showAddTaskFormButton');
+        clearTaskForm();
     });
 
-    addEventListenerSafely('addClassButton', 'click', (e) => {
+    document.getElementById('addClassButton').addEventListener('click', (e) => {
         e.preventDefault();
-        const day = document.getElementById('classDay').value;
-        const name = document.getElementById('className').value;
-        const startTime = document.getElementById('classStartTime').value;
-        const endTime = document.getElementById('classEndTime').value;
-        const location = document.getElementById('classLocation').value;
+        const className = document.getElementById('className').value;
+        const classDay = document.getElementById('classDay').value;
+        const classStartTime = document.getElementById('classStartTime').value;
+        const classEndTime = document.getElementById('classEndTime').value;
+        const classLocation = document.getElementById('classLocation').value;
 
-        if (name && startTime && endTime) {
-            weeklySchedule.push({ day, name, startTime, endTime, location });
-            updateWeeklyClassList();
+        if (className && classDay && classStartTime && classEndTime) {
+            const newClass = { name: className, day: classDay, startTime: classStartTime, endTime: classEndTime, location: classLocation };
+            TaskManager.addClass(newClass);
             clearClassForm();
         } else {
-            UI.showError('请填写课程名称、开始时间和结束时间。');
+            alert("请填写所有必要的课程信息");
         }
     });
 
-    addEventListenerSafely('saveWeeklyScheduleButton', 'click', (e) => {
+    document.getElementById('saveWeeklyScheduleButton').addEventListener('click', (e) => {
         e.preventDefault();
-        if (weeklySchedule.length > 0) {
-            TaskManager.addWeeklySchedule(weeklySchedule);
-            UI.showSuccess('周课表已保存！');
-            weeklySchedule = [];
-            updateWeeklyClassList();
-        } else {
-            UI.showError('请先添加课程。');
-        }
+        TaskManager.addWeeklySchedule(weeklySchedule);
+        weeklySchedule = [];
+        UI.updateClassList([]);
     });
 
     // 任务列表事件监听
-    const allTasks = document.getElementById('allTasks');
-    allTasks.addEventListener('click', (e) => {
+    document.getElementById('allTasks').addEventListener('click', (e) => {
         if (e.target.classList.contains('edit-button')) {
             const index = parseInt(e.target.dataset.index);
             editTask(index);
@@ -157,11 +133,9 @@ function initializeApp() {
     });
 
     // 编辑任务表单事件监听
-    addEventListenerSafely('saveEditTaskButton', 'click', saveEditTask);
-    addEventListenerSafely('cancelEditTaskButton', 'click', cancelEditTask);
+    document.getElementById('saveEditTaskButton').addEventListener('click', saveEditTask);
+    document.getElementById('cancelEditTaskButton').addEventListener('click', cancelEditTask);
 
-    logDeviceInfo();
-    checkLocalStorage();
     Auth.checkLoginStatus();
     TaskManager.loadClasses();
     TaskManager.loadTasks();
@@ -171,39 +145,20 @@ function initializeApp() {
     console.log("App initialization completed");
 }
 
-function addEventListenerSafely(id, event, handler) {
-    const element = document.getElementById(id);
-    if (element) {
-        element.addEventListener(event, handler);
-        console.log(`Event listener added to ${id}`);
-    } else {
-        console.warn(`Element ${id} not found. Event listener not added.`);
-    }
-}
-
-function updateWeeklyClassList() {
-    const weeklyClassList = document.getElementById('weeklyClassList');
-    if (weeklyClassList) {
-        weeklyClassList.innerHTML = '';
-        weeklySchedule.forEach((cls, index) => {
-            const li = document.createElement('li');
-            li.textContent = `${cls.day} ${cls.name} ${cls.startTime}-${cls.endTime} ${cls.location}`;
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = '删除';
-            deleteButton.onclick = () => {
-                weeklySchedule.splice(index, 1);
-                updateWeeklyClassList();
-            };
-            li.appendChild(deleteButton);
-            weeklyClassList.appendChild(li);
-        });
-    } else {
-        console.error("weeklyClassList element not found");
-    }
+function clearTaskForm() {
+    document.getElementById('taskName').value = '';
+    document.getElementById('startDate').value = '';
+    document.getElementById('startTime').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('endTime').value = '';
+    document.getElementById('priority').value = 'low';
+    document.getElementById('category').value = '';
+    document.getElementById('location').value = '';
 }
 
 function clearClassForm() {
     document.getElementById('className').value = '';
+    document.getElementById('classDay').value = '周一';
     document.getElementById('classStartTime').value = '';
     document.getElementById('classEndTime').value = '';
     document.getElementById('classLocation').value = '';
@@ -242,6 +197,7 @@ function saveEditTask(e) {
     document.getElementById('editTaskForm').style.display = 'none';
 }
 
-function cancelEditTask() {
+function cancelEditTask(e) {
+    e.preventDefault();
     document.getElementById('editTaskForm').style.display = 'none';
 }
