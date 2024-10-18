@@ -204,7 +204,7 @@ function initializeApp() {
     const classes = Storage.getItem('classes') || [];
     showTodayClasses(classes);
 
-    // 修改编码任务相关的代码
+    // ���改编码任务相关的代码
     const allTasks = document.getElementById('allTasks');
     const editTaskForm = document.getElementById('editTaskForm');
     const saveEditTaskButton = document.getElementById('saveEditTaskButton');
@@ -278,7 +278,10 @@ function addEventListenerSafely(id, event, handler) {
 // 添加这个新函数来显示今天的课程
 function showTodayClasses(classes) {
     const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
+    console.log("Today is:", today);
+    console.log("All classes:", classes);
     const todayClasses = classes.filter(c => c.day === today);
+    console.log("Today's classes:", todayClasses);
     if (todayClasses.length > 0) {
         let message = `今天（${today}）的课程：\n\n`;
         todayClasses.forEach(classInfo => {
