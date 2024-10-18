@@ -235,7 +235,10 @@ function initializeApp() {
             editTaskForm.style.display = 'block';
             document.getElementById('taskManager').style.display = 'block'; // 修改这里，保持taskManager可见
         } else if (e.target.classList.contains('delete-button')) {
-            // ... 现有的删除任务代码 ...
+            const index = parseInt(e.target.dataset.index);
+            if (confirm('确定要删除这个任务吗？')) {
+                TaskManager.deleteTask(index);
+            }
         } else if (e.target.classList.contains('complete-button')) {
             const index = parseInt(e.target.dataset.index);
             TaskManager.toggleTaskCompletion(index);
