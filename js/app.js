@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log("App script loaded");
 
-    // 检查所有需要的 DOM 元素
+    // 修改检查的 DOM 元素列表，移除不存在的元素
     const elements = [
         'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
         'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
