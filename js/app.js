@@ -17,62 +17,36 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (error) {
         console.error("Error during app initialization:", error);
     }
-
-    // 为“设置任务”按钮添加事件监听器
-    document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
-        UI.showElement('addTaskForm');
-        UI.hideElement('showAddTaskFormButton');
-    });
-
-    // 修改现有事件监听器以在显示表单时隐藏“设置任务”按钮
-    document.getElementById('addTaskButton').addEventListener('click', (e) => {
-        e.preventDefault();
-        const taskName = document.getElementById('taskName').value;
-        const startDate = document.getElementById('startDate').value;
-        const startTime = document.getElementById('startTime').value;
-        const endDate = document.getElementById('endDate').value;
-        const endTime = document.getElementById('endTime').value;
-        const priority = document.getElementById('priority').value;
-        const category = document.getElementById('category').value;
-        const location = document.getElementById('location').value;
-
-        if (taskName) {
-            const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
-            TaskManager.addTask(newTask);
-            UI.hideElement('addTaskForm');
-            UI.showElement('showAddTaskFormButton');
-            clearTaskForm();
-        } else {
-            alert("请输入任务名称");
-        }
-    });
-
-    document.getElementById('cancelAddTaskButton').addEventListener('click', (e) => {
-        e.preventDefault();
-        UI.hideElement('addTaskForm');
-        UI.showElement('showAddTaskFormButton');
-        clearTaskForm();
-    });
-
-    document.getElementById('saveEditTaskButton').addEventListener('click', saveEditTask);
-    document.getElementById('cancelEditTaskButton').addEventListener('click', cancelEditTask);
-
-    Auth.checkLoginStatus();
-    TaskManager.loadClasses();
-    TaskManager.loadTasks();
-    UI.showTodayClasses();
-    UI.showUnfinishedTasks();
-
-    console.log("App initialization completed");
 });
 
 function initializeApp() {
     console.log("initializeApp function called");
 
+    // 检查当前页面
+    const currentPage = window.location.pathname.split("/").pop();
+
+    if (currentPage === "index.html" || currentPage === "") {
+        initializeMainPage();
+    } else if (currentPage === "addTask.html") {
+        initializeAddTaskPage();
+    } else if (currentPage === "editTask.html") {
+        initializeEditTaskPage();
+    }
+
+    // 检查必要的对象是否已定义
+    if (typeof UI === 'undefined' || typeof Auth === 'undefined' || 
+        typeof TaskManager === 'undefined' || typeof Storage === 'undefined') {
+        console.error("One or more required objects are not defined. Check script loading order.");
+        return;
+    }
+
+    console.log("App initialization completed");
+}
+
+function initializeMainPage() {
     const requiredElements = [
         'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
-        'showAddTaskFormButton', 'addTaskForm', 'addTaskButton', 'cancelAddTaskButton',
-        'allTasks', 'editTaskForm', 'saveEditTaskButton', 'cancelEditTaskButton', 
+        'showAddTaskFormButton', 'allTasks', 
         'addClassButton', 'saveWeeklyScheduleButton', 'weeklyClassList'
     ];
 
@@ -83,14 +57,7 @@ function initializeApp() {
         return;
     }
 
-    // 检查必要的对象是否已定义
-    if (typeof UI === 'undefined' || typeof Auth === 'undefined' || 
-        typeof TaskManager === 'undefined' || typeof Storage === 'undefined') {
-        console.error("One or more required objects are not defined. Check script loading order.");
-        return;
-    }
-
-    // 设置事件监听器
+    // 设置主页面的事件监听器
     document.getElementById('loginButton').addEventListener('click', () => {
         UI.showElement('authForm');
         UI.hideElement('loginButton');
@@ -104,11 +71,6 @@ function initializeApp() {
     });
 
     document.getElementById('logoutButton').addEventListener('click', Auth.logout);
-
-    document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
-        UI.showElement('addTaskForm');
-        UI.hideElement('showAddTaskFormButton');
-    });
 
     document.getElementById('addClassButton').addEventListener('click', (e) => {
         e.preventDefault();
@@ -138,7 +100,7 @@ function initializeApp() {
     document.getElementById('allTasks').addEventListener('click', (e) => {
         if (e.target.classList.contains('edit-button')) {
             const index = parseInt(e.target.dataset.index);
-            editTask(index);
+            window.location.href = `editTask.html?index=${index}`;
         } else if (e.target.classList.contains('delete-button')) {
             const index = parseInt(e.target.dataset.index);
             if (confirm('确定要删除这个任务吗？')) {
@@ -150,30 +112,114 @@ function initializeApp() {
         }
     });
 
-    // 编辑任务表单事件监听
-    document.getElementById('saveEditTaskButton').addEventListener('click', saveEditTask);
-    document.getElementById('cancelEditTaskButton').addEventListener('click', cancelEditTask);
-
-    // Add event listener for the new toggle button
-    document.getElementById('toggleTaskFormButton').addEventListener('click', () => {
-        const addTaskForm = document.getElementById('addTaskForm');
-        const editTaskForm = document.getElementById('editTaskForm');
-        
-        if (addTaskForm.style.display === 'none' && editTaskForm.style.display === 'none') {
-            UI.showElement('addTaskForm');
-        } else {
-            UI.hideElement('addTaskForm');
-            UI.hideElement('editTaskForm');
-        }
-    });
-
     Auth.checkLoginStatus();
     TaskManager.loadClasses();
     TaskManager.loadTasks();
     UI.showTodayClasses();
     UI.showUnfinishedTasks();
 
-    console.log("App initialization completed");
+    // 修改"添加任务"按钮的事件监听器
+    document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
+        UI.showElement('addTaskForm');
+        UI.hideElement('showAddTaskFormButton');
+    });
+
+    // 添加任务的事件监听器
+    document.getElementById('addTaskButton').addEventListener('click', (e) => {
+        e.preventDefault();
+        const taskName = document.getElementById('taskName').value;
+        const startDate = document.getElementById('startDate').value;
+        const startTime = document.getElementById('startTime').value;
+        const endDate = document.getElementById('endDate').value;
+        const endTime = document.getElementById('endTime').value;
+        const priority = document.getElementById('priority').value;
+        const category = document.getElementById('category').value;
+        const location = document.getElementById('location').value;
+
+        if (taskName) {
+            const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
+            TaskManager.addTask(newTask);
+            UI.hideElement('addTaskForm');
+            UI.showElement('showAddTaskFormButton');
+            clearTaskForm();
+        } else {
+            alert("请输入任务名称");
+        }
+    });
+
+    // 取消添加任务的事件监听器
+    document.getElementById('cancelAddTaskButton').addEventListener('click', (e) => {
+        e.preventDefault();
+        UI.hideElement('addTaskForm');
+        UI.showElement('showAddTaskFormButton');
+        clearTaskForm();
+    });
+}
+
+function initializeAddTaskPage() {
+    // 添加任务页面的初始化逻辑已经在 addTask.js 中实现
+}
+
+function initializeEditTaskPage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const taskIndex = urlParams.get('index');
+
+    if (taskIndex !== null) {
+        const tasks = Storage.getItem('tasks') || [];
+        const task = tasks[taskIndex];
+
+        if (task) {
+            document.getElementById('editTaskName').value = task.name;
+            document.getElementById('editStartDate').value = task.startDate;
+            document.getElementById('editStartTime').value = task.startTime;
+            document.getElementById('editEndDate').value = task.endDate;
+            document.getElementById('editEndTime').value = task.endTime;
+            document.getElementById('editPriority').value = task.priority;
+            document.getElementById('editCategory').value = task.category || '';
+            document.getElementById('editLocation').value = task.location || '';
+
+            document.getElementById('saveEditTaskButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                const updatedTask = {
+                    name: document.getElementById('editTaskName').value,
+                    startDate: document.getElementById('editStartDate').value,
+                    startTime: document.getElementById('editStartTime').value,
+                    endDate: document.getElementById('editEndDate').value,
+                    endTime: document.getElementById('editEndTime').value,
+                    priority: document.getElementById('editPriority').value,
+                    category: document.getElementById('editCategory').value,
+                    location: document.getElementById('editLocation').value,
+                    completed: task.completed
+                };
+                TaskManager.editTask(taskIndex, updatedTask);
+                alert("任务已更新");
+                window.location.href = 'index.html';
+            });
+
+            document.getElementById('cancelEditTaskButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                if (confirm("确定要取消编辑任务吗？")) {
+                    window.location.href = 'index.html';
+                }
+            });
+        } else {
+            console.error("Task not found");
+            alert("未找到任务");
+            window.location.href = 'index.html';
+        }
+    } else {
+        console.error("No task index provided");
+        alert("未提供任务索引");
+        window.location.href = 'index.html';
+    }
+}
+
+function clearClassForm() {
+    document.getElementById('className').value = '';
+    document.getElementById('classDay').value = '周一';
+    document.getElementById('classStartTime').value = '';
+    document.getElementById('classEndTime').value = '';
+    document.getElementById('classLocation').value = '';
 }
 
 function clearTaskForm() {
@@ -185,54 +231,4 @@ function clearTaskForm() {
     document.getElementById('priority').value = 'low';
     document.getElementById('category').value = '';
     document.getElementById('location').value = '';
-}
-
-function clearClassForm() {
-    document.getElementById('className').value = '';
-    document.getElementById('classDay').value = '周一';
-    document.getElementById('classStartTime').value = '';
-    document.getElementById('classEndTime').value = '';
-    document.getElementById('classLocation').value = '';
-}
-
-function editTask(index) {
-    const tasks = Storage.getItem('tasks') || [];
-    const task = tasks[index];
-    document.getElementById('editTaskName').value = task.name;
-    document.getElementById('editStartDate').value = task.startDate;
-    document.getElementById('editStartTime').value = task.startTime;
-    document.getElementById('editEndDate').value = task.endDate;
-    document.getElementById('editEndTime').value = task.endTime;
-    document.getElementById('editPriority').value = task.priority;
-    document.getElementById('editCategory').value = task.category || '';
-    document.getElementById('editLocation').value = task.location || '';
-    document.getElementById('editTaskForm').style.display = 'block';
-    document.getElementById('editTaskForm').dataset.taskIndex = index;
-}
-
-function saveEditTask(e) {
-    e.preventDefault();
-    const index = parseInt(document.getElementById('editTaskForm').dataset.taskIndex);
-    const updatedTask = {
-        name: document.getElementById('editTaskName').value,
-        startDate: document.getElementById('editStartDate').value,
-        startTime: document.getElementById('editStartTime').value,
-        endDate: document.getElementById('editEndDate').value,
-        endTime: document.getElementById('editEndTime').value,
-        priority: document.getElementById('editPriority').value,
-        category: document.getElementById('editCategory').value,
-        location: document.getElementById('editLocation').value,
-        completed: false
-    };
-    TaskManager.editTask(index, updatedTask);
-    document.getElementById('editTaskForm').style.display = 'none';
-    UI.hideElement('editTaskForm');
-    UI.showElement('toggleTaskFormButton');
-}
-
-function cancelEditTask(e) {
-    e.preventDefault();
-    document.getElementById('editTaskForm').style.display = 'none';
-    UI.hideElement('editTaskForm');
-    UI.showElement('toggleTaskFormButton');
 }
