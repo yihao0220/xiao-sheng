@@ -202,3 +202,15 @@ function saveEditTask() {
     document.getElementById('editTaskFormOverlay').style.display = 'none';
     alert("任务已更新");
 }
+
+// 在文件末尾添加这个函数
+function clearTaskForm() {
+    document.getElementById('taskName').value = '';
+    document.getElementById('startDate').value = '';
+    document.getElementById('startTime').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('endTime').value = '';
+    document.getElementById('priority').value = 'low';
+    document.getElementById('category').value = '';
+    document.getElementById('location').value = '';
+}
