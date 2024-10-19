@@ -85,11 +85,84 @@ body {
 }
 
 .task-item {
-    background-color: white;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 10px;
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.task-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.task-item h3 {
+    margin-top: 0;
     margin-bottom: 10px;
+    color: #343a40;
+}
+
+.task-item p {
+    margin: 5px 0;
+    color: #6c757d;
+}
+
+.task-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.task-actions button {
+    margin-left: 10px;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-button {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+}
+
+.complete-button {
+    background-color: #28a745;
+    color: white;
+}
+
+.task-actions button:hover {
+    opacity: 0.8;
+}
+
+/* 优先级颜色指示器 */
+.priority-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.priority-low {
+    background-color: #28a745;
+}
+
+.priority-medium {
+    background-color: #ffc107;
+}
+
+.priority-high {
+    background-color: #dc3545;
 }
 
 .class-form {
