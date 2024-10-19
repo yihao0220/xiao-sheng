@@ -241,3 +241,12 @@ function updateTaskList(tasks) {
     // 更新存储中的任务列表
     Storage.setItem('tasks', tasks);
 }
+
+// 在文件末尾添加这个函数
+function clearClassForm() {
+    document.getElementById('className').value = '';
+    document.getElementById('classDay').value = '周一';
+    document.getElementById('classStartTime').value = '';
+    document.getElementById('classEndTime').value = '';
+    document.getElementById('classLocation').value = '';
+}
