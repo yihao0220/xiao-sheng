@@ -98,7 +98,7 @@ function initializeMainPage() {
     document.getElementById('allTasks').addEventListener('click', (e) => {
         if (e.target.classList.contains('edit-button')) {
             const index = parseInt(e.target.dataset.index);
-            window.location.href = `editTask.html?index=${index}`;
+            showEditTaskForm(index);
         } else if (e.target.classList.contains('delete-button')) {
             const index = parseInt(e.target.dataset.index);
             if (confirm('确定要删除这个任务吗？')) {
@@ -108,6 +108,17 @@ function initializeMainPage() {
             const index = parseInt(e.target.dataset.index);
             TaskManager.toggleTaskCompletion(index);
         }
+    });
+
+    // 编辑任务表单的事件监听器
+    document.getElementById('saveEditTaskButton').addEventListener('click', (e) => {
+        e.preventDefault();
+        saveEditTask();
+    });
+
+    document.getElementById('cancelEditTaskButton').addEventListener('click', (e) => {
+        e.preventDefault();
+        document.getElementById('editTaskFormOverlay').style.display = 'none';
     });
 
     Auth.checkLoginStatus();
@@ -151,75 +162,43 @@ function initializeMainPage() {
     });
 }
 
-function initializeEditTaskPage() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const taskIndex = urlParams.get('index');
+function showEditTaskForm(index) {
+    const tasks = Storage.getItem('tasks') || [];
+    const task = tasks[index];
 
-    if (taskIndex !== null) {
-        const tasks = Storage.getItem('tasks') || [];
-        const task = tasks[taskIndex];
+    if (task) {
+        document.getElementById('editTaskName').value = task.name;
+        document.getElementById('editStartDate').value = task.startDate;
+        document.getElementById('editStartTime').value = task.startTime;
+        document.getElementById('editEndDate').value = task.endDate;
+        document.getElementById('editEndTime').value = task.endTime;
+        document.getElementById('editPriority').value = task.priority;
+        document.getElementById('editCategory').value = task.category || '';
+        document.getElementById('editLocation').value = task.location || '';
 
-        if (task) {
-            document.getElementById('editTaskName').value = task.name;
-            document.getElementById('editStartDate').value = task.startDate;
-            document.getElementById('editStartTime').value = task.startTime;
-            document.getElementById('editEndDate').value = task.endDate;
-            document.getElementById('editEndTime').value = task.endTime;
-            document.getElementById('editPriority').value = task.priority;
-            document.getElementById('editCategory').value = task.category || '';
-            document.getElementById('editLocation').value = task.location || '';
-
-            document.getElementById('saveEditTaskButton').addEventListener('click', (e) => {
-                e.preventDefault();
-                const updatedTask = {
-                    name: document.getElementById('editTaskName').value,
-                    startDate: document.getElementById('editStartDate').value,
-                    startTime: document.getElementById('editStartTime').value,
-                    endDate: document.getElementById('editEndDate').value,
-                    endTime: document.getElementById('editEndTime').value,
-                    priority: document.getElementById('editPriority').value,
-                    category: document.getElementById('editCategory').value,
-                    location: document.getElementById('editLocation').value,
-                    completed: task.completed
-                };
-                TaskManager.editTask(taskIndex, updatedTask);
-                alert("任务已更新");
-                window.location.href = 'index.html';
-            });
-
-            document.getElementById('cancelEditTaskButton').addEventListener('click', (e) => {
-                e.preventDefault();
-                if (confirm("确定要取消编辑任务吗？")) {
-                    window.location.href = 'index.html';
-                }
-            });
-        } else {
-            console.error("Task not found");
-            alert("未找到任务");
-            window.location.href = 'index.html';
-        }
+        document.getElementById('editTaskFormOverlay').style.display = 'flex';
+        document.getElementById('editTaskForm').dataset.taskIndex = index;
     } else {
-        console.error("No task index provided");
-        alert("未提供任务索引");
-        window.location.href = 'index.html';
+        console.error("Task not found");
+        alert("未找到任务");
     }
 }
 
-function clearClassForm() {
-    document.getElementById('className').value = '';
-    document.getElementById('classDay').value = '周一';
-    document.getElementById('classStartTime').value = '';
-    document.getElementById('classEndTime').value = '';
-    document.getElementById('classLocation').value = '';
-}
+function saveEditTask() {
+    const taskIndex = document.getElementById('editTaskForm').dataset.taskIndex;
+    const updatedTask = {
+        name: document.getElementById('editTaskName').value,
+        startDate: document.getElementById('editStartDate').value,
+        startTime: document.getElementById('editStartTime').value,
+        endDate: document.getElementById('editEndDate').value,
+        endTime: document.getElementById('editEndTime').value,
+        priority: document.getElementById('editPriority').value,
+        category: document.getElementById('editCategory').value,
+        location: document.getElementById('editLocation').value,
+        completed: false // 保持原有的完成状态
+    };
 
-function clearTaskForm() {
-    document.getElementById('taskName').value = '';
-    document.getElementById('startDate').value = '';
-    document.getElementById('startTime').value = '';
-    document.getElementById('endDate').value = '';
-    document.getElementById('endTime').value = '';
-    document.getElementById('priority').value = 'low';
-    document.getElementById('category').value = '';
-    document.getElementById('location').value = '';
+    TaskManager.editTask(taskIndex, updatedTask);
+    document.getElementById('editTaskFormOverlay').style.display = 'none';
+    alert("任务已更新");
 }
