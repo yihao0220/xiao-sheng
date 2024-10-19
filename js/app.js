@@ -104,9 +104,6 @@ function initializeMainPage() {
             if (confirm('确定要删除这个任务吗？')) {
                 TaskManager.deleteTask(index);
             }
-        } else if (e.target.classList.contains('complete-button')) {
-            const index = parseInt(e.target.dataset.index);
-            TaskManager.toggleTaskCompletion(index);
         }
     });
 
@@ -219,6 +216,13 @@ function clearTaskForm() {
 function updateTaskList(tasks) {
     const allTasks = document.getElementById('allTasks');
     allTasks.innerHTML = '';
+    const now = new Date();
+
+    tasks = tasks.filter(task => {
+        const endDate = new Date(task.endDate + 'T' + task.endTime);
+        return endDate > now;
+    });
+
     tasks.forEach((task, index) => {
         const li = document.createElement('li');
         li.className = 'task-item';
@@ -232,13 +236,14 @@ function updateTaskList(tasks) {
             <p>优先级: ${task.priority}</p>
             ${task.category ? `<p>分类: ${task.category}</p>` : ''}
             ${task.location ? `<p>地点: ${task.location}</p>` : ''}
-            <p>状态: ${task.completed ? '已完成' : '未完成'}</p>
             <div class="task-actions">
-                <button class="complete-button" data-index="${index}">${task.completed ? '标记为未完成' : '标记为已完成'}</button>
                 <button class="edit-button" data-index="${index}">编辑</button>
                 <button class="delete-button" data-index="${index}">删除</button>
             </div>
         `;
         allTasks.appendChild(li);
     });
+
+    // 更新存储中的任务列表
+    Storage.setItem('tasks', tasks);
 }
