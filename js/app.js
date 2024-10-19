@@ -216,12 +216,6 @@ function clearTaskForm() {
 function updateTaskList(tasks) {
     const allTasks = document.getElementById('allTasks');
     allTasks.innerHTML = '';
-    const now = new Date();
-
-    tasks = tasks.filter(task => {
-        const endDate = new Date(task.endDate + 'T' + task.endTime);
-        return endDate > now;
-    });
 
     tasks.forEach((task, index) => {
         const li = document.createElement('li');
