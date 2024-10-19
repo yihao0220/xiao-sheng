@@ -116,6 +116,59 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- 在 taskManager div 中添加这个部分，紧接着 addTaskFormOverlay 之后 -->
+                <div id="editTaskFormOverlay" class="overlay" style="display: none;">
+                    <div class="task-form" id="editTaskForm">
+                        <h2>编辑任务</h2>
+                        <form>
+                            <div class="form-group">
+                                <label for="editTaskName">任务名称</label>
+                                <input type="text" id="editTaskName" placeholder="输入任务名称" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editStartDate">开始日期</label>
+                                    <input type="date" id="editStartDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editStartTime">开始时间</label>
+                                    <input type="time" id="editStartTime" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="editEndDate">结束日期</label>
+                                    <input type="date" id="editEndDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="editEndTime">结束时间</label>
+                                    <input type="time" id="editEndTime" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="editPriority">优先级</label>
+                                <select id="editPriority" required>
+                                    <option value="low">低优先级</option>
+                                    <option value="medium">中优先级</option>
+                                    <option value="high">高优先级</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editCategory">分类</label>
+                                <input type="text" id="editCategory" placeholder="输入任务分类">
+                            </div>
+                            <div class="form-group">
+                                <label for="editLocation">地点</label>
+                                <input type="text" id="editLocation" placeholder="输入任务地点">
+                            </div>
+                            <div class="form-actions">
+                                <button id="saveEditTaskButton" class="btn btn-primary">保存修改</button>
+                                <button id="cancelEditTaskButton" class="btn btn-secondary">取消</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
