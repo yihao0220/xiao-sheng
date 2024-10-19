@@ -2,8 +2,6 @@ const TaskManager = {
     addTask: (task) => {
         try {
             const tasks = Storage.getItem('tasks') || [];
-            // 确保新任务的 completed 属性被设置为 false
-            task.completed = false;
             tasks.push(task);
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
@@ -41,12 +39,26 @@ const TaskManager = {
     },
     loadTasks: () => {
         try {
-            const tasks = Storage.getItem('tasks') || [];
+            let tasks = Storage.getItem('tasks') || [];
+            tasks = TaskManager.removeExpiredTasks(tasks);
             UI.updateTaskList(tasks);
         } catch (error) {
             console.error("Error loading tasks:", error);
             alert("加载任务列表时出错，请稍后再试。");
         }
+    },
+
+    removeExpiredTasks: (tasks) => {
+        const now = new Date();
+        const updatedTasks = tasks.filter(task => {
+            const endDate = new Date(task.endDate + 'T' + task.endTime);
+            return endDate > now;
+        });
+        if (updatedTasks.length !== tasks.length) {
+            Storage.setItem('tasks', updatedTasks);
+            console.log("Expired tasks removed");
+        }
+        return updatedTasks;
     },
 
     addClass: (classInfo) => {
@@ -93,7 +105,7 @@ const TaskManager = {
             });
         } catch (error) {
             console.error("Error getting morning classes:", error);
-            alert("获取早上的班级列表时出错，请稍后再试。");
+            alert("获取早上的班级列表���出错，请稍后再试。");
         }
     },
 
@@ -160,7 +172,7 @@ const TaskManager = {
             console.log("Weekly schedule added successfully");
         } catch (error) {
             console.error("Error adding weekly schedule:", error);
-            alert("添加周课表时出错，请稍后再试��");
+            alert("添加周课表时出错，请稍后再试");
         }
     },
 
@@ -198,21 +210,17 @@ const TaskManager = {
 
     checkExpiredTasks: function() {
         const tasks = Storage.getItem('tasks') || [];
-        const now = new Date();
-        const updatedTasks = tasks.filter(task => {
-            const endDate = new Date(task.endDate + 'T' + task.endTime);
-            return endDate > now;
-        });
-
+        const updatedTasks = this.removeExpiredTasks(tasks);
         if (updatedTasks.length !== tasks.length) {
-            Storage.setItem('tasks', updatedTasks);
             this.loadTasks(); // 重新加载任务列表
         }
     },
+
+    // 每分钟检查一次过期任务（用于测试，实际使用可以改回每小时）
 };
+
+// 每分钟检查一次过期任务（用于测试，实际使用可以改回每小时）
+setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 
 // 将 TaskManager 对象添加到全局作用域
 window.TaskManager = TaskManager;
-
-// 每小时检查一次过期任务
-setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 3600000);
