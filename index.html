@@ -26,8 +26,7 @@
             </div>
 
             <div id="taskManager" style="display: none;">
-                <!-- 这个按钮用于显示任务设置表单 -->
-                <button id="showAddTaskFormButton" class="btn btn-primary full-width" onclick="location.href='addTask.html'">设置任务</button>
+                <button id="showAddTaskFormButton" class="btn btn-primary full-width" onclick="location.href='addTask.html'">添加任务</button>
 
                 <section class="task-section">
                     <h2>任务列表</h2>
@@ -41,26 +40,6 @@
                         <button id="clearSearchButton" class="btn btn-secondary">清除搜索</button>
                     </div>
                     <ul id="allTasks" class="task-list"></ul>
-                </section>
-
-                <section class="task-form" id="addTaskForm" style="display: none;">
-                    <h2>添加任务</h2>
-                    <form>
-                        <input type="text" id="taskName" placeholder="任务名称" required>
-                        <input type="date" id="startDate" required>
-                        <input type="time" id="startTime" required>
-                        <input type="date" id="endDate" required>
-                        <input type="time" id="endTime" required>
-                        <select id="priority" required>
-                            <option value="low">低优先级</option>
-                            <option value="medium">中优先级</option>
-                            <option value="high">高优先级</option>
-                        </select>
-                        <input type="text" id="category" placeholder="分类">
-                        <input type="text" id="location" placeholder="地点">
-                        <button id="addTaskButton" class="btn btn-primary">添加任务</button>
-                        <button id="cancelAddTaskButton" class="btn btn-secondary">取消</button>
-                    </form>
                 </section>
 
                 <section class="class-section">
@@ -84,26 +63,27 @@
                     <button id="saveWeeklyScheduleButton" class="btn btn-primary">保存周课表</button>
                     <ul id="weeklyClassList" class="class-list"></ul>
                 </section>
-            </div>
 
-            <div id="editTaskForm" class="task-form" style="display: none;">
-                <h2>编辑任务</h2>
-                <form>
-                    <input type="text" id="editTaskName" placeholder="任务名称" required>
-                    <input type="date" id="editStartDate" required>
-                    <input type="time" id="editStartTime" required>
-                    <input type="date" id="editEndDate" required>
-                    <input type="time" id="editEndTime" required>
-                    <select id="editPriority" required>
-                        <option value="low">低优先级</option>
-                        <option value="medium">中优先级</option>
-                        <option value="high">高优先级</option>
-                    </select>
-                    <input type="text" id="editCategory" placeholder="分类">
-                    <input type="text" id="editLocation" placeholder="地点">
-                    <button id="saveEditTaskButton" class="btn btn-primary">保存修改</button>
-                    <button id="cancelEditTaskButton" class="btn btn-secondary">取消</button>
-                </form>
+                <!-- 在 taskManager div 中添加这个部分 -->
+                <section class="task-form" id="addTaskForm" style="display: none;">
+                    <h2>添加任务</h2>
+                    <form>
+                        <input type="text" id="taskName" placeholder="任务名称" required>
+                        <input type="date" id="startDate" required>
+                        <input type="time" id="startTime" required>
+                        <input type="date" id="endDate" required>
+                        <input type="time" id="endTime" required>
+                        <select id="priority" required>
+                            <option value="low">低优先级</option>
+                            <option value="medium">中优先级</option>
+                            <option value="high">高优先级</option>
+                        </select>
+                        <input type="text" id="category" placeholder="分类">
+                        <input type="text" id="location" placeholder="地点">
+                        <button id="addTaskButton" class="btn btn-primary">添加任务</button>
+                        <button id="cancelAddTaskButton" class="btn btn-secondary">取消</button>
+                    </form>
+                </section>
             </div>
         </main>
     </div>
