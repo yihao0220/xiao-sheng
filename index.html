@@ -47,7 +47,7 @@
                     <form id="addClassForm" class="class-form">
                         <input type="text" id="className" placeholder="课程名称" required>
                         <select id="classDay" required>
-                            <option value="周一">周��</option>
+                            <option value="周一">周一</option>
                             <option value="周二">周二</option>
                             <option value="周三">周三</option>
                             <option value="周四">周四</option>
@@ -65,25 +65,33 @@
                 </section>
 
                 <!-- 在 taskManager div 中添加这个部分 -->
-                <section class="task-form" id="addTaskForm" style="display: none;">
-                    <h2>添加任务</h2>
-                    <form>
-                        <input type="text" id="taskName" placeholder="任务名称" required>
-                        <input type="date" id="startDate" required>
-                        <input type="time" id="startTime" required>
-                        <input type="date" id="endDate" required>
-                        <input type="time" id="endTime" required>
-                        <select id="priority" required>
-                            <option value="low">低优先级</option>
-                            <option value="medium">中优先级</option>
-                            <option value="high">高优先级</option>
-                        </select>
-                        <input type="text" id="category" placeholder="分类">
-                        <input type="text" id="location" placeholder="地点">
-                        <button id="addTaskButton" class="btn btn-primary">添加任务</button>
-                        <button id="cancelAddTaskButton" class="btn btn-secondary">取消</button>
-                    </form>
-                </section>
+                <div id="addTaskFormOverlay" class="overlay" style="display: none;">
+                    <div class="task-form" id="addTaskForm">
+                        <h2>添加任务</h2>
+                        <form>
+                            <input type="text" id="taskName" placeholder="任务名称" required>
+                            <div class="form-row">
+                                <input type="date" id="startDate" required>
+                                <input type="time" id="startTime" required>
+                            </div>
+                            <div class="form-row">
+                                <input type="date" id="endDate" required>
+                                <input type="time" id="endTime" required>
+                            </div>
+                            <select id="priority" required>
+                                <option value="low">低优先级</option>
+                                <option value="medium">中优先级</option>
+                                <option value="high">高优先级</option>
+                            </select>
+                            <input type="text" id="category" placeholder="分类">
+                            <input type="text" id="location" placeholder="地点">
+                            <div class="form-actions">
+                                <button id="addTaskButton" class="btn btn-primary">添加任务</button>
+                                <button id="cancelAddTaskButton" class="btn btn-secondary">取消</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
