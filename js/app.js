@@ -18,20 +18,13 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error("Error during app initialization:", error);
     }
 
-    // 为新切换按钮添加事件监听器
-    document.getElementById('toggleTaskFormButton').addEventListener('click', () => {
-        const addTaskForm = document.getElementById('addTaskForm');
-        const editTaskForm = document.getElementById('editTaskForm');
-        
-        if (addTaskForm.style.display === 'none' && editTaskForm.style.display === 'none') {
-            UI.showElement('addTaskForm');
-        } else {
-            UI.hideElement('addTaskForm');
-            UI.hideElement('editTaskForm');
-        }
+    // 为“设置任务”按钮添加事件监听器
+    document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
+        UI.showElement('addTaskForm');
+        UI.hideElement('showAddTaskFormButton');
     });
 
-    // 修改现有事件监听器以在显示表单时隐藏切换按钮
+    // 修改现有事件监听器以在显示表单时隐藏“设置任务”按钮
     document.getElementById('addTaskButton').addEventListener('click', (e) => {
         e.preventDefault();
         const taskName = document.getElementById('taskName').value;
@@ -47,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
             TaskManager.addTask(newTask);
             UI.hideElement('addTaskForm');
-            UI.showElement('toggleTaskFormButton');
+            UI.showElement('showAddTaskFormButton');
             clearTaskForm();
         } else {
             alert("请输入任务名称");
@@ -57,7 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('cancelAddTaskButton').addEventListener('click', (e) => {
         e.preventDefault();
         UI.hideElement('addTaskForm');
-        UI.showElement('toggleTaskFormButton');
+        UI.showElement('showAddTaskFormButton');
         clearTaskForm();
     });
 
