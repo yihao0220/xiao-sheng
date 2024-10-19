@@ -85,19 +85,19 @@ const UI = {
     },
     updateClassList: (classes) => {
         console.log("Updating class list:", classes);
-        const classList = document.getElementById('classList');
-        if (!classList) {
-            console.error("classList element not found");
+        const weeklyClassList = document.getElementById('weeklyClassList');
+        if (!weeklyClassList) {
+            console.error("weeklyClassList element not found");
             return;
         }
-        classList.innerHTML = '';
+        weeklyClassList.innerHTML = '';
         classes.forEach((classInfo) => {
             const li = document.createElement('li');
             li.innerHTML = `
-                <span>${classInfo.name} - 周${classInfo.day} ${classInfo.startTime}-${classInfo.endTime} ${classInfo.location}</span>
+                <span>${classInfo.name} - ${classInfo.day} ${classInfo.startTime}-${classInfo.endTime} ${classInfo.location}</span>
                 ${classInfo.photo ? `<img src="${classInfo.photo}" alt="${classInfo.name}" style="max-width: 100px; max-height: 100px;">` : ''}
             `;
-            classList.appendChild(li);
+            weeklyClassList.appendChild(li);
         });
         console.log("Class list updated");
     },
