@@ -105,7 +105,7 @@ const TaskManager = {
             });
         } catch (error) {
             console.error("Error getting morning classes:", error);
-            alert("获取早上的班级列表���出错，请稍后再试。");
+            alert("获取早上的班级列表出错，请稍后再试。");
         }
     },
 
