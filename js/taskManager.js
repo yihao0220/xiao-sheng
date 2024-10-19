@@ -160,7 +160,7 @@ const TaskManager = {
             console.log("Weekly schedule added successfully");
         } catch (error) {
             console.error("Error adding weekly schedule:", error);
-            alert("添加周课表时出错，请稍后再试。");
+            alert("添加周课表时出错，请稍后再试��");
         }
     },
 
@@ -194,8 +194,25 @@ const TaskManager = {
 
     formatDate: (date) => {
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-    }
+    },
+
+    checkExpiredTasks: function() {
+        const tasks = Storage.getItem('tasks') || [];
+        const now = new Date();
+        const updatedTasks = tasks.filter(task => {
+            const endDate = new Date(task.endDate + 'T' + task.endTime);
+            return endDate > now;
+        });
+
+        if (updatedTasks.length !== tasks.length) {
+            Storage.setItem('tasks', updatedTasks);
+            this.loadTasks(); // 重新加载任务列表
+        }
+    },
 };
 
-// 将 TaskManager 对象添加���全局作用域
+// 将 TaskManager 对象添加到全局作用域
 window.TaskManager = TaskManager;
+
+// 每小时检查一次过期任务
+setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 3600000);
