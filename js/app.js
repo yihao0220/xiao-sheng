@@ -121,9 +121,10 @@ function initializeMainPage() {
     Auth.checkLoginStatus();
     TaskManager.loadClasses();
     TaskManager.loadTasks();
-    updateTaskList(Storage.getItem('tasks') || []); // 添加这一行
+    updateTaskList(Storage.getItem('tasks') || []);
     UI.showTodayClasses();
     UI.showUnfinishedTasks();
+    UI.showClassReminders(); // 添加这行来显示课程提醒
 
     // 修改"添加任务"按钮的事件监听器
     document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
