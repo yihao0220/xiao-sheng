@@ -17,6 +17,60 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (error) {
         console.error("Error during app initialization:", error);
     }
+
+    // 为新切换按钮添加事件监听器
+    document.getElementById('toggleTaskFormButton').addEventListener('click', () => {
+        const addTaskForm = document.getElementById('addTaskForm');
+        const editTaskForm = document.getElementById('editTaskForm');
+        
+        if (addTaskForm.style.display === 'none' && editTaskForm.style.display === 'none') {
+            UI.showElement('addTaskForm');
+        } else {
+            UI.hideElement('addTaskForm');
+            UI.hideElement('editTaskForm');
+        }
+    });
+
+    // 修改现有事件监听器以在显示表单时隐藏切换按钮
+    document.getElementById('addTaskButton').addEventListener('click', (e) => {
+        e.preventDefault();
+        const taskName = document.getElementById('taskName').value;
+        const startDate = document.getElementById('startDate').value;
+        const startTime = document.getElementById('startTime').value;
+        const endDate = document.getElementById('endDate').value;
+        const endTime = document.getElementById('endTime').value;
+        const priority = document.getElementById('priority').value;
+        const category = document.getElementById('category').value;
+        const location = document.getElementById('location').value;
+
+        if (taskName) {
+            const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
+            TaskManager.addTask(newTask);
+            UI.hideElement('addTaskForm');
+            UI.showElement('toggleTaskFormButton');
+            clearTaskForm();
+        } else {
+            alert("请输入任务名称");
+        }
+    });
+
+    document.getElementById('cancelAddTaskButton').addEventListener('click', (e) => {
+        e.preventDefault();
+        UI.hideElement('addTaskForm');
+        UI.showElement('toggleTaskFormButton');
+        clearTaskForm();
+    });
+
+    document.getElementById('saveEditTaskButton').addEventListener('click', saveEditTask);
+    document.getElementById('cancelEditTaskButton').addEventListener('click', cancelEditTask);
+
+    Auth.checkLoginStatus();
+    TaskManager.loadClasses();
+    TaskManager.loadTasks();
+    UI.showTodayClasses();
+    UI.showUnfinishedTasks();
+
+    console.log("App initialization completed");
 });
 
 function initializeApp() {
@@ -63,35 +117,6 @@ function initializeApp() {
         UI.hideElement('showAddTaskFormButton');
     });
 
-    document.getElementById('addTaskButton').addEventListener('click', (e) => {
-        e.preventDefault();
-        const taskName = document.getElementById('taskName').value;
-        const startDate = document.getElementById('startDate').value;
-        const startTime = document.getElementById('startTime').value;
-        const endDate = document.getElementById('endDate').value;
-        const endTime = document.getElementById('endTime').value;
-        const priority = document.getElementById('priority').value;
-        const category = document.getElementById('category').value;
-        const location = document.getElementById('location').value;
-
-        if (taskName) {
-            const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
-            TaskManager.addTask(newTask);
-            UI.hideElement('addTaskForm');
-            UI.showElement('showAddTaskFormButton');
-            clearTaskForm();
-        } else {
-            alert("请输入任务名称");
-        }
-    });
-
-    document.getElementById('cancelAddTaskButton').addEventListener('click', (e) => {
-        e.preventDefault();
-        UI.hideElement('addTaskForm');
-        UI.showElement('showAddTaskFormButton');
-        clearTaskForm();
-    });
-
     document.getElementById('addClassButton').addEventListener('click', (e) => {
         e.preventDefault();
         const className = document.getElementById('className').value;
@@ -135,6 +160,19 @@ function initializeApp() {
     // 编辑任务表单事件监听
     document.getElementById('saveEditTaskButton').addEventListener('click', saveEditTask);
     document.getElementById('cancelEditTaskButton').addEventListener('click', cancelEditTask);
+
+    // Add event listener for the new toggle button
+    document.getElementById('toggleTaskFormButton').addEventListener('click', () => {
+        const addTaskForm = document.getElementById('addTaskForm');
+        const editTaskForm = document.getElementById('editTaskForm');
+        
+        if (addTaskForm.style.display === 'none' && editTaskForm.style.display === 'none') {
+            UI.showElement('addTaskForm');
+        } else {
+            UI.hideElement('addTaskForm');
+            UI.hideElement('editTaskForm');
+        }
+    });
 
     Auth.checkLoginStatus();
     TaskManager.loadClasses();
@@ -195,9 +233,13 @@ function saveEditTask(e) {
     };
     TaskManager.editTask(index, updatedTask);
     document.getElementById('editTaskForm').style.display = 'none';
+    UI.hideElement('editTaskForm');
+    UI.showElement('toggleTaskFormButton');
 }
 
 function cancelEditTask(e) {
     e.preventDefault();
     document.getElementById('editTaskForm').style.display = 'none';
+    UI.hideElement('editTaskForm');
+    UI.showElement('toggleTaskFormButton');
 }
