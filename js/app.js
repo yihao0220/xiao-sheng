@@ -124,6 +124,7 @@ function initializeMainPage() {
     Auth.checkLoginStatus();
     TaskManager.loadClasses();
     TaskManager.loadTasks();
+    updateTaskList(Storage.getItem('tasks') || []); // 添加这一行
     UI.showTodayClasses();
     UI.showUnfinishedTasks();
 
@@ -213,4 +214,31 @@ function clearTaskForm() {
     document.getElementById('priority').value = 'low';
     document.getElementById('category').value = '';
     document.getElementById('location').value = '';
+}
+
+function updateTaskList(tasks) {
+    const allTasks = document.getElementById('allTasks');
+    allTasks.innerHTML = '';
+    tasks.forEach((task, index) => {
+        const li = document.createElement('li');
+        li.className = 'task-item';
+        li.innerHTML = `
+            <h3>
+                <span class="priority-indicator priority-${task.priority}"></span>
+                ${task.name}
+            </h3>
+            <p>开始: ${task.startDate} ${task.startTime}</p>
+            <p>结束: ${task.endDate} ${task.endTime}</p>
+            <p>优先级: ${task.priority}</p>
+            ${task.category ? `<p>分类: ${task.category}</p>` : ''}
+            ${task.location ? `<p>地点: ${task.location}</p>` : ''}
+            <p>状态: ${task.completed ? '已完成' : '未完成'}</p>
+            <div class="task-actions">
+                <button class="complete-button" data-index="${index}">${task.completed ? '标记为未完成' : '标记为已完成'}</button>
+                <button class="edit-button" data-index="${index}">编辑</button>
+                <button class="delete-button" data-index="${index}">删除</button>
+            </div>
+        `;
+        allTasks.appendChild(li);
+    });
 }
