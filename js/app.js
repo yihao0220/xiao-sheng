@@ -27,8 +27,6 @@ function initializeApp() {
 
     if (currentPage === "index.html" || currentPage === "") {
         initializeMainPage();
-    } else if (currentPage === "addTask.html") {
-        initializeAddTaskPage();
     } else if (currentPage === "editTask.html") {
         initializeEditTaskPage();
     }
@@ -154,10 +152,6 @@ function initializeMainPage() {
         UI.showElement('showAddTaskFormButton');
         clearTaskForm();
     });
-}
-
-function initializeAddTaskPage() {
-    // 添加任务页面的初始化逻辑已经在 addTask.js 中实现
 }
 
 function initializeEditTaskPage() {
