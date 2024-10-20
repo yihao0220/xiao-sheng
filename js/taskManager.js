@@ -35,7 +35,7 @@ const TaskManager = {
             const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
             tasks[index] = updatedTask; // 用更新后的任务替换原有任务
             Storage.setItem('tasks', tasks); // 保存更新后的任务数组
-            UI.updateTaskList(tasks); // 更新UI显��任务列表
+            UI.updateTaskList(tasks); // 更新UI显的任务列表
             console.log("Task edited successfully"); // 日志：任务编辑成功
         } catch (error) {
             console.error("Error editing task:", error); // 错误日志：编辑任务时出错
@@ -124,7 +124,6 @@ const TaskManager = {
     getClassesForToday: () => {
         const classes = Storage.getItem('classes') || [];
         const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
-        console.log("Today is:", today);
         return classes.filter(classInfo => classInfo.day === today);
     },
 
@@ -201,15 +200,27 @@ const TaskManager = {
     },
 
     // 添加周课表
-    addWeeklySchedule: (weeklySchedule) => {
+    addWeeklySchedule: () => {
         try {
-            console.log("Adding weekly schedule:", weeklySchedule); // 日志：正在添加周课表
-            Storage.setItem('weeklySchedule', weeklySchedule); // 保存周课表
-            TaskManager.generateSemesterSchedule(weeklySchedule); // 生成学期课表
-            console.log("Weekly schedule added successfully"); // 日志：周课表添加成功
+            const weeklySchedule = [];
+            const inputs = document.querySelectorAll('#weeklyScheduleTemplate .course-input');
+            inputs.forEach(input => {
+                if (input.value.trim()) {
+                    weeklySchedule.push({
+                        name: input.value.trim(),
+                        day: ['周一', '周二', '周三', '周四', '周五'][input.dataset.day],
+                        time: input.dataset.time
+                    });
+                }
+            });
+
+            console.log("Adding weekly schedule:", weeklySchedule);
+            Storage.setItem('weeklySchedule', weeklySchedule);
+            UI.updateClassList(weeklySchedule);
+            console.log("Weekly schedule added successfully");
         } catch (error) {
-            console.error("Error adding weekly schedule:", error); // 错误日志：添加周课表时出错
-            alert("添加周课表时出错，请稍后再试"); // 显示错误消息给用户
+            console.error("Error adding weekly schedule:", error);
+            UI.showError("添加周课表时出错，请稍后再试");
         }
     },
 
@@ -239,7 +250,6 @@ const TaskManager = {
     getClassesForDate: (date) => {
         const classes = Storage.getItem('classes') || [];
         const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'});
-        console.log("Getting classes for:", dayOfWeek);
         return classes.filter(classInfo => classInfo.day === dayOfWeek);
     },
 
@@ -285,3 +295,4 @@ setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 window.TaskManager = TaskManager;
 
 // 注意：这里不需要额外的闭合大括号和分号，因为它们已经在对象定义的末尾了
+
