@@ -119,57 +119,19 @@
         </div>
 
         <!-- 编辑任务模态框 -->
-        <div class="modal fade" id="editTaskModal" tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editTaskModalLabel">编辑任务</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> <!-- 关闭编辑模态框的按钮 -->
-                    </div>
-                    <div class="modal-body">
-                        <form id="editTaskForm">
-                            <div class="mb-3">
-                                <input type="text" id="editTaskName" class="form-control" placeholder="任务名称" required> <!-- 编辑任务名称输入框 -->
-                            </div>
-                            <div class="mb-3">
-                                <input type="date" id="editStartDate" class="form-control" required> <!-- 编辑开始日期输入框 -->
-                            </div>
-                            <div class="mb-3">
-                                <input type="time" id="editStartTime" class="form-control" required> <!-- 编辑开始时间输入框 -->
-                            </div>
-                            <div class="mb-3">
-                                <input type="date" id="editEndDate" class="form-control" required> <!-- 编辑结束日期输入框 -->
-                            </div>
-                            <div class="mb-3">
-                                <input type="time" id="editEndTime" class="form-control" required> <!-- 编辑结束时间输入框 -->
-                            </div>
-                            <div class="mb-3">
-                                <select id="editPriority" class="form-select" required> <!-- 编辑优先级选择下拉菜单 -->
-                                    <option value="low">低优先级</option>
-                                    <option value="medium">中优先级</option>
-                                    <option value="high">高优先级</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" id="editCategory" class="form-control" placeholder="分类"> <!-- 编辑分类输入框 -->
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" id="editLocation" class="form-control" placeholder="地点"> <!-- 编辑地点输入框 -->
-                            </div>
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button> <!-- 取消编辑按钮 -->
-                        <button type="button" class="btn btn-primary" id="saveEditTaskButton">保存修改</button> <!-- 保存编辑修改按钮 -->
-                    </div>
-                </div>
+        <div id="editTaskModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>编辑任务</h2>
+                <form id="editTaskForm">
+                    <!-- 表单内容 -->
+                </form>
+                <button type="button" class="btn-secondary close-modal">取消</button>
+                <button type="button" class="btn-primary" id="saveEditTaskButton">保存修改</button>
             </div>
         </div>
     </div>
 
-    <!-- 首先加载 Bootstrap JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    
     <!-- 然后加载你的自定义脚本 -->
     <script src="js/storage.js"></script>
     <script src="js/ui.js"></script>
