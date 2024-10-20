@@ -135,9 +135,19 @@ function initializeApp() {
             const category = document.getElementById('category').value;
             const location = document.getElementById('location').value;
 
-            // 检查必要信息是否填写完整
-            if (taskName && startDate && startTime && endDate && endTime) {
-                const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
+            // 检查是否至少填写了任务名称
+            if (taskName) {
+                const newTask = { 
+                    name: taskName, 
+                    startDate: startDate || null, 
+                    startTime: startTime || null, 
+                    endDate: endDate || null, 
+                    endTime: endTime || null, 
+                    priority: priority || 'medium', 
+                    category: category || '', 
+                    location: location || '', 
+                    completed: false 
+                };
                 console.log("New task object:", newTask);
                 const success = TaskManager.addTask(newTask);
                 if (success) {
@@ -149,7 +159,7 @@ function initializeApp() {
                     console.log("Tasks reloaded after adding new task");
                 }
             } else {
-                UI.showError("请填写所有必要的任务信息");
+                UI.showError("请至少填写任务名称");
             }
         });
 
@@ -221,13 +231,3 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
         priority: document.getElementById('editPriority').value,
         category: document.getElementById('editCategory').value,
         location: document.getElementById('editLocation').value,
-        completed: false
-    };
-
-    TaskManager.editTask(taskIndex, updatedTask);
-    document.getElementById('editTaskModal').style.display = 'none';
-    UI.showSuccess("任务已更新");
-});
-
-// 在 DOM 加载完成后初始化应用程序
-document.addEventListener('DOMContentLoaded', initializeApp);
