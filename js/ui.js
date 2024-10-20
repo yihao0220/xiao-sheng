@@ -19,10 +19,10 @@ const UI = {
         }
     },
     updateTaskList: (tasks) => {
-        console.log("Updating task list:", tasks);
+        console.log("UI: Updating task list:", tasks);
         const allTasks = document.getElementById('allTasks');
         if (!allTasks) {
-            console.error("allTasks element not found");
+            console.error("UI: allTasks element not found");
             return;
         }
         allTasks.innerHTML = '';
@@ -47,7 +47,7 @@ const UI = {
             `;
             allTasks.appendChild(li);
         });
-        console.log("Task list updated");
+        console.log("UI: Task list updated");
     },
     showError: (message) => {
         console.error(message);
@@ -159,6 +159,18 @@ const UI = {
         document.getElementById('classStartTime').value = '';
         document.getElementById('classEndTime').value = '';
         document.getElementById('classLocation').value = '';
+    },
+    clearTaskForm: () => {
+        const formElements = ['taskName', 'startDate', 'startTime', 'endDate', 'endTime', 'priority', 'category', 'location'];
+        formElements.forEach(elementId => {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.value = '';
+            } else {
+                console.error(`Form element ${elementId} not found`);
+            }
+        });
+        console.log("Task form cleared");
     }
 };
 window.UI = UI;  // 将 UI 对象添加到全局作用域
