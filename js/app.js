@@ -12,6 +12,12 @@ window.addEventListener('unhandledrejection', function(event) {
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM content loaded");
+    if (typeof TaskManager === 'undefined') {
+        console.error("TaskManager is not defined");
+    }
+    if (typeof UI === 'undefined') {
+        console.error("UI is not defined");
+    }
     try {
         initializeApp();
     } catch (error) {
@@ -132,6 +138,7 @@ function initializeMainPage() {
     }
 
     if (elements.addTaskButton) {
+        console.log("Adding event listener to addTaskButton");
         elements.addTaskButton.addEventListener('click', (e) => {
             e.preventDefault();
             console.log("Add task button clicked");
@@ -148,7 +155,12 @@ function initializeMainPage() {
                 const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
                 TaskManager.addTask(newTask);
                 if (elements.addTaskModal) {
-                    bootstrap.Modal.getInstance(elements.addTaskModal).hide();
+                    const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
+                    if (modal) {
+                        modal.hide();
+                    } else {
+                        console.error("Bootstrap modal instance not found");
+                    }
                 }
                 UI.clearTaskForm();
             } else {
@@ -189,6 +201,13 @@ function initializeMainPage() {
             }
         });
     });
+
+    // 初始化所有模态框
+    var modals = document.querySelectorAll('.modal');
+    modals.forEach(function(modal) {
+        new bootstrap.Modal(modal);
+    });
+    console.log("Modals initialized");
 }
 
 function showEditTaskForm(index) {
