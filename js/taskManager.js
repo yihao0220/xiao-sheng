@@ -7,9 +7,11 @@ const TaskManager = {
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
             console.log("TaskManager: Task added successfully:", task);
+            return true; // 返回 true 表示添加成功
         } catch (error) {
             console.error("TaskManager: Error adding task:", error);
             UI.showError("添加任务时出错，请稍后再试。");
+            return false; // 返回 false 表示添加失败
         }
     },
     editTask: (index, updatedTask) => {
