@@ -35,7 +35,7 @@ const TaskManager = {
             const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
             tasks[index] = updatedTask; // 用更新后的任务替换原有任务
             Storage.setItem('tasks', tasks); // 保存更新后的任务数组
-            UI.updateTaskList(tasks); // 更新UI显的任务列表
+            UI.updateTaskList(tasks); // 更新UI显��任务列表
             console.log("Task edited successfully"); // 日志：任务编辑成功
         } catch (error) {
             console.error("Error editing task:", error); // 错误日志：编辑任务时出错
@@ -74,7 +74,7 @@ const TaskManager = {
         }
     },
 
-    // ���除过期任务
+    // 除过期任务
     removeExpiredTasks: (tasks) => {
         const now = new Date(); // 获取当前时间
         const updatedTasks = tasks.filter(task => {
@@ -124,6 +124,7 @@ const TaskManager = {
     getClassesForToday: () => {
         const classes = Storage.getItem('classes') || [];
         const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
+        console.log("Today is:", today);
         return classes.filter(classInfo => classInfo.day === today);
     },
 
@@ -238,6 +239,7 @@ const TaskManager = {
     getClassesForDate: (date) => {
         const classes = Storage.getItem('classes') || [];
         const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'});
+        console.log("Getting classes for:", dayOfWeek);
         return classes.filter(classInfo => classInfo.day === dayOfWeek);
     },
 
