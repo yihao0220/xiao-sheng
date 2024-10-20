@@ -8,7 +8,7 @@ window.addEventListener('unhandledrejection', function(event) {
 });
 
 // 在文件顶部定义 weeklySchedule
-let weeklySchedule = [];
+// let weeklySchedule = [];
 
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM content loaded");
@@ -104,9 +104,9 @@ function initializeMainPage() {
 
     elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
         e.preventDefault();
+        const weeklySchedule = TaskManager.getWeeklySchedule(); // 从 TaskManager 获取周课表
         TaskManager.addWeeklySchedule(weeklySchedule);
-        weeklySchedule = [];
-        UI.updateClassList([]);
+        UI.updateClassList(weeklySchedule);
     });
 
     // 任务列表事件监听
@@ -288,10 +288,10 @@ function updateTaskList(tasks) {
 }
 
 // 在文件末尾添加这个函数
-function clearClassForm() {
-    document.getElementById('className').value = '';
-    document.getElementById('classDay').value = '周一';
-    document.getElementById('classStartTime').value = '';
-    document.getElementById('classEndTime').value = '';
-    document.getElementById('classLocation').value = '';
-}
+// function clearClassForm() {
+//     document.getElementById('className').value = '';
+//     document.getElementById('classDay').value = '周一';
+//     document.getElementById('classStartTime').value = '';
+//     document.getElementById('classEndTime').value = '';
+//     document.getElementById('classLocation').value = '';
+// }
