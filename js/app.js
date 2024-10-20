@@ -132,7 +132,7 @@ function initializeMainPage() {
 
     // 修改"添加任务"按钮的事件监听器
     document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
-        document.getElementById('addTaskFormOverlay').style.display = 'flex';
+        new bootstrap.Modal(document.getElementById('addTaskFormOverlay')).show();
     });
 
     // 添加任务的事件监听器
@@ -158,10 +158,8 @@ function initializeMainPage() {
     });
 
     // 取消添加任务的事件监听器
-    document.getElementById('cancelAddTaskButton').addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('addTaskFormOverlay').style.display = 'none';
-        clearTaskForm();
+    document.getElementById('cancelAddTaskButton').addEventListener('click', () => {
+        bootstrap.Modal.getInstance(document.getElementById('addTaskFormOverlay')).hide();
     });
 }
 
@@ -255,3 +253,4 @@ function clearClassForm() {
     document.getElementById('classEndTime').value = '';
     document.getElementById('classLocation').value = '';
 }
+
