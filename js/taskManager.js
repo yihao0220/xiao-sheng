@@ -45,12 +45,16 @@ const TaskManager = {
     },
     loadTasks: () => {
         try {
+            console.log("Loading tasks");
             let tasks = Storage.getItem('tasks') || [];
+            console.log("Tasks from storage:", tasks);
             tasks = TaskManager.removeExpiredTasks(tasks);
+            console.log("Tasks after removing expired:", tasks);
             UI.updateTaskList(tasks);
+            console.log("Task list updated");
         } catch (error) {
             console.error("Error loading tasks:", error);
-            alert("加载任务列表时出错，请稍后再试。");
+            UI.showError("加载任务列表时出错，请稍后再试。");
         }
     },
 
