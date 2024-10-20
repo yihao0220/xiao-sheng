@@ -161,6 +161,16 @@ function initializeMainPage() {
     document.getElementById('cancelAddTaskButton').addEventListener('click', () => {
         bootstrap.Modal.getInstance(document.getElementById('addTaskFormOverlay')).hide();
     });
+
+    // 添加课程列表的事件监听器
+    document.getElementById('weeklyClassList').addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-class')) {
+            const index = parseInt(e.target.dataset.index);
+            if (confirm('确定要删除这个课程吗？')) {
+                TaskManager.deleteClass(index);
+            }
+        }
+    });
 }
 
 function showEditTaskForm(index) {
@@ -253,4 +263,3 @@ function clearClassForm() {
     document.getElementById('classEndTime').value = '';
     document.getElementById('classLocation').value = '';
 }
-
