@@ -35,7 +35,7 @@ const TaskManager = {
             const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
             tasks[index] = updatedTask; // 用更新后的任务替换原有任务
             Storage.setItem('tasks', tasks); // 保存更新后的任务数组
-            UI.updateTaskList(tasks); // 更新UI显示的任务列表
+            UI.updateTaskList(tasks); // 更新UI显的任务列表
             console.log("Task edited successfully"); // 日志：任务编辑成功
         } catch (error) {
             console.error("Error editing task:", error); // 错误日志：编辑任务时出错
@@ -63,7 +63,7 @@ const TaskManager = {
         try {
             console.log("Loading tasks"); // 日志：正在加载任务
             let tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
-            console.log("Tasks from storage:", tasks); // 日志：���示从存储中获取的任务
+            console.log("Tasks from storage:", tasks); // 日志：示从存储中获取的任务
             tasks = TaskManager.removeExpiredTasks(tasks); // 移除过期任务
             console.log("Tasks after removing expired:", tasks); // 日志：显示移除过期任务后的任务列表
             UI.updateTaskList(tasks); // 更新UI显示的任务列表
@@ -269,9 +269,23 @@ const TaskManager = {
             classes.splice(index, 1); // 从数组中移除指定索引的课程
             Storage.setItem('classes', classes); // 保存更新后的课程数组
             UI.updateClassList(classes); // 更新UI显示的课程列表
-            console.log("Class deleted successfully"); // 日志：课程删除成��
+            console.log("Class deleted successfully"); // 日志：课程删除成功
         } catch (error) {
             console.error("Error deleting class:", error); // 错误日志：删除课程时出错
             alert("删除课程时出错，请稍后再试。"); // 显示错误消息给用户
         }
     },
+
+    // 获取周课表
+    getWeeklySchedule: () => {
+        return Storage.getItem('weeklySchedule') || []; // 从存储中获取周课表，如果没有则返回空数组
+    },
+};
+
+// 每分钟检查一次过期任务（用于测试，实际使用可以改回每小时）
+setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
+
+// 将 TaskManager 对象添加到全局作用域
+window.TaskManager = TaskManager;
+
+// 注意：这里不需要额外的闭合大括号和分号，因为它们已经在对象定义的末尾了
