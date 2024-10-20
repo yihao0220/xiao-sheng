@@ -3,15 +3,18 @@ const TaskManager = {
         try {
             console.log("TaskManager: Adding task:", task);
             const tasks = Storage.getItem('tasks') || [];
+            console.log("Current tasks:", tasks);
             tasks.push(task);
+            console.log("Updated tasks:", tasks);
             Storage.setItem('tasks', tasks);
+            console.log("Tasks saved to storage");
             UI.updateTaskList(tasks);
-            console.log("TaskManager: Task added successfully:", task);
-            return true; // 返回 true 表示添加成功
+            console.log("UI updated with new task list");
+            return true;
         } catch (error) {
             console.error("TaskManager: Error adding task:", error);
             UI.showError("添加任务时出错，请稍后再试。");
-            return false; // 返回 false 表示添加失败
+            return false;
         }
     },
     editTask: (index, updatedTask) => {
