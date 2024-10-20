@@ -57,120 +57,107 @@ function initializeMainPage() {
         console.log(`${key}: ${value ? 'Found' : 'Not found'}`);
     }
 
-    const requiredElements = [
-        'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
-        'showAddTaskFormButton', 'allTasks', 
-        'addClassButton', 'saveWeeklyScheduleButton', 'weeklyClassList'
-    ];
-
-    const missingElements = requiredElements.filter(id => !document.getElementById(id));
-    if (missingElements.length > 0) {
-        console.error("Missing required elements:", missingElements);
-        UI.showError("页面加载出错，缺少必要元素。请刷新页面或联系管理员。");
-        return;
+    // 只为存在的元素添加事件监听器
+    if (elements.loginButton) {
+        elements.loginButton.addEventListener('click', () => {
+            UI.showElement('authForm');
+            UI.hideElement('loginButton');
+        });
     }
 
-    // 设置主页面的事件监听器
-    elements.loginButton?.addEventListener('click', () => {
-        UI.showElement('authForm');
-        UI.hideElement('loginButton');
-    });
+    if (elements.submitLoginButton) {
+        elements.submitLoginButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            Auth.login(username, password);
+        });
+    }
 
-    elements.submitLoginButton?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        Auth.login(username, password);
-    });
+    if (elements.logoutButton) {
+        elements.logoutButton.addEventListener('click', Auth.logout);
+    }
 
-    elements.logoutButton?.addEventListener('click', Auth.logout);
+    if (elements.addClassButton) {
+        elements.addClassButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const className = document.getElementById('className').value;
+            const classDay = document.getElementById('classDay').value;
+            const classStartTime = document.getElementById('classStartTime').value;
+            const classEndTime = document.getElementById('classEndTime').value;
+            const classLocation = document.getElementById('classLocation').value;
 
-    elements.addClassButton?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const className = document.getElementById('className').value;
-        const classDay = document.getElementById('classDay').value;
-        const classStartTime = document.getElementById('classStartTime').value;
-        const classEndTime = document.getElementById('classEndTime').value;
-        const classLocation = document.getElementById('classLocation').value;
-
-        if (className && classDay && classStartTime && classEndTime) {
-            const newClass = { name: className, day: classDay, startTime: classStartTime, endTime: classEndTime, location: classLocation };
-            TaskManager.addClass(newClass);
-            clearClassForm();
-        } else {
-            alert("请填写所有必要的课程信息");
-        }
-    });
-
-    elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const weeklySchedule = TaskManager.getWeeklySchedule(); // 从 TaskManager 获取周课表
-        TaskManager.addWeeklySchedule(weeklySchedule);
-        UI.updateClassList(weeklySchedule);
-    });
-
-    // 任务列表事件监听
-    elements.allTasks?.addEventListener('click', (e) => {
-        if (e.target.classList.contains('edit-button')) {
-            const index = parseInt(e.target.dataset.index);
-            showEditTaskForm(index);
-        } else if (e.target.classList.contains('delete-button')) {
-            const index = parseInt(e.target.dataset.index);
-            if (confirm('确定要删除这个任务吗？')) {
-                TaskManager.deleteTask(index);
+            if (className && classDay && classStartTime && classEndTime) {
+                const newClass = { name: className, day: classDay, startTime: classStartTime, endTime: classEndTime, location: classLocation };
+                TaskManager.addClass(newClass);
+                UI.clearClassForm();
+            } else {
+                UI.showError("请填写所有必要的课程信息");
             }
-        }
-    });
+        });
+    }
 
-    // 编辑任务表单的事件监听器
-    document.getElementById('saveEditTaskButton').addEventListener('click', saveEditTask);
+    if (elements.saveWeeklyScheduleButton) {
+        elements.saveWeeklyScheduleButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const weeklySchedule = TaskManager.getWeeklySchedule();
+            TaskManager.addWeeklySchedule(weeklySchedule);
+            UI.updateClassList(weeklySchedule);
+        });
+    }
 
-    document.getElementById('cancelEditTaskButton').addEventListener('click', (e) => {
-        e.preventDefault();
-        document.getElementById('editTaskFormOverlay').style.display = 'none';
-    });
+    if (elements.allTasks) {
+        elements.allTasks.addEventListener('click', (e) => {
+            if (e.target.classList.contains('edit-button')) {
+                const index = parseInt(e.target.dataset.index);
+                showEditTaskForm(index);
+            } else if (e.target.classList.contains('delete-button')) {
+                const index = parseInt(e.target.dataset.index);
+                if (confirm('确定要删除这个任务吗？')) {
+                    TaskManager.deleteTask(index);
+                }
+            }
+        });
+    }
 
-    Auth.checkLoginStatus();
-    TaskManager.loadClasses();
-    TaskManager.loadTasks();
-    updateTaskList(Storage.getItem('tasks') || []);
-    
-    setTimeout(() => {
-        UI.showTodayClasses();
-        UI.showUnfinishedTasks();
-        UI.showClassReminders();
-    }, 1000);
+    if (elements.showAddTaskFormButton) {
+        elements.showAddTaskFormButton.addEventListener('click', () => {
+            console.log("Showing add task modal");
+            if (elements.addTaskModal) {
+                new bootstrap.Modal(elements.addTaskModal).show();
+            } else {
+                console.error("Add task modal not found");
+            }
+        });
+    }
 
-    elements.showAddTaskFormButton?.addEventListener('click', () => {
-        console.log("Showing add task modal");
-        if (elements.addTaskModal) {
-            elements.addTaskModal.style.display = 'block';
-        } else {
-            console.error("Add task modal not found");
-        }
-    });
+    if (elements.addTaskButton) {
+        elements.addTaskButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("Add task button clicked");
+            const taskName = document.getElementById('taskName').value;
+            const startDate = document.getElementById('startDate').value;
+            const startTime = document.getElementById('startTime').value;
+            const endDate = document.getElementById('endDate').value;
+            const endTime = document.getElementById('endTime').value;
+            const priority = document.getElementById('priority').value;
+            const category = document.getElementById('category').value;
+            const location = document.getElementById('location').value;
 
-    // 添加任务的事件监听器
-    elements.addTaskButton?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const taskName = document.getElementById('taskName').value;
-        const startDate = document.getElementById('startDate').value;
-        const startTime = document.getElementById('startTime').value;
-        const endDate = document.getElementById('endDate').value;
-        const endTime = document.getElementById('endTime').value;
-        const priority = document.getElementById('priority').value;
-        const category = document.getElementById('category').value;
-        const location = document.getElementById('location').value;
-
-        if (taskName) {
-            const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
-            TaskManager.addTask(newTask);
-            bootstrap.Modal.getInstance(elements.addTaskModal).hide();
-            clearTaskForm();
-        } else {
-            alert("请输入任务名称");
-        }
-    });
+            if (taskName) {
+                const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
+                TaskManager.addTask(newTask);
+                if (elements.addTaskModal) {
+                    bootstrap.Modal.getInstance(elements.addTaskModal).hide();
+                }
+                UI.clearTaskForm();
+            } else {
+                UI.showError("请输入任务名称");
+            }
+        });
+    } else {
+        console.error("Add task button not found");
+    }
 
     // 取消添加任务的事件监听器
     elements.cancelAddTaskButton?.addEventListener('click', (e) => {
@@ -246,7 +233,7 @@ function saveEditTask() {
     alert("任务已更新");
 }
 
-// 在文件末尾添加这个函数
+// 在文件末尾添加这个函
 function clearTaskForm() {
     document.getElementById('taskName').value = '';
     document.getElementById('startDate').value = '';
@@ -295,3 +282,4 @@ function updateTaskList(tasks) {
 //     document.getElementById('classEndTime').value = '';
 //     document.getElementById('classLocation').value = '';
 // }
+
