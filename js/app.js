@@ -79,7 +79,7 @@ function initializeApp() {
             }
         });
 
-        // 为保存周课表按钮添加点击事件监听器
+        // 为保存周课表按钮添���点击事件监听器
         elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
             e.preventDefault();
             const weeklySchedule = TaskManager.getWeeklySchedule();
