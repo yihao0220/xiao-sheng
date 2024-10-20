@@ -5,174 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>大学任务提醒</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
-    <div class="app-container">
-        <header class="app-header">
-            <h1>大学任务提醒</h1>
-            <button id="loginButton" class="btn btn-primary">登录</button>
-            <button id="logoutButton" class="btn btn-secondary" style="display: none;">退出</button>
+    <div class="container">
+        <header class="py-3 mb-4 border-bottom">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h3 mb-0">大学任务提醒</h1>
+                <div>
+                    <button id="loginButton" class="btn btn-primary">登录</button>
+                    <button id="logoutButton" class="btn btn-secondary" style="display: none;">退出</button>
+                </div>
+            </div>
         </header>
 
-        <main class="app-main">
-            <div id="authForm" class="auth-form" style="display: none;">
-                <h2>登录</h2>
-                <form id="loginForm">
-                    <input type="text" id="loginUsername" placeholder="用户名" required>
-                    <input type="password" id="loginPassword" placeholder="密码" required>
-                    <button id="submitLoginButton" class="btn btn-primary">登录</button>
-                </form>
+        <main>
+            <div id="authForm" class="card mb-4" style="display: none;">
+                <div class="card-body">
+                    <h2 class="card-title">登录</h2>
+                    <form id="loginForm">
+                        <div class="mb-3">
+                            <input type="text" id="loginUsername" class="form-control" placeholder="用户名" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" id="loginPassword" class="form-control" placeholder="密码" required>
+                        </div>
+                        <button id="submitLoginButton" class="btn btn-primary">登录</button>
+                    </form>
+                </div>
             </div>
 
             <div id="taskManager" style="display: none;">
-                <button id="showAddTaskFormButton" class="btn btn-primary full-width">添加任务</button>
+                <button id="showAddTaskFormButton" class="btn btn-primary w-100 mb-4">添加任务</button>
 
-                <section class="task-section">
-                    <h2>任务列表</h2>
-                    <div class="task-filters">
-                        <select id="taskSort">
-                            <option value="startDate">开始日期</option>
-                            <option value="endDate">结束日期</option>
-                            <option value="priority">优先级</option>
-                        </select>
-                        <input type="text" id="taskSearch" placeholder="搜索任务...">
-                        <button id="clearSearchButton" class="btn btn-secondary">清除搜索</button>
-                    </div>
-                    <ul id="allTasks" class="task-list"></ul>
-                </section>
-
-                <section class="class-section">
-                    <h2>添加课程信息</h2>
-                    <form id="addClassForm" class="class-form">
-                        <input type="text" id="className" placeholder="课程名称" required>
-                        <select id="classDay" required>
-                            <option value="周一">周一</option>
-                            <option value="周二">周二</option>
-                            <option value="周三">周三</option>
-                            <option value="周四">周四</option>
-                            <option value="周五">周五</option>
-                            <option value="周六">周六</option>
-                            <option value="周日">周日</option>
-                        </select>
-                        <input type="time" id="classStartTime" required>
-                        <input type="time" id="classEndTime" required>
-                        <input type="text" id="classLocation" placeholder="上课地点 (可选)">
-                        <button id="addClassButton" type="submit" class="btn btn-primary">添加课程</button>
-                    </form>
-                    <button id="saveWeeklyScheduleButton" class="btn btn-primary">保存周课表</button>
-                    <ul id="weeklyClassList" class="class-list"></ul>
-                    <!-- 在 class-section 中添加这个元素 -->
-                    <ul id="classList" class="class-list"></ul>
-                </section>
-
-                <!-- 在 taskManager div 中添加这个部分 -->
-                <div id="addTaskFormOverlay" class="overlay" style="display: none;">
-                    <div class="task-form" id="addTaskForm">
-                        <h2>添加新任务</h2>
-                        <form>
-                            <div class="form-group">
-                                <label for="taskName">任务名称</label>
-                                <input type="text" id="taskName" placeholder="输入任务名称" required>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="startDate">开始日期</label>
-                                    <input type="date" id="startDate" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="startTime">开始时间</label>
-                                    <input type="time" id="startTime" required>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="endDate">结束日期</label>
-                                    <input type="date" id="endDate" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="endTime">结束时间</label>
-                                    <input type="time" id="endTime" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="priority">优先级</label>
-                                <select id="priority" required>
-                                    <option value="low">低优先级</option>
-                                    <option value="medium">中优先级</option>
-                                    <option value="high">高优先级</option>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">任务列表</h2>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <select id="taskSort" class="form-select">
+                                    <option value="startDate">开始日期</option>
+                                    <option value="endDate">结束日期</option>
+                                    <option value="priority">优先级</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="category">分类</label>
-                                <input type="text" id="category" placeholder="输入任务分类">
+                            <div class="col">
+                                <input type="text" id="taskSearch" class="form-control" placeholder="搜索任务...">
                             </div>
-                            <div class="form-group">
-                                <label for="location">地点</label>
-                                <input type="text" id="location" placeholder="输入任务地点">
+                            <div class="col-auto">
+                                <button id="clearSearchButton" class="btn btn-secondary">清除搜索</button>
                             </div>
-                            <div class="form-actions">
-                                <button id="addTaskButton" class="btn btn-primary">添加任务</button>
-                                <button id="cancelAddTaskButton" class="btn btn-secondary">取消</button>
-                            </div>
-                        </form>
+                        </div>
+                        <ul id="allTasks" class="list-group"></ul>
                     </div>
                 </div>
 
-                <!-- 在 taskManager div 中添加这个部分，紧接着 addTaskFormOverlay 之后 -->
-                <div id="editTaskFormOverlay" class="overlay" style="display: none;">
-                    <div class="task-form" id="editTaskForm">
-                        <h2>编辑任务</h2>
-                        <form>
-                            <div class="form-group">
-                                <label for="editTaskName">任务名称</label>
-                                <input type="text" id="editTaskName" placeholder="输入任务名称" required>
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">添加课程信息</h2>
+                        <form id="addClassForm">
+                            <div class="mb-3">
+                                <input type="text" id="className" class="form-control" placeholder="课程名称" required>
                             </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="editStartDate">��始日期</label>
-                                    <input type="date" id="editStartDate" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editStartTime">开始时间</label>
-                                    <input type="time" id="editStartTime" required>
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="editEndDate">结束日期</label>
-                                    <input type="date" id="editEndDate" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="editEndTime">结束时间</label>
-                                    <input type="time" id="editEndTime" required>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="editPriority">优先级</label>
-                                <select id="editPriority" required>
-                                    <option value="low">低优先级</option>
-                                    <option value="medium">中优先级</option>
-                                    <option value="high">高优先级</option>
+                            <div class="mb-3">
+                                <select id="classDay" class="form-select" required>
+                                    <option value="周一">周一</option>
+                                    <option value="周二">周二</option>
+                                    <option value="周三">周三</option>
+                                    <option value="周四">周四</option>
+                                    <option value="周五">周五</option>
+                                    <option value="周六">周六</option>
+                                    <option value="周日">周日</option>
                                 </select>
                             </div>
-                            <div class="form-group">
-                                <label for="editCategory">分类</label>
-                                <input type="text" id="editCategory" placeholder="输入任务分类">
+                            <div class="mb-3">
+                                <input type="time" id="classStartTime" class="form-control" required>
                             </div>
-                            <div class="form-group">
-                                <label for="editLocation">地点</label>
-                                <input type="text" id="editLocation" placeholder="输入任务地点">
+                            <div class="mb-3">
+                                <input type="time" id="classEndTime" class="form-control" required>
                             </div>
-                            <div class="form-actions">
-                                <button id="saveEditTaskButton" class="btn btn-primary">保存修改</button>
-                                <button id="cancelEditTaskButton" class="btn btn-secondary">取消</button>
+                            <div class="mb-3">
+                                <input type="text" id="classLocation" class="form-control" placeholder="上课地点 (可选)">
                             </div>
+                            <button id="addClassButton" type="submit" class="btn btn-primary">添加课程</button>
                         </form>
+                        <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3">保存周课表</button>
+                        <ul id="weeklyClassList" class="list-group mt-3"></ul>
                     </div>
                 </div>
             </div>
         </main>
+    </div>
+
+    <!-- 添加任务表单模态框 -->
+    <div class="modal fade" id="addTaskFormOverlay" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">添加新任务</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- 添加任务表单内容 -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 编辑任务表单模态框 -->
+    <div class="modal fade" id="editTaskFormOverlay" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">编辑任务</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- 编辑任务表单内容 -->
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="js/storage.js"></script>
@@ -180,5 +133,6 @@
     <script src="js/taskManager.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
