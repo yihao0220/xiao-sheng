@@ -152,14 +152,13 @@ function initializeApp() {
                 const success = TaskManager.addTask(newTask);
                 if (success) {
                     console.log("Task added successfully");
-                    // 隐藏模态框
-                    const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
+                    // 确保模态框正确关闭
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('addTaskModal'));
                     if (modal) {
                         modal.hide();
-                        console.log("Modal hidden");
                     } else {
                         console.error("Bootstrap modal instance not found");
-                        elements.addTaskModal.style.display = 'none';
+                        document.getElementById('addTaskModal').style.display = 'none';
                     }
                     UI.clearTaskForm();
                     UI.showSuccess("任务已添加");
