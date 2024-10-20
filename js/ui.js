@@ -152,6 +152,13 @@ const UI = {
         } else {
             console.log("No classes found for yesterday");
         }
+    },
+    clearClassForm: () => {
+        document.getElementById('className').value = '';
+        document.getElementById('classDay').value = '周一';
+        document.getElementById('classStartTime').value = '';
+        document.getElementById('classEndTime').value = '';
+        document.getElementById('classLocation').value = '';
     }
 };
 window.UI = UI;  // 将 UI 对象添加到全局作用域
