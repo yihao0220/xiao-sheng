@@ -123,7 +123,7 @@ function initializeApp() {
                     UI.clearTaskForm();
                     UI.showSuccess("任务已添加");
                     TaskManager.loadTasks(); // 重新加载任务列表
-                    console.log("Tasks reloaded");
+                    console.log("Tasks reloaded after adding new task");
                 }
             } else {
                 UI.showError("请输入任务名称");
@@ -151,7 +151,8 @@ function initializeApp() {
         // 初始化
         Auth.checkLoginStatus();
         TaskManager.loadClasses();
-        TaskManager.loadTasks();
+        TaskManager.loadTasks(); // 确保这行代码存在
+        console.log("Tasks loaded");
 
         console.log("App initialization completed");
     } catch (error) {
