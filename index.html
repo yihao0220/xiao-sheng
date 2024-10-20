@@ -1,46 +1,46 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>大学任务提醒</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="./styles.css">
+<!DOCTYPE html> <!-- 声明文档类型为HTML5 -->
+<html lang="zh-CN"> <!-- 开始HTML文档，设置语言为中文简体 -->
+<head> <!-- 头部信息开始 -->
+    <meta charset="UTF-8"> <!-- 设置字符编码为UTF-8 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 设置视口，确保在移动设备上正确显示 -->
+    <title>大学任务提醒</title> <!-- 设置页面标题 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"> <!-- 引入Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"> <!-- 引入Font Awesome图标库 -->
+    <link rel="stylesheet" href="./styles.css"> <!-- 引入自定义CSS文件 -->
 </head>
-<body>
-    <div class="container mt-4">
-        <header class="mb-4">
-            <h1 class="text-center">大学任务提醒</h1>
-            <div class="text-end">
-                <button id="loginButton" class="btn btn-primary">登录</button>
-                <button id="logoutButton" class="btn btn-secondary" style="display: none;">退出</button>
+<body> <!-- 页面主体开始 -->
+    <div class="container mt-4"> <!-- 创建一个带上边距的容器 -->
+        <header class="mb-4"> <!-- 页面头部，带下边距 -->
+            <h1 class="text-center">大学任务提醒</h1> <!-- 居中显示的标题 -->
+            <div class="text-end"> <!-- 右对齐的容器 -->
+                <button id="loginButton" class="btn btn-primary">登录</button> <!-- 登录按钮 -->
+                <button id="logoutButton" class="btn btn-secondary" style="display: none;">退出</button> <!-- 退出按钮，初始隐藏 -->
             </div>
         </header>
 
-        <main>
-            <div id="authForm" class="card mb-4" style="display: none;">
+        <main> <!-- 主要内容区域 -->
+            <div id="authForm" class="card mb-4" style="display: none;"> <!-- 认证表单，初始隐藏 -->
                 <div class="card-body">
                     <h2 class="card-title">登录</h2>
                     <form id="loginForm">
                         <div class="mb-3">
-                            <input type="text" id="loginUsername" class="form-control" placeholder="用户名" required>
+                            <input type="text" id="loginUsername" class="form-control" placeholder="用户名" required> <!-- 用户名输入框 -->
                         </div>
                         <div class="mb-3">
-                            <input type="password" id="loginPassword" class="form-control" placeholder="密码" required>
+                            <input type="password" id="loginPassword" class="form-control" placeholder="密码" required> <!-- 密码输入框 -->
                         </div>
-                        <button id="submitLoginButton" class="btn btn-primary">登录</button>
+                        <button id="submitLoginButton" class="btn btn-primary">登录</button> <!-- 提交登录按钮 -->
                     </form>
                 </div>
             </div>
 
-            <div id="taskManager" style="display: none;">
-                <button id="showAddTaskFormButton" class="btn btn-primary mb-4 w-100" data-bs-toggle="modal" data-bs-target="#addTaskModal">添加任务</button>
+            <div id="taskManager" style="display: none;"> <!-- 任务管理区域，初始隐藏 -->
+                <button id="showAddTaskFormButton" class="btn btn-primary mb-4 w-100" data-bs-toggle="modal" data-bs-target="#addTaskModal">添加任务</button> <!-- 显示添加任务模态框的按钮 -->
 
                 <div class="card mb-4">
                     <div class="card-body">
                         <h2 class="card-title">任务列表</h2>
-                        <ul id="allTasks" class="list-group"></ul>
+                        <ul id="allTasks" class="list-group"></ul> <!-- 用于显示所有任务的列表 -->
                     </div>
                 </div>
 
@@ -49,10 +49,10 @@
                         <h2 class="card-title">添加课程信息</h2>
                         <form id="addClassForm">
                             <div class="mb-3">
-                                <input type="text" id="className" class="form-control" placeholder="课程名称" required>
+                                <input type="text" id="className" class="form-control" placeholder="课程名称" required> <!-- 课程名称输入框 -->
                             </div>
                             <div class="mb-3">
-                                <select id="classDay" class="form-select" required>
+                                <select id="classDay" class="form-select" required> <!-- 选择上课日期的下拉菜单 -->
                                     <option value="周一">周一</option>
                                     <option value="周二">周二</option>
                                     <option value="周三">周三</option>
@@ -63,18 +63,18 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <input type="time" id="classStartTime" class="form-control" required>
+                                <input type="time" id="classStartTime" class="form-control" required> <!-- 课程开始时间输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="time" id="classEndTime" class="form-control" required>
+                                <input type="time" id="classEndTime" class="form-control" required> <!-- 课程结束时间输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="text" id="classLocation" class="form-control" placeholder="上课地点 (可选)">
+                                <input type="text" id="classLocation" class="form-control" placeholder="上课地点 (可选)"> <!-- 上课地点输入框 -->
                             </div>
-                            <button id="addClassButton" type="submit" class="btn btn-primary">添加课程</button>
+                            <button id="addClassButton" type="submit" class="btn btn-primary">添加课程</button> <!-- 添加课程按钮 -->
                         </form>
-                        <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3">保存周课表</button>
-                        <ul id="weeklyClassList" class="list-group mt-3"></ul>
+                        <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3">保存周课表</button> <!-- 保存周课表按钮 -->
+                        <ul id="weeklyClassList" class="list-group mt-3"></ul> <!-- 用于显示周课表的列表 -->
                     </div>
                 </div>
             </div>
@@ -86,43 +86,43 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="addTaskModalLabel">添加任务</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> <!-- 关闭模态框的按钮 -->
                     </div>
                     <div class="modal-body">
                         <form id="addTaskForm">
                             <div class="mb-3">
-                                <input type="text" id="taskName" class="form-control" placeholder="任务名称" required>
+                                <input type="text" id="taskName" class="form-control" placeholder="任务名称" required> <!-- 任务名称输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="date" id="startDate" class="form-control" required>
+                                <input type="date" id="startDate" class="form-control" required> <!-- 开始日期输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="time" id="startTime" class="form-control" required>
+                                <input type="time" id="startTime" class="form-control" required> <!-- 开始时间输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="date" id="endDate" class="form-control" required>
+                                <input type="date" id="endDate" class="form-control" required> <!-- 结束日期输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="time" id="endTime" class="form-control" required>
+                                <input type="time" id="endTime" class="form-control" required> <!-- 结束时间输入框 -->
                             </div>
                             <div class="mb-3">
-                                <select id="priority" class="form-select" required>
+                                <select id="priority" class="form-select" required> <!-- 优先级选择下拉菜单 -->
                                     <option value="low">低优先级</option>
                                     <option value="medium">中优先级</option>
                                     <option value="high">高优先级</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <input type="text" id="category" class="form-control" placeholder="分类">
+                                <input type="text" id="category" class="form-control" placeholder="分类"> <!-- 分类输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="text" id="location" class="form-control" placeholder="地点">
+                                <input type="text" id="location" class="form-control" placeholder="地点"> <!-- 地点输入框 -->
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" id="cancelAddTaskButton" data-bs-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-primary" id="addTaskButton">添加任务</button>
+                        <button type="button" class="btn btn-secondary" id="cancelAddTaskButton" data-bs-dismiss="modal">取消</button> <!-- 取消添加任务按钮 -->
+                        <button type="button" class="btn btn-primary" id="addTaskButton">添加任务</button> <!-- 确认添加任务按钮 -->
                     </div>
                 </div>
             </div>
@@ -134,54 +134,58 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editTaskModalLabel">编辑任务</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> <!-- 关闭编辑模态框的按钮 -->
                     </div>
                     <div class="modal-body">
                         <form id="editTaskForm">
                             <div class="mb-3">
-                                <input type="text" id="editTaskName" class="form-control" placeholder="任务名称" required>
+                                <input type="text" id="editTaskName" class="form-control" placeholder="任务名称" required> <!-- 编辑任务名称输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="date" id="editStartDate" class="form-control" required>
+                                <input type="date" id="editStartDate" class="form-control" required> <!-- 编辑开始日期输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="time" id="editStartTime" class="form-control" required>
+                                <input type="time" id="editStartTime" class="form-control" required> <!-- 编辑开始时间输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="date" id="editEndDate" class="form-control" required>
+                                <input type="date" id="editEndDate" class="form-control" required> <!-- 编辑结束日期输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="time" id="editEndTime" class="form-control" required>
+                                <input type="time" id="editEndTime" class="form-control" required> <!-- 编辑结束时间输入框 -->
                             </div>
                             <div class="mb-3">
-                                <select id="editPriority" class="form-select" required>
+                                <select id="editPriority" class="form-select" required> <!-- 编辑优先级选择下拉菜单 -->
                                     <option value="low">低优先级</option>
                                     <option value="medium">中优先级</option>
                                     <option value="high">高优先级</option>
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <input type="text" id="editCategory" class="form-control" placeholder="分类">
+                                <input type="text" id="editCategory" class="form-control" placeholder="分类"> <!-- 编辑分类输入框 -->
                             </div>
                             <div class="mb-3">
-                                <input type="text" id="editLocation" class="form-control" placeholder="地点">
+                                <input type="text" id="editLocation" class="form-control" placeholder="地点"> <!-- 编辑地点输入框 -->
                             </div>
                         </form>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-primary" id="saveEditTaskButton">保存修改</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button> <!-- 取消编辑按钮 -->
+                        <button type="button" class="btn btn-primary" id="saveEditTaskButton">保存修改</button> <!-- 保存编辑修改按钮 -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- 首先加载 Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- 然后加载你的自定义脚本 -->
     <script src="js/storage.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/taskManager.js"></script>
     <script src="js/auth.js"></script>
-    <script src="js/app.js"></script>
     <script src="js/addTask.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
