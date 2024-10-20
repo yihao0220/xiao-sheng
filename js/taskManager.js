@@ -198,10 +198,12 @@ const TaskManager = {
     },
 
     getClassesForDate: (date) => {
-        const semesterClasses = Storage.getItem('semesterClasses') || [];
-        return semesterClasses.filter(cls => 
-            TaskManager.formatDate(new Date(cls.date)) === TaskManager.formatDate(date)
-        );
+        const classes = Storage.getItem('classes') || [];
+        const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'});
+        console.log("Getting classes for:", dayOfWeek);
+        const todayClasses = classes.filter(classInfo => classInfo.day === dayOfWeek);
+        console.log("Classes found:", todayClasses);
+        return todayClasses;
     },
 
     formatDate: (date) => {
