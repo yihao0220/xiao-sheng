@@ -3,9 +3,10 @@ const Storage = {
         try {
             console.log(`Setting ${key} in storage:`, value);
             localStorage.setItem(key, JSON.stringify(value));
+            console.log(`${key} set successfully`);
         } catch (error) {
             console.error(`Error setting ${key} in storage:`, error);
-            alert("存储数据时出错，请确保您的浏览器支持本地存储。");
+            throw error; // 抛出错误以便上层捕获
         }
     },
     getItem: (key) => {
