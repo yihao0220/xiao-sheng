@@ -91,11 +91,12 @@ const UI = {
             return;
         }
         weeklyClassList.innerHTML = '';
-        classes.forEach((classInfo) => {
+        classes.forEach((classInfo, index) => {
             const li = document.createElement('li');
+            li.className = 'list-group-item d-flex justify-content-between align-items-center';
             li.innerHTML = `
                 <span>${classInfo.name} - ${classInfo.day} ${classInfo.startTime}-${classInfo.endTime} ${classInfo.location}</span>
-                ${classInfo.photo ? `<img src="${classInfo.photo}" alt="${classInfo.name}" style="max-width: 100px; max-height: 100px;">` : ''}
+                <button class="btn btn-danger btn-sm delete-class" data-index="${index}">删除</button>
             `;
             weeklyClassList.appendChild(li);
         });
