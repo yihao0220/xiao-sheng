@@ -231,3 +231,13 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
         priority: document.getElementById('editPriority').value,
         category: document.getElementById('editCategory').value,
         location: document.getElementById('editLocation').value,
+        completed: false
+    };
+
+    TaskManager.editTask(taskIndex, updatedTask);
+    document.getElementById('editTaskModal').style.display = 'none';
+    UI.showSuccess("任务已更新");
+});
+
+// 在 DOM 加载完成后初始化应用程序
+document.addEventListener('DOMContentLoaded', initializeApp);
