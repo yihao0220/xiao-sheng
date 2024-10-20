@@ -109,7 +109,7 @@ body {
 
 /* 设置任务项悬停效果 */
 .task-item:hover {
-    transform: translateY(-3px); /* 上移3���素 */
+    transform: translateY(-3px); /* 上移3素 */
     box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* 增强阴影 */
 }
 
@@ -385,3 +385,4 @@ body {
 
 /* 添加其他必要的样式来替代 Bootstrap 的样式 */
 /* ... */
+
