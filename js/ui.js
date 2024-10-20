@@ -27,11 +27,12 @@ const UI = {
         }
         allTasks.innerHTML = '';
         tasks.forEach((task, index) => {
+            console.log(`Creating list item for task ${index}:`, task);
             const li = document.createElement('li');
             li.className = 'list-group-item';
             li.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center">
-                    <span>${task.name}</span>
+                    <span>${task.name} - ${task.startDate} ${task.startTime}</span>
                     <div>
                         <button class="btn btn-sm btn-outline-primary edit-button" data-index="${index}">编辑</button>
                         <button class="btn btn-sm btn-outline-danger delete-button" data-index="${index}">删除</button>
@@ -40,7 +41,7 @@ const UI = {
             `;
             allTasks.appendChild(li);
         });
-        console.log("UI: Task list updated");
+        console.log("UI: Task list updated, total tasks:", tasks.length);
     },
     showError: (message) => {
         console.error(message);
