@@ -119,9 +119,22 @@ function initializeMainPage() {
         UI.showClassReminders();
     }, 1000);
 
-    // 修改"添加任务"按钮的事件监听器
-    document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
-        new bootstrap.Modal(document.getElementById('addTaskModal')).show();
+    const showAddTaskFormButton = document.getElementById('showAddTaskFormButton');
+    const addTaskModal = document.getElementById('addTaskModal');
+    if (showAddTaskFormButton && addTaskModal) {
+        showAddTaskFormButton.addEventListener('click', () => {
+            addTaskModal.style.display = 'block';
+        });
+    } else {
+        console.error("showAddTaskFormButton or addTaskModal not found");
+    }
+
+    // 添加关闭模态框的逻辑
+    const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
+    closeButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            addTaskModal.style.display = 'none';
+        });
     });
 
     // 添加任务的事件监听器
