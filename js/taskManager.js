@@ -1,14 +1,15 @@
 const TaskManager = {
     addTask: (task) => {
         try {
+            console.log("TaskManager: Adding task:", task);
             const tasks = Storage.getItem('tasks') || [];
             tasks.push(task);
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
-            console.log("Task added successfully:", task);
+            console.log("TaskManager: Task added successfully:", task);
         } catch (error) {
-            console.error("Error adding task:", error);
-            alert("添加任务时出错，请稍后再试。");
+            console.error("TaskManager: Error adding task:", error);
+            UI.showError("添加任务时出错，请稍后再试。");
         }
     },
     editTask: (index, updatedTask) => {
