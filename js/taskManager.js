@@ -3,16 +3,28 @@ const TaskManager = {
     // 添加新任务
     addTask: (task) => {
         try {
-            console.log("TaskManager: Adding task:", task); // 日志：正在添加任务
-            const tasks = Storage.getItem('tasks') || []; // 从存储中获取现有任务，如果没有则初始化为空数组
-            tasks.push(task); // 将新任务添加到任务数组中
-            Storage.setItem('tasks', tasks); // 将更新后的任务数组保存到存储中
-            console.log("TaskManager: Task added to storage, total tasks:", tasks.length); // 日志：任务添加成功，显示总任务数
-            return true; // 返回true表示添加成功
+            console.log("TaskManager: Adding task:", task);
+            const tasks = Storage.getItem('tasks') || [];
+            // 为未填写的字段设置默认值
+            const newTask = {
+                name: task.name,
+                startDate: task.startDate || new Date().toISOString().split('T')[0], // 默认为今天
+                startTime: task.startTime || '00:00',
+                endDate: task.endDate || task.startDate || new Date().toISOString().split('T')[0],
+                endTime: task.endTime || '23:59',
+                priority: task.priority || 'medium',
+                category: task.category || '',
+                location: task.location || '',
+                completed: false
+            };
+            tasks.push(newTask);
+            Storage.setItem('tasks', tasks);
+            console.log("TaskManager: Task added to storage, total tasks:", tasks.length);
+            return true;
         } catch (error) {
-            console.error("TaskManager: Error adding task:", error); // 错误日志：添加任务时出错
-            UI.showError("添加任务时出错，请稍后再试。"); // 显示错误消息给用户
-            return false; // 返回false表示添加失败
+            console.error("TaskManager: Error adding task:", error);
+            UI.showError("添加任务时出错，请稍后再试。");
+            return false;
         }
     },
 
@@ -49,16 +61,16 @@ const TaskManager = {
     // 加载所有任务
     loadTasks: () => {
         try {
-            console.log("Loading tasks");
-            let tasks = Storage.getItem('tasks') || [];
-            console.log("Tasks from storage:", tasks);
-            tasks = TaskManager.removeExpiredTasks(tasks);
-            console.log("Tasks after removing expired:", tasks);
-            UI.updateTaskList(tasks); // 确保这行代码存在
-            console.log("Task list updated, total tasks:", tasks.length);
+            console.log("Loading tasks"); // 日志：正在加载任务
+            let tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
+            console.log("Tasks from storage:", tasks); // 日志：���示从存储中获取的任务
+            tasks = TaskManager.removeExpiredTasks(tasks); // 移除过期任务
+            console.log("Tasks after removing expired:", tasks); // 日志：显示移除过期任务后的任务列表
+            UI.updateTaskList(tasks); // 更新UI显示的任务列表
+            console.log("Task list updated, total tasks:", tasks.length); // 日志：任务列表更新完成，显示总任务数
         } catch (error) {
-            console.error("Error loading tasks:", error);
-            UI.showError("加载任务列表时出错，请稍后再试。");
+            console.error("Error loading tasks:", error); // 错误日志：加载任务时出错
+            UI.showError("加载任务列表时出错，请稍后再试。"); // 显示错误消息给用户
         }
     },
 
@@ -257,21 +269,9 @@ const TaskManager = {
             classes.splice(index, 1); // 从数组中移除指定索引的课程
             Storage.setItem('classes', classes); // 保存更新后的课程数组
             UI.updateClassList(classes); // 更新UI显示的课程列表
-            console.log("Class deleted successfully"); // 日志：课程删除成功
+            console.log("Class deleted successfully"); // 日志：课程删除成��
         } catch (error) {
             console.error("Error deleting class:", error); // 错误日志：删除课程时出错
             alert("删除课程时出错，请稍后再试。"); // 显示错误消息给用户
         }
     },
-
-    // 获取周课表
-    getWeeklySchedule: () => {
-        return Storage.getItem('weeklySchedule') || []; // 从存储中获取周课表，如果没有则返回空数组
-    },
-};
-
-// 每分钟检查一次过期任务（用于测试，实际使用可以改回每小时）
-setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
-
-// 将 TaskManager 对象添加到全局作用域
-window.TaskManager = TaskManager;
