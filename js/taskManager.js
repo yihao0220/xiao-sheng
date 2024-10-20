@@ -47,7 +47,7 @@ const TaskManager = {
             tasks = TaskManager.removeExpiredTasks(tasks);
             console.log("Tasks after removing expired:", tasks);
             UI.updateTaskList(tasks);
-            console.log("Task list updated");
+            console.log("Task list updated, total tasks:", tasks.length);
         } catch (error) {
             console.error("Error loading tasks:", error);
             UI.showError("加载任务列表时出错，请稍后再试。");
