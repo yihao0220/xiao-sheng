@@ -74,7 +74,7 @@ const TaskManager = {
         }
     },
 
-    // 移除过期任务
+    // ���除过期任务
     removeExpiredTasks: (tasks) => {
         const now = new Date(); // 获取当前时间
         const updatedTasks = tasks.filter(task => {
@@ -96,7 +96,7 @@ const TaskManager = {
     addClass: (classInfo) => {
         try {
             console.log("Adding class:", classInfo); // 日志：正在添加课程
-            const classes = Storage.getItem('classes') || []; // 从存储中获取课程数组
+            const classes = Storage.getItem('classes') || []; // 从存储中取课程数组
             classes.push(classInfo); // 添加新课程
             Storage.setItem('classes', classes); // 保存更新后的课程数组
             UI.updateClassList(classes); // 更新UI显示的课程列表
@@ -122,12 +122,9 @@ const TaskManager = {
 
     // 获取今天的课程
     getClassesForToday: () => {
-        const classes = Storage.getItem('classes') || []; // 从存储中获取课程数组
-        const today = new Date().toLocaleString('zh-CN', {weekday: 'long'}); // 获取今天的星期几（中文）
-        console.log("Today is:", today); // 日志：显示今天是星期几
-        const todayClasses = classes.filter(classInfo => classInfo.day === today); // 筛选出今天的课程
-        console.log("Classes for today:", todayClasses); // 日志：显示今天的课程
-        return todayClasses; // 返回今天的课程数组
+        const classes = Storage.getItem('classes') || [];
+        const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
+        return classes.filter(classInfo => classInfo.day === today);
     },
 
     // 获取早上的课程
@@ -239,12 +236,9 @@ const TaskManager = {
 
     // 获取指定日期的课程
     getClassesForDate: (date) => {
-        const classes = Storage.getItem('classes') || []; // 从存储中获取课程数组
-        const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'}); // 获取指定日期的星期几（中文）
-        console.log("Getting classes for:", dayOfWeek); // 日志：显示正在获取哪一天的课程
-        const todayClasses = classes.filter(classInfo => classInfo.day === dayOfWeek); // 筛选出指定日期的课程
-        console.log("Classes found:", todayClasses); // 日志：显示找到的课程
-        return todayClasses; // 返回指定日期的课程数组
+        const classes = Storage.getItem('classes') || [];
+        const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'});
+        return classes.filter(classInfo => classInfo.day === dayOfWeek);
     },
 
     // 格式化日期
