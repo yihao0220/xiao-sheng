@@ -31,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeApp() {
     console.log("initializeApp function called");
 
-    // 检查必要的对象是否已定义
     if (typeof UI === 'undefined' || typeof Auth === 'undefined' || 
         typeof TaskManager === 'undefined' || typeof Storage === 'undefined') {
         console.error("One or more required objects are not defined. Check script loading order.");
@@ -46,7 +45,6 @@ function initializeApp() {
 function initializeMainPage() {
     console.log("Initializing main page");
 
-    // 检查所有需要的元素
     const elements = {
         loginButton: document.getElementById('loginButton'),
         submitLoginButton: document.getElementById('submitLoginButton'),
@@ -61,12 +59,10 @@ function initializeMainPage() {
         weeklyClassList: document.getElementById('weeklyClassList')
     };
 
-    // 输出所有元素的状态
     for (const [key, value] of Object.entries(elements)) {
         console.log(`${key}: ${value ? 'Found' : 'Not found'}`);
     }
 
-    // 只为存在的元素添加事件监控器
     if (elements.loginButton) {
         elements.loginButton.addEventListener('click', () => {
             UI.showElement('authForm');
@@ -188,15 +184,13 @@ function initializeMainPage() {
         console.error("Add task button not found");
     }
 
-    // 取消添加任务的事件监听器
     elements.cancelAddTaskButton?.addEventListener('click', (e) => {
         e.preventDefault();
         UI.hideElement('addTaskForm');
         UI.showElement('showAddTaskFormButton');
-        clearTaskForm();
+        UI.clearTaskForm();
     });
 
-    // 添加课程列表的事件监听器
     elements.weeklyClassList?.addEventListener('click', (e) => {
         if (e.target.classList.contains('delete-class')) {
             const index = parseInt(e.target.dataset.index);
@@ -208,7 +202,6 @@ function initializeMainPage() {
 
     console.log("Main page initialization completed");
 
-    // 添加关闭模态框的逻辑
     const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
     closeButtons.forEach(button => {
         button.addEventListener('click', () => {
@@ -219,7 +212,6 @@ function initializeMainPage() {
         });
     });
 
-    // 初始化所有模态框
     document.querySelectorAll('.modal').forEach(modalElement => {
         new bootstrap.Modal(modalElement);
     });
@@ -260,7 +252,7 @@ function saveEditTask() {
         priority: document.getElementById('editPriority').value,
         category: document.getElementById('editCategory').value,
         location: document.getElementById('editLocation').value,
-        completed: false // 保持原有的完成状态
+        completed: false
     };
 
     TaskManager.editTask(taskIndex, updatedTask);
@@ -268,7 +260,6 @@ function saveEditTask() {
     alert("任务已更新");
 }
 
-// 在文件末尾添加这个函数
 function clearTaskForm() {
     document.getElementById('taskName').value = '';
     document.getElementById('startDate').value = '';
@@ -305,16 +296,5 @@ function updateTaskList(tasks) {
         allTasks.appendChild(li);
     });
 
-    // 更新存储中的任务列表
     Storage.setItem('tasks', tasks);
 }
-
-// 在文件末尾添加这个函数
-// function clearClassForm() {
-//     document.getElementById('className').value = '';
-//     document.getElementById('classDay').value = '周一';
-//     document.getElementById('classStartTime').value = '';
-//     document.getElementById('classEndTime').value = '';
-//     document.getElementById('classLocation').value = '';
-// }
-
