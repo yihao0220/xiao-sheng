@@ -33,3 +33,9 @@ function initializeApp() {
 
 // 确保在 DOM 加载完成后调用 initializeApp
 document.addEventListener('DOMContentLoaded', initializeApp);
+
+// 为保存周课表按钮添加事件监听器（如果还没有的话）
+document.getElementById('saveWeeklyScheduleButton')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    TaskManager.addWeeklySchedule();
+});
