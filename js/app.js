@@ -11,12 +11,15 @@ window.addEventListener('unhandledrejection', function(event) {
 // let weeklySchedule = [];
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM content loaded");
-    if (typeof TaskManager === 'undefined') {
-        console.error("TaskManager is not defined");
-    }
+    console.log("DOM fully loaded");
     if (typeof UI === 'undefined') {
-        console.error("UI is not defined");
+        console.error("UI object is not defined");
+    }
+    if (typeof TaskManager === 'undefined') {
+        console.error("TaskManager object is not defined");
+    }
+    if (typeof Storage === 'undefined') {
+        console.error("Storage object is not defined");
     }
     try {
         initializeApp();
@@ -143,6 +146,7 @@ function initializeMainPage() {
             e.preventDefault();
             console.log("Add task button clicked");
             const taskName = document.getElementById('taskName').value;
+            console.log("Task name:", taskName);
             const startDate = document.getElementById('startDate').value;
             const startTime = document.getElementById('startTime').value;
             const endDate = document.getElementById('endDate').value;
@@ -152,22 +156,31 @@ function initializeMainPage() {
             const location = document.getElementById('location').value;
 
             if (taskName) {
+                console.log("Creating new task object");
                 const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
+                console.log("New task object:", newTask);
                 const success = TaskManager.addTask(newTask);
+                console.log("Task add result:", success);
                 if (success) {
+                    console.log("Task added successfully, attempting to close modal");
                     if (elements.addTaskModal) {
                         const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
                         if (modal) {
                             modal.hide();
+                            console.log("Modal hidden");
                         } else {
                             console.error("Bootstrap modal instance not found");
                             elements.addTaskModal.style.display = 'none';
+                            console.log("Modal display set to none");
                         }
+                    } else {
+                        console.error("Add task modal element not found");
                     }
                     UI.clearTaskForm();
-                    console.log("Task added successfully");
+                    console.log("Task form cleared");
                 }
             } else {
+                console.log("Task name is empty");
                 UI.showError("请输入任务名称");
             }
         });
