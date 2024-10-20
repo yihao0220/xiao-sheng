@@ -82,9 +82,7 @@ function initializeApp() {
         // 为保存周课表按钮添加点击事件监听器
         elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
             e.preventDefault();
-            const weeklySchedule = TaskManager.getWeeklySchedule();
-            TaskManager.addWeeklySchedule(weeklySchedule);
-            UI.updateClassList(weeklySchedule);
+            TaskManager.addWeeklySchedule();
         });
 
         // 为任务列表添加点击事件监听器，处理编辑和删除任务
@@ -189,6 +187,12 @@ function initializeApp() {
         if (localStorage.getItem('isLoggedIn') === 'true') {
             showAllReminders();
         }
+
+        // 初始检查提醒
+        ReminderSystem.checkReminders();
+
+        // 设置定期检查提醒（每小时检查一次）
+        setInterval(ReminderSystem.checkReminders.bind(ReminderSystem), 3600000);
 
         console.log("App initialization completed");
     } catch (error) {
@@ -317,3 +321,86 @@ function showAllReminders() {
         alert(message);
     }
 }
+
+// 在 app.js 文件中添加以下代码
+
+const ReminderSystem = {
+    checkReminders: function() {
+        this.checkTodayClasses();
+        this.checkUnfinishedTasks();
+        this.checkUpcomingClasses();
+    },
+
+    checkTodayClasses: function() {
+        const todayClasses = TaskManager.getClassesForToday();
+        if (todayClasses.length > 0) {
+            let message = "今天的课程：\n";
+            todayClasses.forEach(classInfo => {
+                message += `${classInfo.name} (${classInfo.startTime} - ${classInfo.endTime})\n`;
+            });
+            this.showNotification(message);
+        }
+    },
+
+    checkUnfinishedTasks: function() {
+        const tasks = Storage.getItem('tasks') || [];
+        const unfinishedTasks = tasks.filter(task => !task.completed);
+        if (unfinishedTasks.length > 0) {
+            let message = "未完成的任务：\n";
+            unfinishedTasks.forEach(task => {
+                message += `${task.name}\n`;
+            });
+            this.showNotification(message);
+        }
+    },
+
+    checkUpcomingClasses: function() {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const tomorrowClasses = TaskManager.getClassesForDate(tomorrow);
+        if (tomorrowClasses.length > 0) {
+            let message = "明天的课程（需要预习）：\n";
+            tomorrowClasses.forEach(classInfo => {
+                message += `${classInfo.name} (${classInfo.startTime} - ${classInfo.endTime})\n`;
+            });
+            this.showNotification(message);
+        }
+    },
+
+    showNotification: function(message) {
+        // 这里可以使用更友好的通知方式，比如自定义的模态框或者浏览器的 Notification API
+        alert(message);
+    }
+};
+
+// 确保在用户登录后也检查提醒
+Auth.login = (username, password) => {
+    // ... 现有的登录代码 ...
+    
+    ReminderSystem.checkReminders();
+};
+
+function generateWeeklyScheduleTemplate() {
+    const timeSlots = [
+        "8:00 - 9:40", "10:00 - 11:40", "14:00 - 15:40", "16:00 - 17:40", "19:00 - 20:40"
+    ];
+    const tbody = document.querySelector("#weeklyScheduleTemplate tbody");
+    tbody.innerHTML = '';
+
+    timeSlots.forEach((slot, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${slot}</td>
+            ${Array(5).fill().map(() => `
+                <td>
+                    <input type="text" class="form-control course-input" data-time="${slot}" data-day="${index}">
+                </td>
+            `).join('')}
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// 在 initializeApp 函数中调用
+generateWeeklyScheduleTemplate();
+
