@@ -107,8 +107,9 @@ function initializeApp() {
             const category = document.getElementById('category').value;
             const location = document.getElementById('location').value;
 
-            if (taskName) {
+            if (taskName && startDate && startTime && endDate && endTime) {
                 const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
+                console.log("New task object:", newTask);
                 const success = TaskManager.addTask(newTask);
                 if (success) {
                     console.log("Task added successfully");
@@ -126,7 +127,7 @@ function initializeApp() {
                     console.log("Tasks reloaded after adding new task");
                 }
             } else {
-                UI.showError("请输入任务名称");
+                UI.showError("请填写所有必要的任务信息");
             }
         });
 
