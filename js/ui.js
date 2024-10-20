@@ -27,6 +27,7 @@ const UI = {
         }
         allTasks.innerHTML = '';
         tasks.forEach((task, index) => {
+            console.log(`Creating list item for task ${index}:`, task);
             const li = document.createElement('li');
             li.className = 'task-item';
             li.innerHTML = `
