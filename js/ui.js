@@ -36,9 +36,17 @@ const UI = {
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
             li.className = 'list-group-item';
+            // 只显示任务名称，其他信息如果存在则显示
+            let taskInfo = `${task.name}`;
+            if (task.startDate) {
+                taskInfo += ` - ${task.startDate}`;
+                if (task.startTime) {
+                    taskInfo += ` ${task.startTime}`;
+                }
+            }
             li.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center">
-                    <span>${task.name} - ${task.startDate} ${task.startTime}</span>
+                    <span>${taskInfo}</span>
                     <div>
                         <button class="btn btn-sm btn-outline-primary edit-button" data-index="${index}">编辑</button>
                         <button class="btn btn-sm btn-outline-danger delete-button" data-index="${index}">删除</button>
