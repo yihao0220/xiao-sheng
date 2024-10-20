@@ -128,6 +128,7 @@ function initializeMainPage() {
 
     const showAddTaskFormButton = document.getElementById('showAddTaskFormButton');
     const addTaskModal = document.getElementById('addTaskModal');
+
     if (showAddTaskFormButton && addTaskModal) {
         showAddTaskFormButton.addEventListener('click', () => {
             console.log("Showing add task modal");
@@ -137,35 +138,32 @@ function initializeMainPage() {
         console.error("showAddTaskFormButton or addTaskModal not found");
     }
 
-    // 添加关闭模态框的逻辑
-    const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            addTaskModal.style.display = 'none';
-        });
-    });
-
     // 添加任务的事件监听器
-    document.getElementById('addTaskButton').addEventListener('click', (e) => {
-        e.preventDefault();
-        const taskName = document.getElementById('taskName').value;
-        const startDate = document.getElementById('startDate').value;
-        const startTime = document.getElementById('startTime').value;
-        const endDate = document.getElementById('endDate').value;
-        const endTime = document.getElementById('endTime').value;
-        const priority = document.getElementById('priority').value;
-        const category = document.getElementById('category').value;
-        const location = document.getElementById('location').value;
+    const addTaskButton = document.getElementById('addTaskButton');
+    if (addTaskButton) {
+        addTaskButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const taskName = document.getElementById('taskName').value;
+            const startDate = document.getElementById('startDate').value;
+            const startTime = document.getElementById('startTime').value;
+            const endDate = document.getElementById('endDate').value;
+            const endTime = document.getElementById('endTime').value;
+            const priority = document.getElementById('priority').value;
+            const category = document.getElementById('category').value;
+            const location = document.getElementById('location').value;
 
-        if (taskName) {
-            const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
-            TaskManager.addTask(newTask);
-            bootstrap.Modal.getInstance(document.getElementById('addTaskModal')).hide();
-            clearTaskForm();
-        } else {
-            alert("请输入任务名称");
-        }
-    });
+            if (taskName) {
+                const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
+                TaskManager.addTask(newTask);
+                bootstrap.Modal.getInstance(addTaskModal).hide();
+                clearTaskForm();
+            } else {
+                alert("请输入任务名称");
+            }
+        });
+    } else {
+        console.error("addTaskButton not found");
+    }
 
     // 取消添加任务的事件监听器
     document.getElementById('cancelAddTaskButton').addEventListener('click', (e) => {
