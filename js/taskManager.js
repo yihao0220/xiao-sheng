@@ -218,6 +218,20 @@ const TaskManager = {
         }
     },
 
+    deleteClass: (index) => {
+        try {
+            console.log("Deleting class at index:", index);
+            const classes = Storage.getItem('classes') || [];
+            classes.splice(index, 1);
+            Storage.setItem('classes', classes);
+            UI.updateClassList(classes);
+            console.log("Class deleted successfully");
+        } catch (error) {
+            console.error("Error deleting class:", error);
+            alert("删除课程时出错，请稍后再试。");
+        }
+    },
+
     // 每分钟检查一次过期任务（用于测试，实际使用可以改回每小时）
 };
 
