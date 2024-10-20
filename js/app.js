@@ -35,6 +35,8 @@ function initializeApp() {
 }
 
 function initializeMainPage() {
+    console.log("Initializing main page");
+
     const requiredElements = [
         'loginButton', 'authForm', 'submitLoginButton', 'logoutButton',
         'showAddTaskFormButton', 'allTasks', 
@@ -49,10 +51,15 @@ function initializeMainPage() {
     }
 
     // 设置主页面的事件监听器
-    document.getElementById('loginButton').addEventListener('click', () => {
-        UI.showElement('authForm');
-        UI.hideElement('loginButton');
-    });
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+        loginButton.addEventListener('click', () => {
+            UI.showElement('authForm');
+            UI.hideElement('loginButton');
+        });
+    } else {
+        console.error("Login button not found");
+    }
 
     document.getElementById('submitLoginButton').addEventListener('click', (e) => {
         e.preventDefault();
@@ -123,6 +130,7 @@ function initializeMainPage() {
     const addTaskModal = document.getElementById('addTaskModal');
     if (showAddTaskFormButton && addTaskModal) {
         showAddTaskFormButton.addEventListener('click', () => {
+            console.log("Showing add task modal");
             addTaskModal.style.display = 'block';
         });
     } else {
@@ -176,6 +184,8 @@ function initializeMainPage() {
             }
         }
     });
+
+    console.log("Main page initialization completed");
 }
 
 function showEditTaskForm(index) {
