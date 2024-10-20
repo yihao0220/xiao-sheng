@@ -63,7 +63,7 @@ function initializeMainPage() {
         console.log(`${key}: ${value ? 'Found' : 'Not found'}`);
     }
 
-    // 只为存在的元素添加事件监听器
+    // 只为存在的元素添加事件监控器
     if (elements.loginButton) {
         elements.loginButton.addEventListener('click', () => {
             UI.showElement('authForm');
@@ -153,16 +153,20 @@ function initializeMainPage() {
 
             if (taskName) {
                 const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
-                TaskManager.addTask(newTask);
-                if (elements.addTaskModal) {
-                    const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
-                    if (modal) {
-                        modal.hide();
-                    } else {
-                        console.error("Bootstrap modal instance not found");
+                const success = TaskManager.addTask(newTask);
+                if (success) {
+                    if (elements.addTaskModal) {
+                        const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
+                        if (modal) {
+                            modal.hide();
+                        } else {
+                            console.error("Bootstrap modal instance not found");
+                            elements.addTaskModal.style.display = 'none';
+                        }
                     }
+                    UI.clearTaskForm();
+                    console.log("Task added successfully");
                 }
-                UI.clearTaskForm();
             } else {
                 UI.showError("请输入任务名称");
             }
@@ -203,11 +207,10 @@ function initializeMainPage() {
     });
 
     // 初始化所有模态框
-    var modals = document.querySelectorAll('.modal');
-    modals.forEach(function(modal) {
-        new bootstrap.Modal(modal);
+    document.querySelectorAll('.modal').forEach(modalElement => {
+        new bootstrap.Modal(modalElement);
     });
-    console.log("Modals initialized");
+    console.log("All modals initialized");
 }
 
 function showEditTaskForm(index) {
@@ -252,7 +255,7 @@ function saveEditTask() {
     alert("任务已更新");
 }
 
-// 在文件末尾添加这个函
+// 在文件末尾添加这个函数
 function clearTaskForm() {
     document.getElementById('taskName').value = '';
     document.getElementById('startDate').value = '';
