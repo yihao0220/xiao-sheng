@@ -118,7 +118,9 @@ function initializeApp() {
                 }
                 UI.clearTaskForm();
                 UI.showSuccess("任务已添加");
-                TaskManager.loadTasks(); // 重新加载任务列表
+                const tasks = Storage.getItem('tasks') || [];
+                UI.updateTaskList(tasks);  // 直接更新UI
+                console.log("UI updated with new task list");
             }
         } else {
             UI.showError("请输入任务名称");
