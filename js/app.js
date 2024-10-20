@@ -118,8 +118,7 @@ function initializeApp() {
                 }
                 UI.clearTaskForm();
                 UI.showSuccess("任务已添加");
-                // 重新加载任务列表
-                TaskManager.loadTasks();
+                TaskManager.loadTasks(); // 重新加载任务列表
             }
         } else {
             UI.showError("请输入任务名称");
