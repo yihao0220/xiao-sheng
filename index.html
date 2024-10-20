@@ -70,7 +70,7 @@
                             </div>
                             <div class="mb-3">
                                 <select id="classDay" class="form-select" required>
-                                    <option value="周��">周一</option>
+                                    <option value="周">周一</option>
                                     <option value="周二">周二</option>
                                     <option value="周三">周三</option>
                                     <option value="周四">周四</option>
@@ -124,7 +124,40 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <!-- 编辑任务表单内容 -->
+                    <form id="editTaskForm">
+                        <div class="mb-3">
+                            <input type="text" id="editTaskName" class="form-control" placeholder="任务名称" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="date" id="editStartDate" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="time" id="editStartTime" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="date" id="editEndDate" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="time" id="editEndTime" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <select id="editPriority" class="form-select" required>
+                                <option value="low">低优先级</option>
+                                <option value="medium">中优先级</option>
+                                <option value="high">高优先级</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="editCategory" class="form-control" placeholder="分类">
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" id="editLocation" class="form-control" placeholder="地点">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="saveEditTaskButton">保存修改</button>
                 </div>
             </div>
         </div>
