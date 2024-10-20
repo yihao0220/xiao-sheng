@@ -183,8 +183,11 @@ function initializeApp() {
         // 初始化应用程序
         Auth.checkLoginStatus();
         TaskManager.loadClasses();
-        TaskManager.loadTasks(); // 确保这行代码存在
+        TaskManager.loadTasks();
         console.log("Tasks loaded");
+
+        // 添加提醒功能
+        showReminders();
 
         console.log("App initialization completed");
     } catch (error) {
@@ -213,7 +216,7 @@ function showEditTaskForm(index) {
             editTaskModal: document.getElementById('editTaskModal')
         };
 
-        // 检查所有必要的��素是否存在
+        // 检查所有必要的元素是否存在
         for (const [key, element] of Object.entries(elements)) {
             if (!element) {
                 console.error(`Element ${key} not found`);
@@ -259,6 +262,18 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
     document.getElementById('editTaskModal').style.display = 'none';
     UI.showSuccess("任务已更新");
 });
+
+// 新增：显示提醒的函数
+function showReminders() {
+    // 显示今天的课程
+    UI.showTodayClasses();
+
+    // 显示未完成的任务
+    UI.showUnfinishedTasks();
+
+    // 显示课程提醒（包括预习和复习提醒）
+    UI.showClassReminders();
+}
 
 // 在 DOM 加载完成后初始化应用程序
 document.addEventListener('DOMContentLoaded', initializeApp);
