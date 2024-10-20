@@ -57,12 +57,16 @@ const TaskManager = {
     removeExpiredTasks: (tasks) => {
         const now = new Date();
         const updatedTasks = tasks.filter(task => {
+            if (!task.endDate || !task.endTime) {
+                console.warn("Task missing end date or time:", task);
+                return true; // 保留没有结束日期或时间的任务
+            }
             const endDate = new Date(task.endDate + 'T' + task.endTime);
             return endDate > now;
         });
         if (updatedTasks.length !== tasks.length) {
             Storage.setItem('tasks', updatedTasks);
-            console.log("Expired tasks removed");
+            console.log("Expired tasks removed, remaining tasks:", updatedTasks.length);
         }
         return updatedTasks;
     },
