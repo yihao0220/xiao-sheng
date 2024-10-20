@@ -70,32 +70,26 @@ const UI = {
 
     // 显示今天的课程
     showTodayClasses: () => {
-        const today = new Date(); // 获取当前日期
-        const todayClasses = TaskManager.getClassesForDate(today); // 获取今天的课程
+        const todayClasses = TaskManager.getClassesForToday();
         if (todayClasses && todayClasses.length > 0) {
-            let message = `今天（${today.toLocaleDateString()}）的课程：\n\n`; // 构建消息开头
+            let message = `今天的课程：\n\n`;
             todayClasses.forEach(classInfo => {
-                // 为每个课程添加详细信息
-                message += `课程：${classInfo.name}\n`;
-                message += `时间：${classInfo.startTime} - ${classInfo.endTime}\n`;
-                message += `地点：${classInfo.location || '未知'}\n\n`;
+                message += `${classInfo.name} (${classInfo.startTime} - ${classInfo.endTime})\n`;
             });
-            UI.showSuccess(message); // 显示今天的课程信息
-        } else {
-            console.log("No classes found for today"); // 如果今天没有课程，输出日志
+            alert(message);
         }
     },
 
     // 显示未完成的任务
     showUnfinishedTasks: () => {
-        const tasks = Storage.getItem('tasks') || []; // 从存储中获取所有任务
-        const unfinishedTasks = tasks.filter(task => !task.completed); // 筛选出未完成的任务
+        const tasks = Storage.getItem('tasks') || [];
+        const unfinishedTasks = tasks.filter(task => !task.completed);
         if (unfinishedTasks.length > 0) {
-            let message = "您有以下未完成的任务:\n"; // 构建消息开头
+            let message = "您有以下未完成的任务:\n";
             unfinishedTasks.forEach(task => {
-                message += `- ${task.name}\n`; // 为每个未完成的任务添加一行
+                message += `- ${task.name}\n`;
             });
-            UI.showSuccess(message); // 显示未完成任务的信息
+            alert(message);
         }
     },
 
@@ -147,34 +141,28 @@ const UI = {
 
     // 显示课程提醒
     showClassReminders: () => {
-        const today = new Date(); // 获取当前日期
-        const todayClasses = TaskManager.getClassesForDate(today); // 获取今天的课程
-        console.log("Today's classes:", todayClasses); // 输出今天的课程日志
+        const today = new Date();
+        const todayClasses = TaskManager.getClassesForDate(today);
         
         if (todayClasses && todayClasses.length > 0) {
-            let message = "今天的课程提醒：\n\n"; // 构建今天课程提醒的消息
+            let message = "今天的课程提醒：\n\n";
             todayClasses.forEach(classInfo => {
                 message += `预习提醒：${classInfo.name}\n`;
                 message += `时间：${classInfo.startTime} - ${classInfo.endTime}\n`;
                 message += `地点：${classInfo.location || '未知'}\n\n`;
             });
-            UI.showSuccess(message); // 显示今天的课程提醒
-        } else {
-            console.log("No classes found for today"); // 如果今天没有课程，输出日志
+            alert(message);
         }
 
-        const yesterday = new Date(today.getTime() - 24*60*60*1000); // 计算昨天的日期
-        const yesterdayClasses = TaskManager.getClassesForDate(yesterday); // 获取昨天的课程
-        console.log("Yesterday's classes:", yesterdayClasses); // 输出昨天的课程日志
+        const yesterday = new Date(today.getTime() - 24*60*60*1000);
+        const yesterdayClasses = TaskManager.getClassesForDate(yesterday);
         
         if (yesterdayClasses && yesterdayClasses.length > 0) {
-            let message = "昨天的课程复习提醒：\n\n"; // 构建昨天课程复习提醒的消息
+            let message = "昨天的课程复习提醒：\n\n";
             yesterdayClasses.forEach(classInfo => {
                 message += `复习提醒：${classInfo.name}\n`;
             });
-            UI.showSuccess(message); // 显示昨天的课程复习提醒
-        } else {
-            console.log("No classes found for yesterday"); // 如果昨天没有课程，输出日志
+            alert(message);
         }
     },
 
