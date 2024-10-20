@@ -131,7 +131,7 @@ function initializeMainPage() {
     if (showAddTaskFormButton && addTaskModal) {
         showAddTaskFormButton.addEventListener('click', () => {
             console.log("Showing add task modal");
-            addTaskModal.style.display = 'block';
+            new bootstrap.Modal(addTaskModal).show();
         });
     } else {
         console.error("showAddTaskFormButton or addTaskModal not found");
