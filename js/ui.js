@@ -4,23 +4,21 @@ console.log("UI.js start"); // 输出日志，表示 UI.js 文件开始执行
 const UI = {
     // 显示指定 ID 的元素
     showElement: (elementId) => {
-        console.log(`Attempting to show element: ${elementId}`); // 输出尝试显示元素的日志
-        const element = document.getElementById(elementId); // 获取指定 ID 的元素
+        const element = document.getElementById(elementId);
         if (element) {
-            element.style.display = 'block'; // 如果元素存在，将其显示样式设置为 block
-            console.log(`Element ${elementId} display set to block`); // 输出设置成功的日志
+            element.style.display = 'block';
         } else {
-            console.error(`Element with id ${elementId} not found`); // 如果元素不存在，输出错误日志
+            console.error(`Element with id ${elementId} not found`);
         }
     },
 
     // 隐藏指定 ID 的元素
     hideElement: (elementId) => {
-        const element = document.getElementById(elementId); // 获取指定 ID 的元素
+        const element = document.getElementById(elementId);
         if (element) {
-            element.style.display = 'none'; // 如果元素存在，将其显示样式设置为 none（隐藏）
+            element.style.display = 'none';
         } else {
-            console.error(`Element with id ${elementId} not found`); // 如果元素不存在，输出错误日志
+            console.error(`Element with id ${elementId} not found`);
         }
     },
 
