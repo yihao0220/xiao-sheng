@@ -27,7 +27,6 @@ const UI = {
         }
         allTasks.innerHTML = '';
         tasks.forEach((task, index) => {
-            console.log(`Creating list item for task ${index}:`, task);
             const li = document.createElement('li');
             li.className = 'list-group-item';
             li.innerHTML = `
@@ -41,7 +40,7 @@ const UI = {
             `;
             allTasks.appendChild(li);
         });
-        console.log("UI: Task list updated, total tasks:", tasks.length);
+        console.log("UI: Task list updated");
     },
     showError: (message) => {
         console.error(message);
