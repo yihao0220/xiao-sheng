@@ -75,11 +75,11 @@ function initializeApp() {
                 TaskManager.addClass(newClass);
                 UI.clearClassForm();
             } else {
-                UI.showError("请填写所���必要的课程信息");
+                UI.showError("请填写所需的课程信息");
             }
         });
 
-        // 为保存周课表按钮添点击事件监听器
+        // 为保存周课表按钮添加点击事件监听器
         elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
             e.preventDefault();
             const weeklySchedule = TaskManager.getWeeklySchedule();
@@ -184,11 +184,10 @@ function initializeApp() {
         Auth.checkLoginStatus();
         TaskManager.loadClasses();
         TaskManager.loadTasks();
-        console.log("Tasks loaded");
 
-        // 添加这行来显示提醒
+        // 如果用户已登录，显示所有提醒
         if (localStorage.getItem('isLoggedIn') === 'true') {
-            showReminders();
+            showAllReminders();
         }
 
         console.log("App initialization completed");
@@ -272,3 +271,49 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 function showReminders() {
     console.log("Showing reminders");
     UI.showTodayClasses();
+    UI.showUnfinishedTasks();
+    UI.showClassReminders();
+}
+
+// 在 app.js 文件中添加以下函数
+
+function showAllReminders() {
+    const today = new Date();
+    const todayClasses = TaskManager.getClassesForDate(today);
+    const tasks = Storage.getItem('tasks') || [];
+    const unfinishedTasks = tasks.filter(task => !task.completed);
+
+    let message = "";
+
+    // 今天的课程提醒
+    if (todayClasses && todayClasses.length > 0) {
+        message += "今天的课程：\n";
+        todayClasses.forEach(classInfo => {
+            message += `- ${classInfo.name} (${classInfo.startTime} - ${classInfo.endTime})\n`;
+        });
+        message += "\n";
+    }
+
+    // 未完成任务提醒
+    if (unfinishedTasks.length > 0) {
+        message += "未完成的任务：\n";
+        unfinishedTasks.forEach(task => {
+            message += `- ${task.name}\n`;
+        });
+        message += "\n";
+    }
+
+    // 明天的课程预习提醒
+    const tomorrow = new Date(today.getTime() + 24*60*60*1000);
+    const tomorrowClasses = TaskManager.getClassesForDate(tomorrow);
+    if (tomorrowClasses && tomorrowClasses.length > 0) {
+        message += "明天需要预习的课程：\n";
+        tomorrowClasses.forEach(classInfo => {
+            message += `- ${classInfo.name}\n`;
+        });
+    }
+
+    if (message) {
+        alert(message);
+    }
+}
