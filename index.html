@@ -124,7 +124,18 @@
                 <span class="close-modal">&times;</span>
                 <h2>编辑任务</h2>
                 <form id="editTaskForm">
-                    <!-- 表单内容 -->
+                    <input type="text" id="editTaskName" placeholder="任务名称">
+                    <input type="date" id="editStartDate">
+                    <input type="time" id="editStartTime">
+                    <input type="date" id="editEndDate">
+                    <input type="time" id="editEndTime">
+                    <select id="editPriority">
+                        <option value="low">低优先级</option>
+                        <option value="medium">中优先级</option>
+                        <option value="high">高优先级</option>
+                    </select>
+                    <input type="text" id="editCategory" placeholder="分类">
+                    <input type="text" id="editLocation" placeholder="地点">
                 </form>
                 <button type="button" class="btn-secondary close-modal">取消</button>
                 <button type="button" class="btn-primary" id="saveEditTaskButton">保存修改</button>
