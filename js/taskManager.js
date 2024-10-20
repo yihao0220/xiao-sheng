@@ -3,13 +3,9 @@ const TaskManager = {
         try {
             console.log("TaskManager: Adding task:", task);
             const tasks = Storage.getItem('tasks') || [];
-            console.log("Current tasks:", tasks);
             tasks.push(task);
-            console.log("Updated tasks:", tasks);
             Storage.setItem('tasks', tasks);
-            console.log("Tasks saved to storage");
             UI.updateTaskList(tasks);
-            console.log("UI updated with new task list");
             return true;
         } catch (error) {
             console.error("TaskManager: Error adding task:", error);
@@ -115,7 +111,7 @@ const TaskManager = {
             });
         } catch (error) {
             console.error("Error getting morning classes:", error);
-            alert("获取早上的班级列表出错，请稍后再试。");
+            alert("获取早上的班级列表出错��请稍后再试。");
         }
     },
 
