@@ -7,43 +7,13 @@ window.addEventListener('unhandledrejection', function(event) {
     console.error('Unhandled promise rejection:', event.reason);
 });
 
-// 在文件顶部定义 weeklySchedule
-// let weeklySchedule = [];
-
 document.addEventListener('DOMContentLoaded', function() {
     console.log("DOM fully loaded");
-    if (typeof UI === 'undefined') {
-        console.error("UI object is not defined");
-    }
-    if (typeof TaskManager === 'undefined') {
-        console.error("TaskManager object is not defined");
-    }
-    if (typeof Storage === 'undefined') {
-        console.error("Storage object is not defined");
-    }
-    try {
-        initializeApp();
-    } catch (error) {
-        console.error("Error during app initialization:", error);
-    }
+    initializeApp();
 });
 
 function initializeApp() {
     console.log("initializeApp function called");
-
-    if (typeof UI === 'undefined' || typeof Auth === 'undefined' || 
-        typeof TaskManager === 'undefined' || typeof Storage === 'undefined') {
-        console.error("One or more required objects are not defined. Check script loading order.");
-        return;
-    }
-
-    initializeMainPage();
-
-    console.log("App initialization completed");
-}
-
-function initializeMainPage() {
-    console.log("Initializing main page");
 
     const elements = {
         loginButton: document.getElementById('loginButton'),
@@ -59,138 +29,103 @@ function initializeMainPage() {
         weeklyClassList: document.getElementById('weeklyClassList')
     };
 
-    for (const [key, value] of Object.entries(elements)) {
-        console.log(`${key}: ${value ? 'Found' : 'Not found'}`);
-    }
+    // 登录相关
+    elements.loginButton?.addEventListener('click', () => {
+        UI.showElement('authForm');
+        UI.hideElement('loginButton');
+    });
 
-    if (elements.loginButton) {
-        elements.loginButton.addEventListener('click', () => {
-            UI.showElement('authForm');
-            UI.hideElement('loginButton');
-        });
-    }
+    elements.submitLoginButton?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        Auth.login(username, password);
+    });
 
-    if (elements.submitLoginButton) {
-        elements.submitLoginButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            Auth.login(username, password);
-        });
-    }
+    elements.logoutButton?.addEventListener('click', Auth.logout);
 
-    if (elements.logoutButton) {
-        elements.logoutButton.addEventListener('click', Auth.logout);
-    }
+    // 添加课程
+    elements.addClassButton?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const className = document.getElementById('className').value;
+        const classDay = document.getElementById('classDay').value;
+        const classStartTime = document.getElementById('classStartTime').value;
+        const classEndTime = document.getElementById('classEndTime').value;
+        const classLocation = document.getElementById('classLocation').value;
 
-    if (elements.addClassButton) {
-        elements.addClassButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            const className = document.getElementById('className').value;
-            const classDay = document.getElementById('classDay').value;
-            const classStartTime = document.getElementById('classStartTime').value;
-            const classEndTime = document.getElementById('classEndTime').value;
-            const classLocation = document.getElementById('classLocation').value;
+        if (className && classDay && classStartTime && classEndTime) {
+            const newClass = { name: className, day: classDay, startTime: classStartTime, endTime: classEndTime, location: classLocation };
+            TaskManager.addClass(newClass);
+            UI.clearClassForm();
+        } else {
+            UI.showError("请填写所有必要的课程信息");
+        }
+    });
 
-            if (className && classDay && classStartTime && classEndTime) {
-                const newClass = { name: className, day: classDay, startTime: classStartTime, endTime: classEndTime, location: classLocation };
-                TaskManager.addClass(newClass);
-                UI.clearClassForm();
-            } else {
-                UI.showError("请填写所有必要的课程信息");
+    // 保存周课表
+    elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const weeklySchedule = TaskManager.getWeeklySchedule();
+        TaskManager.addWeeklySchedule(weeklySchedule);
+        UI.updateClassList(weeklySchedule);
+    });
+
+    // 任务列表事件
+    elements.allTasks?.addEventListener('click', (e) => {
+        if (e.target.classList.contains('edit-button')) {
+            const index = parseInt(e.target.dataset.index);
+            showEditTaskForm(index);
+        } else if (e.target.classList.contains('delete-button')) {
+            const index = parseInt(e.target.dataset.index);
+            if (confirm('确定要删除这个任务吗？')) {
+                TaskManager.deleteTask(index);
             }
-        });
-    }
+        }
+    });
 
-    if (elements.saveWeeklyScheduleButton) {
-        elements.saveWeeklyScheduleButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            const weeklySchedule = TaskManager.getWeeklySchedule();
-            TaskManager.addWeeklySchedule(weeklySchedule);
-            UI.updateClassList(weeklySchedule);
-        });
-    }
+    // 显示添加任务模态框
+    elements.showAddTaskFormButton?.addEventListener('click', () => {
+        console.log("Showing add task modal");
+        const modal = new bootstrap.Modal(elements.addTaskModal);
+        modal.show();
+    });
 
-    if (elements.allTasks) {
-        elements.allTasks.addEventListener('click', (e) => {
-            if (e.target.classList.contains('edit-button')) {
-                const index = parseInt(e.target.dataset.index);
-                showEditTaskForm(index);
-            } else if (e.target.classList.contains('delete-button')) {
-                const index = parseInt(e.target.dataset.index);
-                if (confirm('确定要删除这个任务吗？')) {
-                    TaskManager.deleteTask(index);
-                }
+    // 添加任务
+    elements.addTaskButton?.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log("Add task button clicked");
+        const taskName = document.getElementById('taskName').value;
+        const startDate = document.getElementById('startDate').value;
+        const startTime = document.getElementById('startTime').value;
+        const endDate = document.getElementById('endDate').value;
+        const endTime = document.getElementById('endTime').value;
+        const priority = document.getElementById('priority').value;
+        const category = document.getElementById('category').value;
+        const location = document.getElementById('location').value;
+
+        if (taskName) {
+            const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
+            const success = TaskManager.addTask(newTask);
+            if (success) {
+                const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
+                modal.hide();
+                UI.clearTaskForm();
+                UI.showSuccess("任务已添加");
             }
-        });
-    }
+        } else {
+            UI.showError("请输入任务名称");
+        }
+    });
 
-    if (elements.showAddTaskFormButton) {
-        elements.showAddTaskFormButton.addEventListener('click', () => {
-            console.log("Showing add task modal");
-            if (elements.addTaskModal) {
-                new bootstrap.Modal(elements.addTaskModal).show();
-            } else {
-                console.error("Add task modal not found");
-            }
-        });
-    }
-
-    if (elements.addTaskButton) {
-        console.log("Adding event listener to addTaskButton");
-        elements.addTaskButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log("Add task button clicked");
-            const taskName = document.getElementById('taskName').value;
-            console.log("Task name:", taskName);
-            const startDate = document.getElementById('startDate').value;
-            const startTime = document.getElementById('startTime').value;
-            const endDate = document.getElementById('endDate').value;
-            const endTime = document.getElementById('endTime').value;
-            const priority = document.getElementById('priority').value;
-            const category = document.getElementById('category').value;
-            const location = document.getElementById('location').value;
-
-            if (taskName) {
-                console.log("Creating new task object");
-                const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
-                console.log("New task object:", newTask);
-                const success = TaskManager.addTask(newTask);
-                console.log("Task add result:", success);
-                if (success) {
-                    console.log("Task added successfully, attempting to close modal");
-                    if (elements.addTaskModal) {
-                        const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
-                        if (modal) {
-                            modal.hide();
-                            console.log("Modal hidden");
-                        } else {
-                            console.error("Bootstrap modal instance not found");
-                            elements.addTaskModal.style.display = 'none';
-                            console.log("Modal display set to none");
-                        }
-                    } else {
-                        console.error("Add task modal element not found");
-                    }
-                    UI.clearTaskForm();
-                    console.log("Task form cleared");
-                }
-            } else {
-                console.log("Task name is empty");
-                UI.showError("请输入任务名称");
-            }
-        });
-    } else {
-        console.error("Add task button not found");
-    }
-
+    // 取消添加任务
     elements.cancelAddTaskButton?.addEventListener('click', (e) => {
         e.preventDefault();
-        UI.hideElement('addTaskForm');
-        UI.showElement('showAddTaskFormButton');
+        const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
+        modal.hide();
         UI.clearTaskForm();
     });
 
+    // 删除课程
     elements.weeklyClassList?.addEventListener('click', (e) => {
         if (e.target.classList.contains('delete-class')) {
             const index = parseInt(e.target.dataset.index);
@@ -200,22 +135,12 @@ function initializeMainPage() {
         }
     });
 
-    console.log("Main page initialization completed");
+    // 初始化
+    Auth.checkLoginStatus();
+    TaskManager.loadClasses();
+    TaskManager.loadTasks();
 
-    const closeButtons = document.querySelectorAll('[data-bs-dismiss="modal"]');
-    closeButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = button.closest('.modal');
-            if (modal) {
-                modal.style.display = 'none';
-            }
-        });
-    });
-
-    document.querySelectorAll('.modal').forEach(modalElement => {
-        new bootstrap.Modal(modalElement);
-    });
-    console.log("All modals initialized");
+    console.log("App initialization completed");
 }
 
 function showEditTaskForm(index) {
@@ -234,14 +159,16 @@ function showEditTaskForm(index) {
 
         document.getElementById('editTaskForm').dataset.taskIndex = index;
 
-        new bootstrap.Modal(document.getElementById('editTaskModal')).show();
+        const modal = new bootstrap.Modal(document.getElementById('editTaskModal'));
+        modal.show();
     } else {
         console.error("Task not found");
-        alert("未找到任务");
+        UI.showError("未找到任务");
     }
 }
 
-function saveEditTask() {
+// 保存编辑后的任务
+document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
     const taskIndex = document.getElementById('editTaskForm').dataset.taskIndex;
     const updatedTask = {
         name: document.getElementById('editTaskName').value,
@@ -256,45 +183,7 @@ function saveEditTask() {
     };
 
     TaskManager.editTask(taskIndex, updatedTask);
-    bootstrap.Modal.getInstance(document.getElementById('editTaskModal')).hide();
-    alert("任务已更新");
-}
-
-function clearTaskForm() {
-    document.getElementById('taskName').value = '';
-    document.getElementById('startDate').value = '';
-    document.getElementById('startTime').value = '';
-    document.getElementById('endDate').value = '';
-    document.getElementById('endTime').value = '';
-    document.getElementById('priority').value = 'low';
-    document.getElementById('category').value = '';
-    document.getElementById('location').value = '';
-}
-
-function updateTaskList(tasks) {
-    const allTasks = document.getElementById('allTasks');
-    allTasks.innerHTML = '';
-
-    tasks.forEach((task, index) => {
-        const li = document.createElement('li');
-        li.className = 'task-item';
-        li.innerHTML = `
-            <h3>
-                <span class="priority-indicator priority-${task.priority}"></span>
-                ${task.name}
-            </h3>
-            <p>开始: ${task.startDate} ${task.startTime}</p>
-            <p>结束: ${task.endDate} ${task.endTime}</p>
-            <p>优先级: ${task.priority}</p>
-            ${task.category ? `<p>分类: ${task.category}</p>` : ''}
-            ${task.location ? `<p>地点: ${task.location}</p>` : ''}
-            <div class="task-actions">
-                <button class="edit-button" data-index="${index}">编辑</button>
-                <button class="delete-button" data-index="${index}">删除</button>
-            </div>
-        `;
-        allTasks.appendChild(li);
-    });
-
-    Storage.setItem('tasks', tasks);
-}
+    const modal = bootstrap.Modal.getInstance(document.getElementById('editTaskModal'));
+    modal.hide();
+    UI.showSuccess("任务已更新");
+});
