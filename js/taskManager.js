@@ -5,7 +5,7 @@ const TaskManager = {
             const tasks = Storage.getItem('tasks') || [];
             tasks.push(task);
             Storage.setItem('tasks', tasks);
-            UI.updateTaskList(tasks);
+            console.log("TaskManager: Task added to storage, total tasks:", tasks.length);
             return true;
         } catch (error) {
             console.error("TaskManager: Error adding task:", error);
