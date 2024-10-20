@@ -232,6 +232,10 @@ const TaskManager = {
         }
     },
 
+    getWeeklySchedule: () => {
+        return Storage.getItem('weeklySchedule') || [];
+    },
+
     // 每分钟检查一次过期任务（用于测试，实际使用可以改回每小时）
 };
 
