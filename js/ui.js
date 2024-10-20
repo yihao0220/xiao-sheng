@@ -27,23 +27,15 @@ const UI = {
         }
         allTasks.innerHTML = '';
         tasks.forEach((task, index) => {
-            console.log(`Creating list item for task ${index}:`, task);
             const li = document.createElement('li');
-            li.className = 'task-item';
+            li.className = 'list-group-item';
             li.innerHTML = `
-                <div class="task-details">
-                    <h3>${task.name}</h3>
-                    <p>开始: ${task.startDate} ${task.startTime}</p>
-                    <p>结束: ${task.endDate} ${task.endTime}</p>
-                    <p>优先级: ${task.priority}</p>
-                    ${task.category ? `<p>分类: ${task.category}</p>` : ''}
-                    ${task.location ? `<p>地点: ${task.location}</p>` : ''}
-                    <p>状态: ${task.completed ? '已完成' : '未完成'}</p>
-                </div>
-                <div class="task-actions">
-                    <button class="complete-button" data-index="${index}">${task.completed ? '标记为未完成' : '标记为已完成'}</button>
-                    <button class="edit-button" data-index="${index}">编辑</button>
-                    <button class="delete-button" data-index="${index}">删除</button>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>${task.name}</span>
+                    <div>
+                        <button class="btn btn-sm btn-outline-primary edit-button" data-index="${index}">编辑</button>
+                        <button class="btn btn-sm btn-outline-danger delete-button" data-index="${index}">删除</button>
+                    </div>
                 </div>
             `;
             allTasks.appendChild(li);
