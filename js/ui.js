@@ -71,12 +71,15 @@ const UI = {
     // 显示今天的课程
     showTodayClasses: () => {
         const todayClasses = TaskManager.getClassesForToday();
+        console.log("Today's classes:", todayClasses);
         if (todayClasses && todayClasses.length > 0) {
             let message = `今天的课程：\n\n`;
             todayClasses.forEach(classInfo => {
                 message += `${classInfo.name} (${classInfo.startTime} - ${classInfo.endTime})\n`;
             });
             alert(message);
+        } else {
+            console.log("No classes for today");
         }
     },
 
@@ -143,6 +146,7 @@ const UI = {
     showClassReminders: () => {
         const today = new Date();
         const todayClasses = TaskManager.getClassesForDate(today);
+        console.log("Classes for today:", todayClasses);
         
         if (todayClasses && todayClasses.length > 0) {
             let message = "今天的课程提醒：\n\n";
@@ -152,10 +156,13 @@ const UI = {
                 message += `地点：${classInfo.location || '未知'}\n\n`;
             });
             alert(message);
+        } else {
+            console.log("No classes to remind for today");
         }
 
         const yesterday = new Date(today.getTime() - 24*60*60*1000);
         const yesterdayClasses = TaskManager.getClassesForDate(yesterday);
+        console.log("Classes for yesterday:", yesterdayClasses);
         
         if (yesterdayClasses && yesterdayClasses.length > 0) {
             let message = "昨天的课程复习提醒：\n\n";
@@ -163,6 +170,8 @@ const UI = {
                 message += `复习提醒：${classInfo.name}\n`;
             });
             alert(message);
+        } else {
+            console.log("No classes to remind for yesterday");
         }
     },
 
