@@ -117,19 +117,26 @@ function initializeApp() {
             }
         });
 
-        // 为显示添加任务模态框按钮添加点击事件监听器
+        // 替换 Bootstrap 模态框相关代码
         const showAddTaskFormButton = document.getElementById('showAddTaskFormButton');
         const addTaskModal = document.getElementById('addTaskModal');
+        const closeModalButtons = document.querySelectorAll('.close-modal');
 
         if (showAddTaskFormButton && addTaskModal) {
             showAddTaskFormButton.addEventListener('click', function() {
                 console.log("Showing add task modal");
-                const modal = new bootstrap.Modal(addTaskModal);
-                modal.show();
+                addTaskModal.style.display = 'block';
             });
-        } else {
-            console.error("Add task button or modal not found");
         }
+
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const modal = this.closest('.modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
 
         // 为添加任务按钮添加点击事件监听器
         elements.addTaskButton?.addEventListener('click', (e) => {
@@ -152,17 +159,10 @@ function initializeApp() {
                 const success = TaskManager.addTask(newTask);
                 if (success) {
                     console.log("Task added successfully");
-                    // 确保模态框正确关闭
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('addTaskModal'));
-                    if (modal) {
-                        modal.hide();
-                    } else {
-                        console.error("Bootstrap modal instance not found");
-                        document.getElementById('addTaskModal').style.display = 'none';
-                    }
+                    addTaskModal.style.display = 'none';
                     UI.clearTaskForm();
                     UI.showSuccess("任务已添加");
-                    TaskManager.loadTasks(); // 重新加载任务列表
+                    TaskManager.loadTasks();
                     console.log("Tasks reloaded after adding new task");
                 }
             } else {
