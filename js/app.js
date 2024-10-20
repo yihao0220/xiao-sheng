@@ -12,29 +12,12 @@ window.addEventListener('unhandledrejection', function(event) {
     console.error('Unhandled promise rejection:', event.reason);
 });
 
-// 检查 Bootstrap 是否正确加载的函数
-function checkBootstrapLoaded() {
-    // 检查 bootstrap 对象是否存在
-    if (typeof bootstrap === 'undefined') {
-        // 如果 bootstrap 未定义，输出错误信息并返回 false
-        console.error("Bootstrap is not loaded. Some features may not work correctly.");
-        return false;
-    }
-    // 如果 bootstrap 已加载，返回 true
-    return true;
-}
-
 // 应用程序初始化函数
 function initializeApp() {
     // 输出日志，表示初始化函数已被调用
     console.log("initializeApp function called");
 
     try {
-        // 检查 Bootstrap 是否加载，如果未加载则抛出错误
-        if (!checkBootstrapLoaded()) {
-            throw new Error("Bootstrap not loaded");
-        }
-
         // 定义包含所有重要 DOM 元素的对象
         const elements = {
             loginButton: document.getElementById('loginButton'),
@@ -173,8 +156,7 @@ function initializeApp() {
         // 为取消添加任务按钮添加点击事件监听器
         elements.cancelAddTaskButton?.addEventListener('click', (e) => {
             e.preventDefault();
-            const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
-            modal.hide();
+            addTaskModal.style.display = 'none';
             UI.clearTaskForm();
         });
 
@@ -204,12 +186,10 @@ function initializeApp() {
 
 // 显示编辑任务表单的函数
 function showEditTaskForm(index) {
-    // 从存储中获取任务列表
     const tasks = Storage.getItem('tasks') || [];
     const task = tasks[index];
 
     if (task) {
-        // 如果找到任务，填充编辑表单
         document.getElementById('editTaskName').value = task.name;
         document.getElementById('editStartDate').value = task.startDate;
         document.getElementById('editStartTime').value = task.startTime;
@@ -219,14 +199,11 @@ function showEditTaskForm(index) {
         document.getElementById('editCategory').value = task.category || '';
         document.getElementById('editLocation').value = task.location || '';
 
-        // 在表单上存储任务索引
         document.getElementById('editTaskForm').dataset.taskIndex = index;
 
-        // 显示编辑任务模态框
-        const modal = new bootstrap.Modal(document.getElementById('editTaskModal'));
-        modal.show();
+        const editTaskModal = document.getElementById('editTaskModal');
+        editTaskModal.style.display = 'block';
     } else {
-        // 如果未找到任务，输出错误信息
         console.error("Task not found");
         UI.showError("未找到任务");
     }
@@ -234,9 +211,7 @@ function showEditTaskForm(index) {
 
 // 为保存编辑任务按钮添加点击事件监听器
 document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
-    // 获取任务索引
     const taskIndex = document.getElementById('editTaskForm').dataset.taskIndex;
-    // 创建更新后的任务对象
     const updatedTask = {
         name: document.getElementById('editTaskName').value,
         startDate: document.getElementById('editStartDate').value,
@@ -249,12 +224,8 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
         completed: false
     };
 
-    // 更新任务
     TaskManager.editTask(taskIndex, updatedTask);
-    // 隐藏编辑任务模态框
-    const modal = bootstrap.Modal.getInstance(document.getElementById('editTaskModal'));
-    modal.hide();
-    // 显示成功消息
+    document.getElementById('editTaskModal').style.display = 'none';
     UI.showSuccess("任务已更新");
 });
 
