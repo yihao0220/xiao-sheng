@@ -121,8 +121,7 @@ function initializeMainPage() {
 
     // 修改"添加任务"按钮的事件监听器
     document.getElementById('showAddTaskFormButton').addEventListener('click', () => {
-        UI.showElement('addTaskForm');
-        UI.hideElement('showAddTaskFormButton');
+        new bootstrap.Modal(document.getElementById('addTaskModal')).show();
     });
 
     // 添加任务的事件监听器
@@ -140,13 +139,11 @@ function initializeMainPage() {
         if (taskName) {
             const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
             TaskManager.addTask(newTask);
-            document.getElementById('addTaskFormOverlay').style.display = 'none';
+            bootstrap.Modal.getInstance(document.getElementById('addTaskModal')).hide();
             clearTaskForm();
         } else {
             alert("请输入任务名称");
         }
-        UI.hideElement('addTaskForm');
-        UI.showElement('showAddTaskFormButton');
     });
 
     // 取消添加任务的事件监听器
@@ -184,14 +181,11 @@ function showEditTaskForm(index) {
 
         document.getElementById('editTaskForm').dataset.taskIndex = index;
 
-        // 使用 Bootstrap 的方式显示模态框
-        const editTaskModal = new bootstrap.Modal(document.getElementById('editTaskFormOverlay'));
-        editTaskModal.show();
+        new bootstrap.Modal(document.getElementById('editTaskModal')).show();
     } else {
         console.error("Task not found");
         alert("未找到任务");
     }
-    UI.showElement('editTaskForm');
 }
 
 function saveEditTask() {
@@ -209,7 +203,7 @@ function saveEditTask() {
     };
 
     TaskManager.editTask(taskIndex, updatedTask);
-    bootstrap.Modal.getInstance(document.getElementById('editTaskFormOverlay')).hide();
+    bootstrap.Modal.getInstance(document.getElementById('editTaskModal')).hide();
     alert("任务已更新");
 }
 
