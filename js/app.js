@@ -75,7 +75,7 @@ function initializeApp() {
                 TaskManager.addClass(newClass);
                 UI.clearClassForm();
             } else {
-                UI.showError("请填写所有必要的课程信息");
+                UI.showError("请填写所���必要的课程信息");
             }
         });
 
@@ -187,7 +187,9 @@ function initializeApp() {
         console.log("Tasks loaded");
 
         // 添加这行来显示提醒
-        showReminders();
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            showReminders();
+        }
 
         console.log("App initialization completed");
     } catch (error) {
@@ -268,7 +270,5 @@ document.addEventListener('DOMContentLoaded', initializeApp);
 
 // 确保 showReminders 函数定义如下
 function showReminders() {
+    console.log("Showing reminders");
     UI.showTodayClasses();
-    UI.showUnfinishedTasks();
-    UI.showClassReminders();
-}
