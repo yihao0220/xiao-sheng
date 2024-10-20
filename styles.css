@@ -284,3 +284,26 @@ body {
     opacity: 0.9;
     transform: translateY(-2px);
 }
+
+/* 保留特定的自定义样式 */
+.priority-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.priority-low {
+    background-color: #28a745;
+}
+
+.priority-medium {
+    background-color: #ffc107;
+}
+
+.priority-high {
+    background-color: #dc3545;
+}
+
+/* 添加其他需要的自定义样式 */
