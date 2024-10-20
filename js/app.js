@@ -186,7 +186,7 @@ function initializeApp() {
         TaskManager.loadTasks();
         console.log("Tasks loaded");
 
-        // 添加提醒功能
+        // 添加这行来显示提醒
         showReminders();
 
         console.log("App initialization completed");
@@ -263,17 +263,12 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
     UI.showSuccess("任务已更新");
 });
 
-// 新增：显示提醒的函数
-function showReminders() {
-    // 显示今天的课程
-    UI.showTodayClasses();
-
-    // 显示未完成的任务
-    UI.showUnfinishedTasks();
-
-    // 显示课程提醒（包括预习和复习提醒）
-    UI.showClassReminders();
-}
-
 // 在 DOM 加载完成后初始化应用程序
 document.addEventListener('DOMContentLoaded', initializeApp);
+
+// 确保 showReminders 函数定义如下
+function showReminders() {
+    UI.showTodayClasses();
+    UI.showUnfinishedTasks();
+    UI.showClassReminders();
+}
