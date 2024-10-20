@@ -7,150 +7,158 @@ window.addEventListener('unhandledrejection', function(event) {
     console.error('Unhandled promise rejection:', event.reason);
 });
 
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("DOM fully loaded");
-    initializeApp();
-});
-
 function initializeApp() {
     console.log("initializeApp function called");
 
-    const elements = {
-        loginButton: document.getElementById('loginButton'),
-        submitLoginButton: document.getElementById('submitLoginButton'),
-        logoutButton: document.getElementById('logoutButton'),
-        addClassButton: document.getElementById('addClassButton'),
-        saveWeeklyScheduleButton: document.getElementById('saveWeeklyScheduleButton'),
-        allTasks: document.getElementById('allTasks'),
-        showAddTaskFormButton: document.getElementById('showAddTaskFormButton'),
-        addTaskModal: document.getElementById('addTaskModal'),
-        addTaskButton: document.getElementById('addTaskButton'),
-        cancelAddTaskButton: document.getElementById('cancelAddTaskButton'),
-        weeklyClassList: document.getElementById('weeklyClassList')
-    };
+    try {
+        const elements = {
+            loginButton: document.getElementById('loginButton'),
+            submitLoginButton: document.getElementById('submitLoginButton'),
+            logoutButton: document.getElementById('logoutButton'),
+            addClassButton: document.getElementById('addClassButton'),
+            saveWeeklyScheduleButton: document.getElementById('saveWeeklyScheduleButton'),
+            allTasks: document.getElementById('allTasks'),
+            showAddTaskFormButton: document.getElementById('showAddTaskFormButton'),
+            addTaskModal: document.getElementById('addTaskModal'),
+            addTaskButton: document.getElementById('addTaskButton'),
+            cancelAddTaskButton: document.getElementById('cancelAddTaskButton'),
+            weeklyClassList: document.getElementById('weeklyClassList')
+        };
 
-    // 登录相关
-    elements.loginButton?.addEventListener('click', () => {
-        UI.showElement('authForm');
-        UI.hideElement('loginButton');
-    });
-
-    elements.submitLoginButton?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const username = document.getElementById('loginUsername').value;
-        const password = document.getElementById('loginPassword').value;
-        Auth.login(username, password);
-    });
-
-    elements.logoutButton?.addEventListener('click', Auth.logout);
-
-    // 添加课程
-    elements.addClassButton?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const className = document.getElementById('className').value;
-        const classDay = document.getElementById('classDay').value;
-        const classStartTime = document.getElementById('classStartTime').value;
-        const classEndTime = document.getElementById('classEndTime').value;
-        const classLocation = document.getElementById('classLocation').value;
-
-        if (className && classDay && classStartTime && classEndTime) {
-            const newClass = { name: className, day: classDay, startTime: classStartTime, endTime: classEndTime, location: classLocation };
-            TaskManager.addClass(newClass);
-            UI.clearClassForm();
-        } else {
-            UI.showError("请填写所有必要的课程信息");
-        }
-    });
-
-    // 保存周课表
-    elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const weeklySchedule = TaskManager.getWeeklySchedule();
-        TaskManager.addWeeklySchedule(weeklySchedule);
-        UI.updateClassList(weeklySchedule);
-    });
-
-    // 任务列表事件
-    elements.allTasks?.addEventListener('click', (e) => {
-        if (e.target.classList.contains('edit-button')) {
-            const index = parseInt(e.target.dataset.index);
-            showEditTaskForm(index);
-        } else if (e.target.classList.contains('delete-button')) {
-            const index = parseInt(e.target.dataset.index);
-            if (confirm('确定要删除这个任务吗？')) {
-                TaskManager.deleteTask(index);
+        // 检查所有元素是否存在
+        for (const [key, value] of Object.entries(elements)) {
+            if (!value) {
+                console.error(`Element ${key} not found`);
             }
         }
-    });
 
-    // 显示添加任务模态框
-    elements.showAddTaskFormButton?.addEventListener('click', () => {
-        console.log("Showing add task modal");
-        const modal = new bootstrap.Modal(elements.addTaskModal);
-        modal.show();
-    });
+        // 登录相关
+        elements.loginButton?.addEventListener('click', () => {
+            console.log("Login button clicked");
+            UI.showElement('authForm');
+            UI.hideElement('loginButton');
+        });
 
-    // 添加任务
-    elements.addTaskButton?.addEventListener('click', (e) => {
-        e.preventDefault();
-        console.log("Add task button clicked");
-        const taskName = document.getElementById('taskName').value;
-        const startDate = document.getElementById('startDate').value;
-        const startTime = document.getElementById('startTime').value;
-        const endDate = document.getElementById('endDate').value;
-        const endTime = document.getElementById('endTime').value;
-        const priority = document.getElementById('priority').value;
-        const category = document.getElementById('category').value;
-        const location = document.getElementById('location').value;
+        elements.submitLoginButton?.addEventListener('click', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            Auth.login(username, password);
+        });
 
-        if (taskName) {
-            const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
-            const success = TaskManager.addTask(newTask);
-            if (success) {
-                console.log("Task added successfully");
-                const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
-                if (modal) {
-                    modal.hide();
-                    console.log("Modal hidden");
-                } else {
-                    console.error("Bootstrap modal instance not found");
-                    elements.addTaskModal.style.display = 'none';
+        elements.logoutButton?.addEventListener('click', Auth.logout);
+
+        // 添加课程
+        elements.addClassButton?.addEventListener('click', (e) => {
+            e.preventDefault();
+            const className = document.getElementById('className').value;
+            const classDay = document.getElementById('classDay').value;
+            const classStartTime = document.getElementById('classStartTime').value;
+            const classEndTime = document.getElementById('classEndTime').value;
+            const classLocation = document.getElementById('classLocation').value;
+
+            if (className && classDay && classStartTime && classEndTime) {
+                const newClass = { name: className, day: classDay, startTime: classStartTime, endTime: classEndTime, location: classLocation };
+                TaskManager.addClass(newClass);
+                UI.clearClassForm();
+            } else {
+                UI.showError("请填写所有必要的课程信息");
+            }
+        });
+
+        // 保存周课表
+        elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
+            e.preventDefault();
+            const weeklySchedule = TaskManager.getWeeklySchedule();
+            TaskManager.addWeeklySchedule(weeklySchedule);
+            UI.updateClassList(weeklySchedule);
+        });
+
+        // 任务列表事件
+        elements.allTasks?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('edit-button')) {
+                const index = parseInt(e.target.dataset.index);
+                showEditTaskForm(index);
+            } else if (e.target.classList.contains('delete-button')) {
+                const index = parseInt(e.target.dataset.index);
+                if (confirm('确定要删除这个任务吗？')) {
+                    TaskManager.deleteTask(index);
                 }
-                UI.clearTaskForm();
-                UI.showSuccess("任务已添加");
-                const tasks = Storage.getItem('tasks') || [];
-                UI.updateTaskList(tasks);  // 直接更新UI
-                console.log("UI updated with new task list");
             }
-        } else {
-            UI.showError("请输入任务名称");
-        }
-    });
+        });
 
-    // 取消添加任务
-    elements.cancelAddTaskButton?.addEventListener('click', (e) => {
-        e.preventDefault();
-        const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
-        modal.hide();
-        UI.clearTaskForm();
-    });
+        // 显示添加任务模态框
+        elements.showAddTaskFormButton?.addEventListener('click', () => {
+            console.log("Showing add task modal");
+            const modal = new bootstrap.Modal(elements.addTaskModal);
+            modal.show();
+        });
 
-    // 删除课程
-    elements.weeklyClassList?.addEventListener('click', (e) => {
-        if (e.target.classList.contains('delete-class')) {
-            const index = parseInt(e.target.dataset.index);
-            if (confirm('确定要删除这个课程吗？')) {
-                TaskManager.deleteClass(index);
+        // 添加任务
+        elements.addTaskButton?.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log("Add task button clicked");
+            const taskName = document.getElementById('taskName').value;
+            const startDate = document.getElementById('startDate').value;
+            const startTime = document.getElementById('startTime').value;
+            const endDate = document.getElementById('endDate').value;
+            const endTime = document.getElementById('endTime').value;
+            const priority = document.getElementById('priority').value;
+            const category = document.getElementById('category').value;
+            const location = document.getElementById('location').value;
+
+            if (taskName) {
+                const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
+                const success = TaskManager.addTask(newTask);
+                if (success) {
+                    console.log("Task added successfully");
+                    const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
+                    if (modal) {
+                        modal.hide();
+                        console.log("Modal hidden");
+                    } else {
+                        console.error("Bootstrap modal instance not found");
+                        elements.addTaskModal.style.display = 'none';
+                    }
+                    UI.clearTaskForm();
+                    UI.showSuccess("任务已添加");
+                    const tasks = Storage.getItem('tasks') || [];
+                    UI.updateTaskList(tasks);  // 直接更新UI
+                    console.log("UI updated with new task list");
+                }
+            } else {
+                UI.showError("请输入任务名称");
             }
-        }
-    });
+        });
 
-    // 初始化
-    Auth.checkLoginStatus();
-    TaskManager.loadClasses();
-    TaskManager.loadTasks();
+        // 取消添加任务
+        elements.cancelAddTaskButton?.addEventListener('click', (e) => {
+            e.preventDefault();
+            const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
+            modal.hide();
+            UI.clearTaskForm();
+        });
 
-    console.log("App initialization completed");
+        // 删除课程
+        elements.weeklyClassList?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('delete-class')) {
+                const index = parseInt(e.target.dataset.index);
+                if (confirm('确定要删除这个课程吗？')) {
+                    TaskManager.deleteClass(index);
+                }
+            }
+        });
+
+        // 初始化
+        Auth.checkLoginStatus();
+        TaskManager.loadClasses();
+        TaskManager.loadTasks();
+
+        console.log("App initialization completed");
+    } catch (error) {
+        console.error("Error during app initialization:", error);
+        alert("初始化应用时出错，请刷新页面或联系管理员。");
+    }
 }
 
 function showEditTaskForm(index) {
@@ -197,3 +205,6 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
     modal.hide();
     UI.showSuccess("任务已更新");
 });
+
+// 确保在DOM加载完成后初始化应用
+document.addEventListener('DOMContentLoaded', initializeApp);
