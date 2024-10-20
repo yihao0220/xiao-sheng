@@ -107,10 +107,19 @@ function initializeApp() {
             const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
             const success = TaskManager.addTask(newTask);
             if (success) {
+                console.log("Task added successfully");
                 const modal = bootstrap.Modal.getInstance(elements.addTaskModal);
-                modal.hide();
+                if (modal) {
+                    modal.hide();
+                    console.log("Modal hidden");
+                } else {
+                    console.error("Bootstrap modal instance not found");
+                    elements.addTaskModal.style.display = 'none';
+                }
                 UI.clearTaskForm();
                 UI.showSuccess("任务已添加");
+                // 重新加载任务列表
+                TaskManager.loadTasks();
             }
         } else {
             UI.showError("请输入任务名称");
