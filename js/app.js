@@ -148,7 +148,9 @@ function initializeApp() {
         Auth.checkLoginStatus();
         TaskManager.loadClasses();
         TaskManager.loadTasks();
-        UI.showUnfinishedTasks(); // 使用 UI 对象的方法来显示未完成任务
+
+        // 每次刷新页面时显示未完成任务提醒，不需要检查登录状态
+        UI.showUnfinishedTasks();
 
         console.log("App initialization completed");
     } catch (error) {
