@@ -74,9 +74,11 @@ const UI = {
         if (todayClasses && todayClasses.length > 0) {
             let message = `今天的课程：\n\n`;
             todayClasses.forEach(classInfo => {
-                message += `${classInfo.name} (${classInfo.startTime} - ${classInfo.endTime})\n`;
+                message += `${classInfo.name} (${classInfo.time})\n`;
             });
             alert(message);
+        } else {
+            console.log("No classes for today");
         }
     },
 
@@ -139,29 +141,21 @@ const UI = {
 
     // 显示课程提醒
     showClassReminders: () => {
-        const today = new Date();
-        const todayClasses = TaskManager.getClassesForDate(today);
+        const todayClasses = TaskManager.getClassesForToday();
         
         if (todayClasses && todayClasses.length > 0) {
             let message = "今天的课程提醒：\n\n";
             todayClasses.forEach(classInfo => {
                 message += `预习提醒：${classInfo.name}\n`;
-                message += `时间：${classInfo.startTime} - ${classInfo.endTime}\n`;
-                message += `地点：${classInfo.location || '未知'}\n\n`;
+                message += `时间：${classInfo.time}\n\n`;
             });
             alert(message);
+        } else {
+            console.log("No classes to remind for today");
         }
 
-        const yesterday = new Date(today.getTime() - 24*60*60*1000);
-        const yesterdayClasses = TaskManager.getClassesForDate(yesterday);
-        
-        if (yesterdayClasses && yesterdayClasses.length > 0) {
-            let message = "昨天的课程复习提醒：\n\n";
-            yesterdayClasses.forEach(classInfo => {
-                message += `复习提醒：${classInfo.name}\n`;
-            });
-            alert(message);
-        }
+        // 注意：由于新的结构不包含具体日期，我们无法显示昨天的课程复习提醒
+        // 如果需要这个功能，可能需要重新设计数据结构或存储方式
     },
 
     // 清空课程表单
