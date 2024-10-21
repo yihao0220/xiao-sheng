@@ -58,14 +58,14 @@ const UI = {
 
     // 显示错误消息
     showError: (message) => {
-        console.error(message);
-        alert(`错误: ${message}`);
+        console.error(message); // 在控制台输出错误消息
+        alert(`错误: ${message}`); // 使用浏览器的 alert 显示错误消息给用户
     },
 
     // 显示成功消息
     showSuccess: (message) => {
-        console.log(message);
-        alert(message);
+        console.log(message); // 在控制台输出成功消息
+        alert(message); // 使用浏览器的 alert 显示成功消息给用户
     },
 
     // 显示今天的课程
@@ -89,6 +89,14 @@ const UI = {
             unfinishedTasks.forEach(task => {
                 message += `- ${task.name}\n`;
             });
+            return message; // 返回消息而不是直接显示
+        }
+        return null; // 如果没有未完成的任务，返回 null
+    },
+
+    showUnfinishedTasksOnce: () => {
+        const message = UI.showUnfinishedTasks();
+        if (message) {
             alert(message);
         }
     },
