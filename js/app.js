@@ -1,4 +1,4 @@
-// 设置全局错误处理函数，捕获未被 try-catch 块捕获的错误
+// 设置全局错误处理函数
 window.onerror = function(message, source, lineno, colno, error) {
     console.error("发生错误:", message, "在", source, "行号:", lineno);
     alert("抱歉，发生了一个错误。请查看控制台以获取更多信息。");
@@ -104,7 +104,7 @@ function initializeApp() {
             e.preventDefault();
             console.log("Add task button clicked");
             // 获取任务信息
-            const taskName = document.getElementById('taskName').value.trim(); // 使用 trim() 去除首尾空格
+            const taskName = document.getElementById('taskName').value.trim();
 
             // 检查必要信息是否填写完整
             if (taskName) {
@@ -139,22 +139,12 @@ function initializeApp() {
             UI.clearTaskForm();
         });
 
-        // 为周课表列表添加点事件监听，处理删除课程
-        elements.weeklyClassList?.addEventListener('click', (e) => {
-            if (e.target.classList.contains('delete-class')) {
-                const index = parseInt(e.target.dataset.index);
-                if (confirm('确定要删除这个课程吗？')) {
-                    TaskManager.deleteClass(index);
-                }
-            }
-        });
-
         // 初始化应用程序
         Auth.checkLoginStatus();
         TaskManager.loadClasses();
         TaskManager.loadTasks();
 
-        // 添加这行来显示未完成任务提醒
+        // 显示未完成任务提醒
         showUnfinishedTasksReminder();
 
         console.log("App initialization completed");
@@ -164,51 +154,7 @@ function initializeApp() {
     }
 }
 
-// 显示编辑任务表单的函数
-function showEditTaskForm(index) {
-    const tasks = Storage.getItem('tasks') || [];
-    const task = tasks[index];
-
-    if (task) {
-        document.getElementById('editTaskName').value = task.name;
-        document.getElementById('editStartDate').value = task.startDate;
-        document.getElementById('editStartTime').value = task.startTime;
-        document.getElementById('editEndDate').value = task.endDate;
-        document.getElementById('editEndTime').value = task.endTime;
-        document.getElementById('editPriority').value = task.priority;
-        document.getElementById('editCategory').value = task.category || '';
-        document.getElementById('editLocation').value = task.location || '';
-
-        document.getElementById('editTaskForm').dataset.taskIndex = index;
-
-        document.getElementById('editTaskModal').style.display = 'block';
-    } else {
-        console.error("Task not found");
-        UI.showError("未找到任务");
-    }
-}
-
-// 为保存编辑任务按钮添加点击事件监听器
-document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
-    const taskIndex = document.getElementById('editTaskForm').dataset.taskIndex;
-    const updatedTask = {
-        name: document.getElementById('editTaskName').value,
-        startDate: document.getElementById('editStartDate').value,
-        startTime: document.getElementById('editStartTime').value,
-        endDate: document.getElementById('editEndDate').value,
-        endTime: document.getElementById('editEndTime').value,
-        priority: document.getElementById('editPriority').value,
-        category: document.getElementById('editCategory').value,
-        location: document.getElementById('editLocation').value,
-        completed: false
-    };
-
-    TaskManager.editTask(taskIndex, updatedTask);
-    document.getElementById('editTaskModal').style.display = 'none';
-    UI.showSuccess("任务已更新");
-});
-
-// 添加这个新函数来显示未完成任务提醒
+// 显示未完成任务提醒的函数
 function showUnfinishedTasksReminder() {
     const tasks = Storage.getItem('tasks') || [];
     const unfinishedTasks = tasks.filter(task => !task.completed);
@@ -223,21 +169,3 @@ function showUnfinishedTasksReminder() {
 
 // 在 DOM 加载完成后初始化应用程序
 document.addEventListener('DOMContentLoaded', initializeApp);
-
-document.addEventListener('DOMContentLoaded', () => {
-    const loginButton = document.getElementById('loginButton');
-    if (loginButton) {
-        loginButton.addEventListener('click', () => {
-            console.log("Login button clicked");
-            UI.showElement('authForm');
-            UI.hideElement('loginButton');
-        });
-    } else {
-        console.error("Login button not found");
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    console.log("DOM fully loaded");
-    initializeApp();
-});
