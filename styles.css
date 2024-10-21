@@ -175,7 +175,7 @@ body {
     margin-right: 5px; /* 右侧外边距 */
 }
 
-/* 设置低优先级指示器颜色 */
+/* 设置低优先级指器颜色 */
 .priority-low {
     background-color: #28a745; /* 绿色 */
 }
