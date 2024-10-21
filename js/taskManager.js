@@ -101,7 +101,7 @@ const TaskManager = {
             console.log("Loading classes"); // 日志：正在加载课程
             const classes = Storage.getItem('classes') || []; // 从存储中获取课程数组
             UI.updateClassList(classes); // 更新UI显示的课程列表
-            console.log("Loaded classes:", classes); // 日志：显示加载的课程
+            console.log("Loaded classes:", classes); // 日志：显示加载的课��
         } catch (error) {
             console.error("Error loading classes:", error); // 错误日志：加载课程时出错
             alert("加载课程列表时出错，请稍后再试。"); // 显示错误消息给用户
@@ -180,7 +180,7 @@ const TaskManager = {
             tasks[index].completed = !tasks[index].completed; // 切换任务的完成状态
             Storage.setItem('tasks', tasks); // 保存更新后的任务数组
             UI.updateTaskList(tasks); // 更新UI显示的任务列表
-            console.log("Task completion toggled:", tasks[index]); // 日志：显示切换后的任务状态
+            console.log("Task completion toggled:", tasks[index]); // 日志：显示切换��的任务状态
         } catch (error) {
             console.error("Error toggling task completion:", error); // 错误日志：切换任务完成状态时出错
             alert("更新任务状态时出错，请稍后再试。"); // 显示错误消息给用户
@@ -188,15 +188,27 @@ const TaskManager = {
     },
 
     // 添加周课表
-    addWeeklySchedule: (weeklySchedule) => {
+    addWeeklySchedule: () => {
         try {
-            console.log("Adding weekly schedule:", weeklySchedule); // 日志：正在添加周课表
-            Storage.setItem('weeklySchedule', weeklySchedule); // 保存周课表
-            TaskManager.generateSemesterSchedule(weeklySchedule); // 生成学期课表
-            console.log("Weekly schedule added successfully"); // 日志：周课表添加成功
+            const weeklySchedule = [];
+            const inputs = document.querySelectorAll('#weeklyScheduleTemplate .course-input');
+            inputs.forEach(input => {
+                if (input.value.trim()) {
+                    weeklySchedule.push({
+                        name: input.value.trim(),
+                        day: ['周一', '周二', '周三', '周四', '周五'][input.dataset.day],
+                        time: input.dataset.time
+                    });
+                }
+            });
+
+            console.log("Adding weekly schedule:", weeklySchedule);
+            Storage.setItem('weeklySchedule', weeklySchedule);
+            UI.updateClassList(weeklySchedule);
+            console.log("Weekly schedule added successfully");
         } catch (error) {
-            console.error("Error adding weekly schedule:", error); // 错误日志：添加周课表时出错
-            alert("添加周课表时出错，请稍后再试"); // 显示错误消息给用户
+            console.error("Error adding weekly schedule:", error);
+            UI.showError("添加周课表时出错，请稍后再试");
         }
     },
 
