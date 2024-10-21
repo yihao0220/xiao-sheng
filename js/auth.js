@@ -17,6 +17,12 @@ if (typeof Auth === 'undefined') {
         login: (username, password) => {
             console.log("Login attempt:", username); // 输出登录尝试的用户名
             try {
+                if (typeof UI === 'undefined') {
+                    throw new Error("UI object is not defined.");
+                }
+                if (typeof TaskManager === 'undefined') {
+                    throw new Error("TaskManager object is not defined.");
+                }
                 localStorage.setItem('isLoggedIn', 'true'); // 在本地存储中设置登录状态为 true
                 localStorage.setItem('currentUser', username); // 在本地存储中保存当前用户名
                 UI.hideElement('authForm'); // 隐藏登录表单
