@@ -119,7 +119,7 @@ function initializeApp() {
                 if (success) {
                     elements.addTaskModal.style.display = 'none';
                     UI.clearTaskForm();
-                    UI.showSuccess("任务已添加");
+                    // 移除这里的 UI.showSuccess 调用
                     TaskManager.loadTasks();
                 }
             } else {
