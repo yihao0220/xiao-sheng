@@ -58,14 +58,14 @@ const UI = {
 
     // 显示错误消息
     showError: (message) => {
-        console.error("UI Error:", message); // 添加更详细的错误日志
+        console.error("UI Error:", message);
         alert(`错误: ${message}`);
     },
 
     // 显示成功消息
     showSuccess: (message) => {
-        console.log(message); // 在控制台输出成功消息
-        alert(message); // 使用浏览器的 alert 显示成功消息给用户
+        console.log("UI Success:", message);
+        alert(message);
     },
 
     // 显示今天的课程
@@ -191,6 +191,6 @@ const UI = {
     }
 };
 
-window.UI = UI;  // 将 UI 对象添加到全局作用域，使其他脚本可以访问
+window.UI = UI;  // 将 UI 对���添加到全局作用域，使其他脚本可以访问
 
 console.log("UI.js end"); // 输出日志，表示 UI.js 文件执行结束
