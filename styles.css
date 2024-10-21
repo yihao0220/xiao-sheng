@@ -21,7 +21,7 @@ body {
 
 /* 设置应用容器的最大宽度和居中 */
 .app-container {
-    max-width: 600px; /* 限制最大宽度 */
+    max-width: 600px; /* 限���最大宽度 */
     margin: 0 auto;   /* 水平居中 */
     padding: 20px;    /* 添加内边距 */
 }
@@ -151,7 +151,7 @@ body {
 
 /* 设置删除按钮样式 */
 .delete-button {
-    background-color: #dc3545; /* 设置背景色 */
+    background-color: #dc3545; /* ��置背景色 */
     color: white; /* 设置文字颜色 */
 }
 
@@ -366,21 +366,6 @@ body {
     border: 1px solid #888;
     width: 80%;
     max-width: 500px;
-}
-
-.close-modal {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.close-modal:hover,
-.close-modal:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
 }
 
 /* 添加其他必要的样式来替代 Bootstrap 的样式 */
