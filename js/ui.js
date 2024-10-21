@@ -91,14 +91,7 @@ const UI = {
             });
             return message; // 返回消息而不是直接显示
         }
-        return null; // 如果没有未完成的任务，返回 null
-    },
-
-    showUnfinishedTasksOnce: () => {
-        const message = UI.showUnfinishedTasks();
-        if (message) {
-            alert(message);
-        }
+        return null;
     },
 
     // 更新课程列表的显示
