@@ -98,13 +98,13 @@ const TaskManager = {
     // 加载所有课程
     loadClasses: () => {
         try {
-            console.log("Loading classes"); // 日志：正在加载课程
-            const classes = Storage.getItem('classes') || []; // 从存储中获取课程数组
-            UI.updateClassList(classes); // 更新UI显示的课程列表
-            console.log("Loaded classes:", classes); // 日志：显示加载的课
+            console.log("Loading classes");
+            const weeklySchedule = Storage.getItem('weeklySchedule') || [];
+            UI.updateClassList(weeklySchedule);
+            console.log("Loaded classes:", weeklySchedule);
         } catch (error) {
-            console.error("Error loading classes:", error); // 错误日志：加载课程时出错
-            alert("加载课程列表时出错，请稍后再试。"); // 显示错误消息给用户
+            console.error("Error loading classes:", error);
+            UI.showError("加载课程列表时出错，请稍后再试。");
         }
     },
 
@@ -186,7 +186,7 @@ const TaskManager = {
         }
     },
 
-    // 添加周课表
+    // ���加周课表
     addWeeklySchedule: () => {
         try {
             const weeklySchedule = [];
@@ -247,7 +247,7 @@ const TaskManager = {
 
     // 检查并移除过期任务
     checkExpiredTasks: function() {
-        const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
+        const tasks = Storage.getItem('tasks') || []; // 从存储中获取任���数组
         const updatedTasks = this.removeExpiredTasks(tasks); // 移除过期任务
         if (updatedTasks.length !== tasks.length) {
             this.loadTasks(); // 如果有任务被移除，重新加载任务列表
