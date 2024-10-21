@@ -106,7 +106,7 @@ const UI = {
             const li = document.createElement('li');
             li.className = 'list-group-item';
             li.innerHTML = `
-                <span>${classInfo.name} - ${classInfo.day} ${classInfo.startTime}-${classInfo.endTime} ${classInfo.location}</span>
+                <span>${classInfo.name} - ${classInfo.day} ${classInfo.time}</span>
             `;
             weeklyClassList.appendChild(li);
         });
