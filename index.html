@@ -78,7 +78,7 @@
                 <h2>添加任务</h2>
                 <form id="addTaskForm">
                     <div class="mb-3">
-                        <input type="text" id="taskName" placeholder="任务名称" required>
+                        <input type="text" id="taskName" class="form-control" placeholder="任务名称" required> <!-- 任务名称输入框 -->
                     </div>
                     <div class="mb-3">
                         <input type="date" id="startDate" class="form-control" required> <!-- 开始日期输入框 -->
@@ -117,7 +117,7 @@
                 <span class="close-modal">&times;</span>
                 <h2>编辑任务</h2>
                 <form id="editTaskForm">
-                    <input type="text" id="editTaskName" placeholder="任务名称">
+                    <input type="text" id="editTaskName" placeholder="任务名称" required>
                     <input type="date" id="editStartDate">
                     <input type="time" id="editStartTime">
                     <input type="date" id="editEndDate">
