@@ -64,8 +64,8 @@ const UI = {
 
     // 显示成功消息
     showSuccess: (message) => {
-        console.log(message); // 在��制台输出成功消息
-        alert(message); // 使用浏览器的 alert 显示成功消息给用户
+        console.log("Success:", message);
+        alert(message); // 或者使用其他更友好的方式显示成功消息
     },
 
     // 显示今天的课程
