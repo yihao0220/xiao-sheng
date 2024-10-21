@@ -5,10 +5,9 @@ const TaskManager = {
         try {
             console.log("TaskManager: Adding task:", task);
             const tasks = Storage.getItem('tasks') || [];
-            // 为未填写的字段设置默认值
             const newTask = {
                 name: task.name,
-                startDate: task.startDate || new Date().toISOString().split('T')[0], // 默认为今天
+                startDate: task.startDate || new Date().toISOString().split('T')[0],
                 startTime: task.startTime || '00:00',
                 endDate: task.endDate || task.startDate || new Date().toISOString().split('T')[0],
                 endTime: task.endTime || '23:59',
@@ -19,11 +18,8 @@ const TaskManager = {
             };
             tasks.push(newTask);
             Storage.setItem('tasks', tasks);
-            console.log("TaskManager: Task added to storage, total tasks:", tasks.length);
-            
-            // 更新UI，但不触发提醒
             UI.updateTaskList(tasks);
-            
+            console.log("TaskManager: Task added to storage, total tasks:", tasks.length);
             return true;
         } catch (error) {
             console.error("TaskManager: Error adding task:", error);
@@ -181,7 +177,7 @@ const TaskManager = {
                     day: dayMap[match[2]] || match[2], // 星期
                     startTime: match[3], // 开始时间
                     endTime: match[4], // 结束时间
-                    location: (match[5] || '').trim() // ��点（如果有）
+                    location: (match[5] || '').trim() // 点（如��有）
                 });
             }
         }
