@@ -81,7 +81,7 @@ function initializeApp() {
             UI.updateClassList(weeklySchedule);
         });
 
-        // 为任务列表添加点击事件监听器，处理编辑和删除任务
+        // 为���务列表添加点击事件监听器，处理编辑和删除任务
         elements.allTasks?.addEventListener('click', (e) => {
             if (e.target.classList.contains('edit-button')) {
                 const index = parseInt(e.target.dataset.index);
@@ -102,35 +102,29 @@ function initializeApp() {
         // 为添加任务按钮添加点击事件监听器
         elements.addTaskButton?.addEventListener('click', (e) => {
             e.preventDefault();
-            console.log("Add task button clicked"); // 添加日志
-            // 获取任务信息
-            const taskName = document.getElementById('taskName').value.trim(); // 使用 trim() 去除首尾空格
-            const startDate = document.getElementById('startDate').value;
-            const startTime = document.getElementById('startTime').value;
-            const endDate = document.getElementById('endDate').value;
-            const endTime = document.getElementById('endTime').value;
-            const priority = document.getElementById('priority').value;
-            const category = document.getElementById('category').value;
-            const location = document.getElementById('location').value;
+            console.log("Add task button clicked");
+            const taskName = document.getElementById('taskName').value.trim();
 
-            console.log("Task name:", taskName); // 添加日志
-
-            // 检查必要信息是否填写完整
             if (taskName) {
-                const newTask = { name: taskName, startDate, startTime, endDate, endTime, priority, category, location, completed: false };
-                console.log("New task object:", newTask); // 添加日志
+                const newTask = { 
+                    name: taskName, 
+                    startDate: document.getElementById('startDate').value,
+                    startTime: document.getElementById('startTime').value,
+                    endDate: document.getElementById('endDate').value,
+                    endTime: document.getElementById('endTime').value,
+                    priority: document.getElementById('priority').value,
+                    category: document.getElementById('category').value,
+                    location: document.getElementById('location').value,
+                    completed: false 
+                };
                 const success = TaskManager.addTask(newTask);
                 if (success) {
-                    console.log("Task added successfully"); // 添加日志
                     elements.addTaskModal.style.display = 'none';
                     UI.clearTaskForm();
                     UI.showSuccess("任务已添加");
                     TaskManager.loadTasks();
-                } else {
-                    console.log("Failed to add task"); // 添加日志
                 }
             } else {
-                console.log("Task name is empty"); // 添加日志
                 UI.showError("请至少填写任务名称");
             }
         });
