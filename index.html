@@ -4,59 +4,63 @@
     <meta charset="UTF-8"> <!-- 设置字符编码为UTF-8 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 设置视口，确保在移动设备上正确显示 -->
     <title>大学任务提醒</title> <!-- 设置页面标题 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" href="./styles.css"> <!-- 引入自定义CSS文件 -->
 </head>
 <body> <!-- 页面主体开始 -->
     <div class="container"> <!-- 创建一个容器 -->
         <header> <!-- 页面头部 -->
-            <h1>大学任务提醒</h1> <!-- 居中显示的标题 -->
+            <h1><i class="fas fa-tasks"></i> 大学任务提醒</h1> <!-- 居中显示的标题 -->
             <div> <!-- 右对齐的容器 -->
-                <button id="loginButton">登录</button> <!-- 登录按钮 -->
-                <button id="logoutButton" style="display: none;">退出</button> <!-- 退出按钮，初始隐藏 -->
+                <button id="loginButton" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> 登录</button> <!-- 登录按钮 -->
+                <button id="logoutButton" class="btn btn-secondary" style="display: none;"><i class="fas fa-sign-out-alt"></i> 退出</button> <!-- 退出按钮，初始隐藏 -->
             </div>
         </header>
 
         <main> <!-- 主要内容区域 -->
-            <div id="authForm" style="display: none;">
+            <div id="authForm" class="card" style="display: none;">
+                <h2><i class="fas fa-user"></i> 用户登录</h2>
                 <form id="loginForm">
-                    <input type="text" id="loginUsername" placeholder="用户名" required>
-                    <input type="password" id="loginPassword" placeholder="密码" required>
-                    <button type="submit" id="submitLoginButton">登录</button>
+                    <div class="form-group">
+                        <label for="loginUsername"><i class="fas fa-user"></i> 用户名</label>
+                        <input type="text" id="loginUsername" placeholder="请输入用户名" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword"><i class="fas fa-lock"></i> 密码</label>
+                        <input type="password" id="loginPassword" placeholder="请输入密码" required>
+                    </div>
+                    <button type="submit" id="submitLoginButton" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> 登录</button>
                 </form>
             </div>
 
             <div id="taskManager" style="display: none;"> <!-- 任务管理区域，初始隐藏 -->
-                <button id="showAddTaskFormButton" class="btn btn-primary mb-4 w-100" data-bs-toggle="modal" data-bs-target="#addTaskModal">添加任务</button> <!-- 显示添加任务模态框的按钮 -->
+                <button id="showAddTaskFormButton" class="btn btn-primary mb-4 w-100"><i class="fas fa-plus"></i> 添加任务</button> <!-- 显示添加任务模态框的按钮 -->
 
                 <div class="card mb-4">
-                    <div class="card-body">
-                        <h2 class="card-title">任务列表</h2>
-                        <ul id="allTasks" class="list-group"></ul> <!-- 用于显示所有任务的列表 -->
-                    </div>
+                    <h2><i class="fas fa-list"></i> 任务列表</h2>
+                    <ul id="allTasks" class="list-group"></ul> <!-- 用于显示所有任务的列表 -->
                 </div>
 
                 <!-- 添加周课表模板部分 -->
                 <div class="card mb-4">
-                    <div class="card-body">
-                        <h2 class="card-title">周课表</h2>
-                        <table id="weeklyScheduleTemplate" class="table">
-                            <thead>
-                                <tr>
-                                    <th>时间段</th>
-                                    <th>周一</th>
-                                    <th>周二</th>
-                                    <th>周三</th>
-                                    <th>周四</th>
-                                    <th>周五</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- 这里将根据常见的课程时间段生成行 -->
-                            </tbody>
-                        </table>
-                        <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3">保存周课表</button>
-                        <ul id="weeklyClassList" class="list-group mt-3"></ul>
-                    </div>
+                    <h2><i class="fas fa-calendar-alt"></i> 周课表</h2>
+                    <table id="weeklyScheduleTemplate" class="table">
+                        <thead>
+                            <tr>
+                                <th>时间段</th>
+                                <th>周一</th>
+                                <th>周二</th>
+                                <th>周三</th>
+                                <th>周四</th>
+                                <th>周五</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- 这里将根据常见的课程时间段生成行 -->
+                        </tbody>
+                    </table>
+                    <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3"><i class="fas fa-save"></i> 保存周课表</button>
+                    <ul id="weeklyClassList" class="list-group mt-3"></ul>
                 </div>
             </div>
         </main>
@@ -64,7 +68,7 @@
         <!-- 添加任务模态框 -->
         <div id="addTaskModal" class="modal" style="display: none;">
             <div class="modal-content">
-                <h2>添加任务</h2>
+                <h2><i class="fas fa-plus-circle"></i> 添加任务</h2>
                 <form id="addTaskForm">
                     <div class="mb-3">
                         <input type="text" id="taskName" class="form-control" placeholder="任务名称" required> <!-- 任务名称输入框 -->
@@ -95,15 +99,15 @@
                         <input type="text" id="location" class="form-control" placeholder="地点"> <!-- 地点输入框 -->
                     </div>
                 </form>
-                <button type="button" id="cancelAddTaskButton" class="btn-secondary close-modal">取消</button>
-                <button type="button" id="addTaskButton" class="btn-primary">添加任务</button>
+                <button type="button" id="cancelAddTaskButton" class="btn btn-secondary"><i class="fas fa-times"></i> 取消</button>
+                <button type="button" id="addTaskButton" class="btn btn-primary"><i class="fas fa-plus"></i> 添加任务</button>
             </div>
         </div>
 
         <!-- 编辑任务模态框 -->
         <div id="editTaskModal" class="modal" style="display: none;">
             <div class="modal-content">
-                <h2>编辑任务</h2>
+                <h2><i class="fas fa-edit"></i> 编辑任务</h2>
                 <form id="editTaskForm">
                     <input type="text" id="editTaskName" placeholder="任务名称" required>
                     <input type="date" id="editStartDate">
@@ -118,8 +122,8 @@
                     <input type="text" id="editCategory" placeholder="分类">
                     <input type="text" id="editLocation" placeholder="地点">
                 </form>
-                <button type="button" class="btn-secondary close-modal">取消</button>
-                <button type="button" class="btn-primary" id="saveEditTaskButton">保存修改</button>
+                <button type="button" class="btn btn-secondary close-modal"><i class="fas fa-times"></i> 取消</button>
+                <button type="button" class="btn btn-primary" id="saveEditTaskButton"><i class="fas fa-save"></i> 保存修改</button>
             </div>
         </div>
     </div>
