@@ -11,8 +11,7 @@ window.addEventListener('unhandledrejection', function(event) {
 
 // 应用程序初始化函数
 function initializeApp() {
-    console.log("initializeApp function called");
-
+    console.log("Initializing app...");
     try {
         // 定义包含所有重要 DOM 元素的对象
         const elements = {
@@ -135,7 +134,7 @@ function initializeApp() {
             UI.clearTaskForm();
         });
 
-        // 为周课表列表添加点击事件监听器，处理删除课程
+        // 为周课表列表添加点事件监听器，处理删除课程
         elements.weeklyClassList?.addEventListener('click', (e) => {
             if (e.target.classList.contains('delete-class')) {
                 const index = parseInt(e.target.dataset.index);
@@ -203,3 +202,16 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
 
 // 在 DOM 加载完成后初始化应用程序
 document.addEventListener('DOMContentLoaded', initializeApp);
+
+document.addEventListener('DOMContentLoaded', () => {
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+        loginButton.addEventListener('click', () => {
+            console.log("Login button clicked");
+            UI.showElement('authForm');
+            UI.hideElement('loginButton');
+        });
+    } else {
+        console.error("Login button not found");
+    }
+});
