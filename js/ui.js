@@ -58,13 +58,13 @@ const UI = {
 
     // 显示错误消息
     showError: (message) => {
-        console.error(message); // 在控制台输出错误消息
-        alert(`错误: ${message}`); // 使用浏览器的 alert 显示错误消息给用户
+        console.error("UI Error:", message); // 添加更详细的错误日志
+        alert(`错误: ${message}`);
     },
 
     // 显示成功消息
     showSuccess: (message) => {
-        console.log(message); // 在��制台输出成功消息
+        console.log(message); // 在控制台输出成功消息
         alert(message); // 使用浏览器的 alert 显示成功消息给用户
     },
 
@@ -89,9 +89,8 @@ const UI = {
             unfinishedTasks.forEach(task => {
                 message += `- ${task.name}\n`;
             });
-            return message; // 返回消息而不是直接显示
+            alert(message);
         }
-        return null;
     },
 
     // 更新课程列表的显示
@@ -178,7 +177,7 @@ const UI = {
 
     // 清空任务表单
     clearTaskForm: () => {
-        // 定义需要清空的表单��素 ID 数组
+        // 定义需要清空的表单元素 ID 数组
         const formElements = ['taskName', 'startDate', 'startTime', 'endDate', 'endTime', 'priority', 'category', 'location'];
         formElements.forEach(elementId => {
             const element = document.getElementById(elementId); // 获取每个表单元素
