@@ -5,10 +5,21 @@ const TaskManager = {
         try {
             console.log("TaskManager: Adding task:", task);
             const tasks = Storage.getItem('tasks') || [];
-            tasks.push(task);
+            // 为未填写的字段设置默认值
+            const newTask = {
+                name: task.name,
+                startDate: task.startDate || new Date().toISOString().split('T')[0], // 默认为今天
+                startTime: task.startTime || '00:00',
+                endDate: task.endDate || task.startDate || new Date().toISOString().split('T')[0],
+                endTime: task.endTime || '23:59',
+                priority: task.priority || 'medium',
+                category: task.category || '',
+                location: task.location || '',
+                completed: false
+            };
+            tasks.push(newTask);
             Storage.setItem('tasks', tasks);
             console.log("TaskManager: Task added to storage, total tasks:", tasks.length);
-            UI.showSuccess("任务已添加"); // 在这里添加成功提示
             return true;
         } catch (error) {
             console.error("TaskManager: Error adding task:", error);
@@ -35,15 +46,15 @@ const TaskManager = {
     // 删除任务
     deleteTask: (index) => {
         try {
-            console.log("Deleting task at index:", index); // 日志：正在删除任务
-            const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
-            tasks.splice(index, 1); // 从数组中移除指定索引的任务
-            Storage.setItem('tasks', tasks); // 保存更新后的任务数组
-            UI.updateTaskList(tasks); // 更新UI显示的任务列表
-            console.log("Task deleted successfully"); // 日志：任务删除成功
+            console.log("Deleting task at index:", index);
+            const tasks = Storage.getItem('tasks') || [];
+            tasks.splice(index, 1);
+            Storage.setItem('tasks', tasks);
+            UI.updateTaskList(tasks);
+            console.log("Task deleted successfully");
         } catch (error) {
-            console.error("Error deleting task:", error); // 错误日志：删除任务时出错
-            alert("删除任务时出错，请稍后再试。"); // 显示错误消息给用户
+            console.error("Error deleting task:", error);
+            alert("删除任务时出错，请稍后再试。");
         }
     },
 
