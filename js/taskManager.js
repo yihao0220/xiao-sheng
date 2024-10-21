@@ -80,6 +80,113 @@ const TaskManager = {
         return updatedTasks; // 返回更新后的任务数组
     },
 
+    // 添加课程信息
+    addClass: (classInfo) => {
+        try {
+            console.log("Adding class:", classInfo); // 日志：正在添加课程
+            const classes = Storage.getItem('classes') || []; // 从存储中取课程数组
+            classes.push(classInfo); // 添加新课程
+            Storage.setItem('classes', classes); // 保存更新后的课程数组
+            UI.updateClassList(classes); // 更新UI显示的课程列表
+            console.log("Class added successfully:", classInfo); // 日志：课程添加成功
+        } catch (error) {
+            console.error("Error adding class:", error); // 错误日志：添加课程时出错
+            alert("添加课程时出错，请稍后再试。"); // 显示错误消息给用户
+        }
+    },
+
+    // 加载所有课程
+    loadClasses: () => {
+        try {
+            console.log("Loading classes"); // 日志：正在加载课程
+            const classes = Storage.getItem('classes') || []; // 从存储中获取课程数组
+            UI.updateClassList(classes); // 更新UI显示的课程列表
+            console.log("Loaded classes:", classes); // 日志：显示加载的课
+        } catch (error) {
+            console.error("Error loading classes:", error); // 错误日志：加载课程时出错
+            alert("加载课程列表时出错，请稍后再试。"); // 显示错误消息给用户
+        }
+    },
+
+    // 获取今天的课程
+    getClassesForToday: () => {
+        const classes = Storage.getItem('classes') || [];
+        const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
+        return classes.filter(classInfo => classInfo.day === today);
+    },
+
+    // 获取早上的课程
+    getMorningClasses: () => {
+        try {
+            const todayClasses = TaskManager.getClassesForToday(); // 获取今天的课程
+            return todayClasses.filter(classInfo => {
+                const classTime = new Date(`2000-01-01T${classInfo.time}`); // 创建课程时间的Date对象
+                return classTime < new Date(`2000-01-01T13:00:00`); // 筛选出13:00前的课程
+            });
+        } catch (error) {
+            console.error("Error getting morning classes:", error); // 错误日志：获取早上课程时出错
+            alert("获取早上的班级列表出错，请稍后再试。"); // 显示错误消息给用户
+        }
+    },
+
+    // 识别课程表图片
+    recognizeSchedule: (file) => {
+        return new Promise((resolve, reject) => {
+            Tesseract.recognize(file, 'chi_sim') // 使用Tesseract.js识别中文简体文字
+                .then(({ data: { text } }) => {
+                    console.log("Recognized text:", text); // 日志：显示识别出的文字
+                    const classes = TaskManager.parseSchedule(text); // 解析识别出的文字
+                    Storage.setItem('classes', classes); // 保存解析后的课程信息
+                    UI.updateClassList(classes); // 更新UI显示的课程列表
+                    resolve(classes); // 解析成功，返回课程数组
+                })
+                .catch((error) => {
+                    console.error("Error recognizing schedule:", error); // 错误日志：识别课程表时出错
+                    reject(error); // 识别失败，返回错误
+                });
+        });
+    },
+
+    // 解析课程表文本
+    parseSchedule: (text) => {
+        const classes = []; // 初始化课程数组
+        const lines = text.split('\n'); // 将文本按行分割
+        const dayMap = {
+            '一': '周一', '': '周二', '三': '周三', '四': '周四', '五': '周五', '六': '周六', '日': '周日',
+            '1': '周一', '2': '周二', '3': '周三', '4': '周四', '5': '周五', '6': '周六', '7': '周日'
+        }; // 定义星期映射
+
+        for (let line of lines) {
+            // 匹配格式：课程名 星期 时间 地点
+            const match = line.match(/(.+?)\s+([\u4e00-\u9fa5一三四五六日1-7])\s*(\d{1,2}:\d{2})[-~](\d{1,2}:\d{2})\s*(.+)?/);
+            if (match) {
+                classes.push({
+                    name: match[1].trim(), // 课程名
+                    day: dayMap[match[2]] || match[2], // 星期
+                    startTime: match[3], // 开始时间
+                    endTime: match[4], // 结束时间
+                    location: (match[5] || '').trim() // 地点（如果有）
+                });
+            }
+        }
+        console.log("Parsed classes:", classes); // 日志：显示解析后的课程
+        return classes; // 返回解析后的课程数组
+    },
+
+    // 切换任务完成状态
+    toggleTaskCompletion: (index) => {
+        try {
+            const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
+            tasks[index].completed = !tasks[index].completed; // 切换任务的完成状态
+            Storage.setItem('tasks', tasks); // 保存更新后的任务数组
+            UI.updateTaskList(tasks); // 更新UI显示的任务列表
+            console.log("Task completion toggled:", tasks[index]); // 日志：显示切换的任务状态
+        } catch (error) {
+            console.error("Error toggling task completion:", error); // 错误日志：切换任务完成状态时出错
+            alert("更新任务状态时出错，请稍后再试。"); // 显示错误消息给用户
+        }
+    },
+
     // 添加周课表
     addWeeklySchedule: () => {
         try {
