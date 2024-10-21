@@ -53,7 +53,7 @@ function initializeApp() {
         // 为登出按钮添加点击事件监听器
         elements.logoutButton?.addEventListener('click', Auth.logout);
 
-        // 为添加课程按钮添加点击��件监听器
+        // 为添加课程按钮添加点击事件监听器
         elements.addClassButton?.addEventListener('click', (e) => {
             e.preventDefault();
             // 获取课程信息
@@ -134,6 +134,36 @@ function initializeApp() {
             e.preventDefault();
             elements.addTaskModal.style.display = 'none';
             UI.clearTaskForm();
+        });
+
+        // 为所有关闭模态框的元素添加事件监听器
+        const closeModalButtons = document.querySelectorAll('.close-modal');
+        closeModalButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    // 如果是编辑任务模态框，清空表单
+                    if (modal.id === 'editTaskModal') {
+                        UI.clearTaskForm();
+                    }
+                }
+            });
+        });
+
+        // 为取消按钮添加事件监听器
+        const cancelButtons = document.querySelectorAll('.btn-secondary.close-modal');
+        cancelButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    // 如果是编辑任务模态框，清空表单
+                    if (modal.id === 'editTaskModal') {
+                        UI.clearTaskForm();
+                    }
+                }
+            });
         });
 
         // 初始化应用程序
