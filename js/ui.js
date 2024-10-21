@@ -58,14 +58,14 @@ const UI = {
 
     // 显示错误消息
     showError: (message) => {
-        console.error(message); // 在控制台输出错误消息
-        alert(`错误: ${message}`); // 使用浏览器的 alert 显示错误消息给用户
+        console.error(message);
+        alert(`错误: ${message}`);
     },
 
     // 显示成功消息
     showSuccess: (message) => {
-        console.log(message); // 在控制台输出成功消息
-        alert(message); // 使用浏览器的 alert 显示成功消息给用户
+        console.log(message);
+        alert(message);
     },
 
     // 显示今天的课程
