@@ -46,35 +46,31 @@ const TaskManager = {
     // 删除任务
     deleteTask: (index) => {
         try {
-            console.log("Deleting task at index:", index);
-            const tasks = Storage.getItem('tasks') || [];
-            if (index >= 0 && index < tasks.length) {
-                tasks.splice(index, 1);
-                Storage.setItem('tasks', tasks);
-                UI.updateTaskList(tasks);
-                console.log("Task deleted successfully");
-            } else {
-                console.error("Invalid task index:", index);
-            }
+            console.log("Deleting task at index:", index); // 日志：正在删除任务
+            const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
+            tasks.splice(index, 1); // 从数组中移除指定索引的任务
+            Storage.setItem('tasks', tasks); // 保存更新后的任务数组
+            UI.updateTaskList(tasks); // 更新UI显示的任务列表
+            console.log("Task deleted successfully"); // 日志：任务删除成功
         } catch (error) {
-            console.error("Error deleting task:", error);
-            alert("删除任务时出错，请稍后再试。");
+            console.error("Error deleting task:", error); // 错误日志：删除任务时出错
+            alert("删除任务时出错，请稍后再试。"); // 显示错误消息给用户
         }
     },
 
     // 加载所有任务
     loadTasks: () => {
         try {
-            console.log("Loading tasks"); // 日志：正在加载任务
-            let tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
-            console.log("Tasks from storage:", tasks); // 日志：示从存储中获取的任务
-            tasks = TaskManager.removeExpiredTasks(tasks); // 移除过期任务
-            console.log("Tasks after removing expired:", tasks); // 日志：显示移除过期任务后的任务列表
-            UI.updateTaskList(tasks); // 更新UI显示的任务列表
-            console.log("Task list updated, total tasks:", tasks.length); // 日志：任务列表更新完成，显示总任务数
+            console.log("Loading tasks");
+            let tasks = Storage.getItem('tasks') || [];
+            console.log("Tasks from storage:", tasks);
+            tasks = TaskManager.removeExpiredTasks(tasks);
+            console.log("Tasks after removing expired:", tasks);
+            UI.updateTaskList(tasks);
+            console.log("Task list updated, total tasks:", tasks.length);
         } catch (error) {
-            console.error("Error loading tasks:", error); // 错误日志：加载任务时出错
-            UI.showError("加载任务列表时出错，请稍后再试。"); // 显示错误消息给用户
+            console.error("Error loading tasks:", error);
+            UI.showError("加载任务列表时出错，请稍后再试。");
         }
     },
 
@@ -136,7 +132,7 @@ const TaskManager = {
         try {
             const todayClasses = TaskManager.getClassesForToday(); // 获取今天的课程
             return todayClasses.filter(classInfo => {
-                const classTime = new Date(`2000-01-01T${classInfo.time}`); // 创建课程时间���Date对象
+                const classTime = new Date(`2000-01-01T${classInfo.time}`); // 创建课程时间的Date对象
                 return classTime < new Date(`2000-01-01T13:00:00`); // 筛选出13:00前的课程
             });
         } catch (error) {
@@ -189,7 +185,7 @@ const TaskManager = {
         return classes; // 返回解析后的课程数组
     },
 
-    // 切换任��完成状态
+    // 切换任务完成状态
     toggleTaskCompletion: (index) => {
         try {
             const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
@@ -287,4 +283,3 @@ setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 window.TaskManager = TaskManager;
 
 // 注意：这里不需要额外的闭合大括号和分号，因为它们已经在对象定义的末尾了
-
