@@ -37,40 +37,6 @@
 
                 <div class="card mb-4">
                     <div class="card-body">
-                        <h2 class="card-title">添加课程信息</h2>
-                        <form id="addClassForm">
-                            <div class="mb-3">
-                                <input type="text" id="className" class="form-control" placeholder="课程名称" required> <!-- 课程名称输入框 -->
-                            </div>
-                            <div class="mb-3">
-                                <select id="classDay" class="form-select" required> <!-- 选择上课日期的下拉菜单 -->
-                                    <option value="周一">周一</option>
-                                    <option value="周二">周二</option>
-                                    <option value="周三">周三</option>
-                                    <option value="周四">周四</option>
-                                    <option value="周五">周五</option>
-                                    <option value="周六">周六</option>
-                                    <option value="周日">周日</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <input type="time" id="classStartTime" class="form-control" required> <!-- 课程开始时间输入框 -->
-                            </div>
-                            <div class="mb-3">
-                                <input type="time" id="classEndTime" class="form-control" required> <!-- 课程结束时间输入框 -->
-                            </div>
-                            <div class="mb-3">
-                                <input type="text" id="classLocation" class="form-control" placeholder="上课地点 (可选)"> <!-- 上课地点输入框 -->
-                            </div>
-                            <button id="addClassButton" type="submit" class="btn btn-primary">添加课程</button> <!-- 添加课程按钮 -->
-                        </form>
-                        <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3">保存周课表</button> <!-- 保存周课表按钮 -->
-                        <ul id="weeklyClassList" class="list-group mt-3"></ul> <!-- 用于显示周课表的列表 -->
-                    </div>
-                </div>
-
-                <div class="card mb-4">
-                    <div class="card-body">
                         <h2 class="card-title">周课表模板</h2>
                         <table id="weeklyScheduleTemplate" class="table">
                             <thead>
