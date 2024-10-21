@@ -5,20 +5,9 @@ const TaskManager = {
         try {
             console.log("TaskManager: Adding task:", task);
             const tasks = Storage.getItem('tasks') || [];
-            const newTask = {
-                name: task.name,
-                startDate: task.startDate || new Date().toISOString().split('T')[0],
-                startTime: task.startTime || '00:00',
-                endDate: task.endDate || task.startDate || new Date().toISOString().split('T')[0],
-                endTime: task.endTime || '23:59',
-                priority: task.priority || 'medium',
-                category: task.category || '',
-                location: task.location || '',
-                completed: false
-            };
-            tasks.push(newTask);
+            tasks.push(task);
             Storage.setItem('tasks', tasks);
-            UI.updateTaskList(tasks);
+            UI.updateTaskList(tasks); // 只更新UI，不触发提醒
             console.log("TaskManager: Task added to storage, total tasks:", tasks.length);
             return true;
         } catch (error) {
@@ -177,7 +166,7 @@ const TaskManager = {
                     day: dayMap[match[2]] || match[2], // 星期
                     startTime: match[3], // 开始时间
                     endTime: match[4], // 结束时间
-                    location: (match[5] || '').trim() // 点（如��有）
+                    location: (match[5] || '').trim() // 地点（如果有）
                 });
             }
         }
