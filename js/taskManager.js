@@ -186,7 +186,7 @@ const TaskManager = {
         }
     },
 
-    // ���加周课表
+    // 添加周课表
     addWeeklySchedule: () => {
         try {
             const weeklySchedule = [];
@@ -205,6 +205,9 @@ const TaskManager = {
             Storage.setItem('weeklySchedule', weeklySchedule);
             UI.updateClassList(weeklySchedule);
             console.log("Weekly schedule added successfully");
+            
+            // 添加成功保存的提醒
+            UI.showSuccess("周课表已成功保存！");
         } catch (error) {
             console.error("Error adding weekly schedule:", error);
             UI.showError("添加周课表时出错，请稍后再试");
@@ -247,7 +250,7 @@ const TaskManager = {
 
     // 检查并移除过期任务
     checkExpiredTasks: function() {
-        const tasks = Storage.getItem('tasks') || []; // 从存储中获取任���数组
+        const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
         const updatedTasks = this.removeExpiredTasks(tasks); // 移除过期任务
         if (updatedTasks.length !== tasks.length) {
             this.loadTasks(); // 如果有任务被移除，重新加载任务列表
