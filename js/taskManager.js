@@ -101,7 +101,7 @@ const TaskManager = {
             console.log("Loading classes"); // 日志：正在加载课程
             const classes = Storage.getItem('classes') || []; // 从存储中获取课程数组
             UI.updateClassList(classes); // 更新UI显示的课程列表
-            console.log("Loaded classes:", classes); // 日志：显示加载的课��
+            console.log("Loaded classes:", classes); // 日志：显示加载的课
         } catch (error) {
             console.error("Error loading classes:", error); // 错误日志：加载课程时出错
             alert("加载课程列表时出错，请稍后再试。"); // 显示错误消息给用户
@@ -180,7 +180,7 @@ const TaskManager = {
             tasks[index].completed = !tasks[index].completed; // 切换任务的完成状态
             Storage.setItem('tasks', tasks); // 保存更新后的任务数组
             UI.updateTaskList(tasks); // 更新UI显示的任务列表
-            console.log("Task completion toggled:", tasks[index]); // 日志：显示切换��的任务状态
+            console.log("Task completion toggled:", tasks[index]); // 日志：显示切换的任务状态
         } catch (error) {
             console.error("Error toggling task completion:", error); // 错误日志：切换任务完成状态时出错
             alert("更新任务状态时出错，请稍后再试。"); // 显示错误消息给用户
@@ -255,21 +255,6 @@ const TaskManager = {
         }
     },
 
-    // 删除课程
-    deleteClass: (index) => {
-        try {
-            console.log("Deleting class at index:", index); // 日志：正在删除课程
-            const classes = Storage.getItem('classes') || []; // 从存储中获取课程数组
-            classes.splice(index, 1); // 从数组中移除指定索引的课程
-            Storage.setItem('classes', classes); // 保存更新后的课程数组
-            UI.updateClassList(classes); // 更新UI显示的课程列表
-            console.log("Class deleted successfully"); // 日志：课程删除成功
-        } catch (error) {
-            console.error("Error deleting class:", error); // 错误日志：删除课程时出错
-            alert("删除课程时出错，请稍后再试。"); // 显示错误消息给用户
-        }
-    },
-
     // 获取周课表
     getWeeklySchedule: () => {
         return Storage.getItem('weeklySchedule') || []; // 从存储中获取周课表，如果没则返回空数组
@@ -283,4 +268,3 @@ setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 window.TaskManager = TaskManager;
 
 // 注意：这里不需要额外的闭合大括号和分号，因为它们已经在对象定义的末尾了
-
