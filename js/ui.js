@@ -95,24 +95,22 @@ const UI = {
 
     // 更新课程列表的显示
     updateClassList: (classes) => {
-        console.log("Updating class list:", classes); // 输出正在更新课程列表的日志
-        const weeklyClassList = document.getElementById('weeklyClassList'); // 获取显示周课表的容器元素
+        console.log("Updating class list:", classes);
+        const weeklyClassList = document.getElementById('weeklyClassList');
         if (!weeklyClassList) {
-            console.error("weeklyClassList element not found"); // 如果容器元素不存在，输出错误日志
+            console.error("weeklyClassList element not found");
             return;
         }
-        weeklyClassList.innerHTML = ''; // 清空容器内容
-        classes.forEach((classInfo, index) => {
-            const li = document.createElement('li'); // 为每个课程创建一个列表项
-            li.className = 'list-group-item d-flex justify-content-between align-items-center'; // 设置列表项的 CSS 类
-            // 设置列表项的 HTML 内容，包括课程信息和删除按钮
+        weeklyClassList.innerHTML = '';
+        classes.forEach((classInfo) => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item';
             li.innerHTML = `
                 <span>${classInfo.name} - ${classInfo.day} ${classInfo.startTime}-${classInfo.endTime} ${classInfo.location}</span>
-                <button class="btn btn-danger btn-sm delete-class" data-index="${index}">删除</button>
             `;
-            weeklyClassList.appendChild(li); // 将列表项添加到容器中
+            weeklyClassList.appendChild(li);
         });
-        console.log("Class list updated"); // 输出课程列表更新完成的日志
+        console.log("Class list updated");
     },
 
     // 显示早上的提醒
@@ -180,7 +178,7 @@ const UI = {
         // 定义需要清空的表单元素 ID 数组
         const formElements = ['taskName', 'startDate', 'startTime', 'endDate', 'endTime', 'priority', 'category', 'location'];
         formElements.forEach(elementId => {
-            const element = document.getElementById(elementId); // ��取每个表单元素
+            const element = document.getElementById(elementId); // 取每个表单元素
             if (element) {
                 element.value = ''; // 如果元素存在，清空其值
             } else {
