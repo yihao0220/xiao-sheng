@@ -110,9 +110,8 @@ const TaskManager = {
 
     // 获取今天的课程
     getClassesForToday: () => {
-        const classes = Storage.getItem('classes') || [];
-        const today = new Date().toLocaleString('zh-CN', {weekday: 'long'});
-        return classes.filter(classInfo => classInfo.day === today);
+        const today = new Date();
+        return TaskManager.getClassesForDate(today);
     },
 
     // 获取早上的课程
@@ -236,9 +235,9 @@ const TaskManager = {
 
     // 获取指定日期的课程
     getClassesForDate: (date) => {
-        const classes = Storage.getItem('classes') || [];
+        const weeklySchedule = Storage.getItem('weeklySchedule') || [];
         const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'});
-        return classes.filter(classInfo => classInfo.day === dayOfWeek);
+        return weeklySchedule.filter(classInfo => classInfo.day === dayOfWeek);
     },
 
     // 格式化日期
