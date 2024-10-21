@@ -17,19 +17,8 @@
         </header>
 
         <main> <!-- 主要内容区域 -->
-            <div id="authForm" class="card mb-4" style="display: none;"> <!-- 认证表单，初始隐藏 -->
-                <div class="card-body">
-                    <h2 class="card-title">登录</h2>
-                    <form id="loginForm">
-                        <div class="mb-3">
-                            <input type="text" id="loginUsername" class="form-control" placeholder="用户名" required> <!-- 用户名输入框 -->
-                        </div>
-                        <div class="mb-3">
-                            <input type="password" id="loginPassword" class="form-control" placeholder="密码" required> <!-- 密码输入框 -->
-                        </div>
-                        <button id="submitLoginButton" class="btn btn-primary">登录</button> <!-- 提交登录按钮 -->
-                    </form>
-                </div>
+            <div id="authForm" style="display: none;"> <!-- 认证表单，初始隐藏 -->
+                <!-- 登录表单内容 -->
             </div>
 
             <div id="taskManager" style="display: none;"> <!-- 任务管理区域，初始隐藏 -->
@@ -73,29 +62,6 @@
                         </form>
                         <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3">保存周课表</button> <!-- 保存周课表按钮 -->
                         <ul id="weeklyClassList" class="list-group mt-3"></ul> <!-- 用于显示周课表的列表 -->
-                    </div>
-                </div>
-
-                <!-- 在添加课程信息的部分添加以下内容 -->
-                <div class="card mb-4">
-                    <div class="card-body">
-                        <h2 class="card-title">周课表模板</h2>
-                        <table id="weeklyScheduleTemplate" class="table">
-                            <thead>
-                                <tr>
-                                    <th>时间段</th>
-                                    <th>周一</th>
-                                    <th>周二</th>
-                                    <th>周三</th>
-                                    <th>周四</th>
-                                    <th>周五</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- 这里将根据常见的课程时间段生成行 -->
-                            </tbody>
-                        </table>
-                        <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3">保存周课表</button>
                     </div>
                 </div>
             </div>
