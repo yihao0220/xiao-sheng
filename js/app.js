@@ -103,10 +103,8 @@ function initializeApp() {
         elements.addTaskButton?.addEventListener('click', (e) => {
             e.preventDefault();
             console.log("Add task button clicked");
-            // 获取任务信息
             const taskName = document.getElementById('taskName').value.trim();
 
-            // 检查必要信息是否填写完整
             if (taskName) {
                 const newTask = { 
                     name: taskName, 
@@ -119,7 +117,6 @@ function initializeApp() {
                     location: document.getElementById('location').value,
                     completed: false 
                 };
-                console.log("New task object:", newTask);
                 const success = TaskManager.addTask(newTask);
                 if (success) {
                     elements.addTaskModal.style.display = 'none';
@@ -144,26 +141,15 @@ function initializeApp() {
         TaskManager.loadClasses();
         TaskManager.loadTasks();
 
-        // 显示未完成任务提醒
-        showUnfinishedTasksReminder();
+        // 添加这行来显示未完成任务提醒
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            UI.showUnfinishedTasks();
+        }
 
         console.log("App initialization completed");
     } catch (error) {
         console.error("Error during app initialization:", error);
         alert("初始化应用时出错，请刷新页面或联系管理员。");
-    }
-}
-
-// 显示未完成任务提醒的函数
-function showUnfinishedTasksReminder() {
-    const tasks = Storage.getItem('tasks') || [];
-    const unfinishedTasks = tasks.filter(task => !task.completed);
-    if (unfinishedTasks.length > 0) {
-        let message = "您有以下未完成的任务:\n";
-        unfinishedTasks.forEach(task => {
-            message += `- ${task.name}\n`;
-        });
-        alert(message);
     }
 }
 
