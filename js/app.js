@@ -151,9 +151,10 @@ function initializeApp() {
         TaskManager.loadClasses();
         TaskManager.loadTasks();
 
-        // 只在用户登录时显示未完成任务提醒
-        if (localStorage.getItem('isLoggedIn') === 'true') {
-            showUnfinishedTasksReminder();
+        // 只在用户首次登录时显示未完成任务提醒
+        if (localStorage.getItem('isLoggedIn') === 'true' && !sessionStorage.getItem('reminderShown')) {
+            UI.showUnfinishedTasks();
+            sessionStorage.setItem('reminderShown', 'true');
         }
 
         console.log("App initialization completed");
