@@ -148,6 +148,7 @@ function initializeApp() {
         Auth.checkLoginStatus();
         TaskManager.loadClasses();
         TaskManager.loadTasks();
+        UI.showUnfinishedTasks(); // 使用 UI 对象的方法来显示未完成任务
 
         console.log("App initialization completed");
     } catch (error) {
