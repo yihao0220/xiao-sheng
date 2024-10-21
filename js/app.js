@@ -31,7 +31,7 @@ function initializeApp() {
     // ... 其他初始化代码 ...
 }
 
-// 确保在 DOM 加载完成后调用 initializeApp
+// 确保您的 DOMContentLoaded 事件监听器仍然存在
 document.addEventListener('DOMContentLoaded', initializeApp);
 
 // 为保存周课表按钮添加事件监听器（如果还没有的话）
