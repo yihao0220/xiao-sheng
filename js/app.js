@@ -89,6 +89,7 @@ function initializeApp() {
             } else if (e.target.classList.contains('delete-button')) {
                 const index = parseInt(e.target.dataset.index);
                 if (confirm('确定要删除这个任务吗？')) {
+                    e.stopPropagation(); // 阻止事件冒泡
                     TaskManager.deleteTask(index);
                 }
             }
