@@ -18,7 +18,6 @@ function initializeApp() {
             loginButton: document.getElementById('loginButton'),
             submitLoginButton: document.getElementById('submitLoginButton'),
             logoutButton: document.getElementById('logoutButton'),
-            addClassButton: document.getElementById('addClassButton'),
             saveWeeklyScheduleButton: document.getElementById('saveWeeklyScheduleButton'),
             allTasks: document.getElementById('allTasks'),
             showAddTaskFormButton: document.getElementById('showAddTaskFormButton'),
@@ -52,26 +51,6 @@ function initializeApp() {
 
         // 为登出按钮添加点击事件监听器
         elements.logoutButton?.addEventListener('click', Auth.logout);
-
-        // 为添加课程按钮添加点击事件监听器
-        elements.addClassButton?.addEventListener('click', (e) => {
-            e.preventDefault();
-            // 获取课程信息
-            const className = document.getElementById('className').value;
-            const classDay = document.getElementById('classDay').value;
-            const classStartTime = document.getElementById('classStartTime').value;
-            const classEndTime = document.getElementById('classEndTime').value;
-            const classLocation = document.getElementById('classLocation').value;
-
-            // 检查必要信息是否填写完整
-            if (className && classDay && classStartTime && classEndTime) {
-                const newClass = { name: className, day: classDay, startTime: classStartTime, endTime: classEndTime, location: classLocation };
-                TaskManager.addClass(newClass);
-                UI.clearClassForm();
-            } else {
-                UI.showError("请填写所有必要的课程信息");
-            }
-        });
 
         // 为保存周课表按钮添加点击事件监听器
         document.getElementById('saveWeeklyScheduleButton')?.addEventListener('click', (e) => {
