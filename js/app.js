@@ -53,8 +53,28 @@ function initializeApp() {
         // 为登出按钮添加点击事件监听器
         elements.logoutButton?.addEventListener('click', Auth.logout);
 
-        // 保留周课表保存按钮的事件监听器
-        elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
+        // 为添加课程按钮添加点击事件监听器
+        elements.addClassButton?.addEventListener('click', (e) => {
+            e.preventDefault();
+            // 获取课程信息
+            const className = document.getElementById('className').value;
+            const classDay = document.getElementById('classDay').value;
+            const classStartTime = document.getElementById('classStartTime').value;
+            const classEndTime = document.getElementById('classEndTime').value;
+            const classLocation = document.getElementById('classLocation').value;
+
+            // 检查必要信息是否填写完整
+            if (className && classDay && classStartTime && classEndTime) {
+                const newClass = { name: className, day: classDay, startTime: classStartTime, endTime: classEndTime, location: classLocation };
+                TaskManager.addClass(newClass);
+                UI.clearClassForm();
+            } else {
+                UI.showError("请填写所有必要的课程信息");
+            }
+        });
+
+        // 为保存周课表按钮添加点击事件监听器
+        document.getElementById('saveWeeklyScheduleButton')?.addEventListener('click', (e) => {
             e.preventDefault();
             TaskManager.addWeeklySchedule();
         });
@@ -162,10 +182,7 @@ function initializeApp() {
 }
 
 // 在 DOM 加载完成后初始化应用程序
-document.addEventListener('DOMContentLoaded', () => {
-    initializeApp();
-    generateWeeklyScheduleTemplate();
-});
+document.addEventListener('DOMContentLoaded', initializeApp);
 
 // 显示编辑任务表单的函数
 function showEditTaskForm(index) {
@@ -212,7 +229,6 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
     UI.showSuccess("任务已更新");
 });
 
-// 添加生成周课表模板的函数
 function generateWeeklyScheduleTemplate() {
     const timeSlots = [
         "8:00 - 9:40", "10:00 - 11:40", "14:00 - 15:40", "16:00 - 17:40", "19:00 - 20:40"
@@ -220,7 +236,7 @@ function generateWeeklyScheduleTemplate() {
     const tbody = document.querySelector("#weeklyScheduleTemplate tbody");
     if (!tbody) {
         console.error("Weekly schedule template tbody not found");
-        return;
+        return; // 如果找不到 tbody，直接返回
     }
     tbody.innerHTML = '';
 
@@ -237,3 +253,6 @@ function generateWeeklyScheduleTemplate() {
         tbody.appendChild(row);
     });
 }
+
+// 在 initializeApp 函数中调用
+generateWeeklyScheduleTemplate();
