@@ -7,7 +7,6 @@ const TaskManager = {
             const tasks = Storage.getItem('tasks') || [];
             tasks.push(task);
             Storage.setItem('tasks', tasks);
-            UI.updateTaskList(tasks); // 只更新UI，不触发提醒
             console.log("TaskManager: Task added to storage, total tasks:", tasks.length);
             return true;
         } catch (error) {
