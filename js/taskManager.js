@@ -48,10 +48,14 @@ const TaskManager = {
         try {
             console.log("Deleting task at index:", index);
             const tasks = Storage.getItem('tasks') || [];
-            tasks.splice(index, 1);
-            Storage.setItem('tasks', tasks);
-            UI.updateTaskList(tasks);
-            console.log("Task deleted successfully");
+            if (index >= 0 && index < tasks.length) {
+                tasks.splice(index, 1);
+                Storage.setItem('tasks', tasks);
+                UI.updateTaskList(tasks);
+                console.log("Task deleted successfully");
+            } else {
+                console.error("Invalid task index:", index);
+            }
         } catch (error) {
             console.error("Error deleting task:", error);
             alert("删除任务时出错，请稍后再试。");
@@ -132,7 +136,7 @@ const TaskManager = {
         try {
             const todayClasses = TaskManager.getClassesForToday(); // 获取今天的课程
             return todayClasses.filter(classInfo => {
-                const classTime = new Date(`2000-01-01T${classInfo.time}`); // 创建课程时间的Date对象
+                const classTime = new Date(`2000-01-01T${classInfo.time}`); // 创建课程时间���Date对象
                 return classTime < new Date(`2000-01-01T13:00:00`); // 筛选出13:00前的课程
             });
         } catch (error) {
@@ -185,7 +189,7 @@ const TaskManager = {
         return classes; // 返回解析后的课程数组
     },
 
-    // 切换任务完成状态
+    // 切换任��完成状态
     toggleTaskCompletion: (index) => {
         try {
             const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
