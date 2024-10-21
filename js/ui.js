@@ -64,7 +64,7 @@ const UI = {
 
     // 显示成功消息
     showSuccess: (message) => {
-        console.log(message); // 在控制台输出成功消息
+        console.log(message); // 在��制台输出成功消息
         alert(message); // 使用浏览器的 alert 显示成功消息给用户
     },
 
@@ -178,7 +178,7 @@ const UI = {
 
     // 清空任务表单
     clearTaskForm: () => {
-        // 定义需要清空的表单元素 ID 数组
+        // 定义需要清空的表单��素 ID 数组
         const formElements = ['taskName', 'startDate', 'startTime', 'endDate', 'endTime', 'priority', 'category', 'location'];
         formElements.forEach(elementId => {
             const element = document.getElementById(elementId); // 获取每个表单元素
