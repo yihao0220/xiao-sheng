@@ -119,7 +119,7 @@ function initializeApp() {
                 if (success) {
                     elements.addTaskModal.style.display = 'none';
                     UI.clearTaskForm();
-                    // 移除这里的 UI.showSuccess 调用
+                    UI.showSuccess("任务已添加");
                     TaskManager.loadTasks();
                 }
             } else {
@@ -149,8 +149,10 @@ function initializeApp() {
         TaskManager.loadClasses();
         TaskManager.loadTasks();
 
-        // 每次刷新页面时显示未完成任务提醒，不需要检查登录状态
-        UI.showUnfinishedTasks();
+        // 只在用户登录时显示一次未完成任务提醒
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            showAllReminders();
+        }
 
         console.log("App initialization completed");
     } catch (error) {
@@ -223,3 +225,28 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded");
     initializeApp();
 });
+
+function showAllReminders() {
+    let message = "";
+
+    // 未完成任务提醒
+    const unfinishedTasksMessage = UI.showUnfinishedTasks();
+    if (unfinishedTasksMessage) {
+        message += unfinishedTasksMessage + "\n\n";
+    }
+
+    // 今日课程提醒
+    const todayClasses = TaskManager.getClassesForToday();
+    if (todayClasses && todayClasses.length > 0) {
+        message += "今天的课程：\n";
+        todayClasses.forEach(classInfo => {
+            message += `- ${classInfo.name} (${classInfo.startTime} - ${classInfo.endTime})\n`;
+        });
+        message += "\n";
+    }
+
+    // 显示合并后的提醒
+    if (message) {
+        alert(message);
+    }
+}
