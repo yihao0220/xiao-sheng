@@ -121,6 +121,8 @@ function initializeApp() {
                     UI.clearTaskForm();
                     UI.showSuccess("任务已添加");
                     TaskManager.loadTasks();
+                    // 移除这里的未完成任务提醒
+                    // showUnfinishedTasksReminder();
                 }
             } else {
                 UI.showError("请至少填写任务名称");
@@ -149,8 +151,10 @@ function initializeApp() {
         TaskManager.loadClasses();
         TaskManager.loadTasks();
 
-        // 添加这行来显示未完成任务提醒
-        showUnfinishedTasksReminder();
+        // 只在用户登录时显示未完成任务提醒
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            showUnfinishedTasksReminder();
+        }
 
         console.log("App initialization completed");
     } catch (error) {
