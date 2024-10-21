@@ -163,13 +163,13 @@ const TaskManager = {
         const classes = []; // 初始化课程数组
         const lines = text.split('\n'); // 将文本按行分割
         const dayMap = {
-            '一': '周一', '二': '周二', '三': '周三', '四': '周四', '五': '周五', '六': '周六', '日': '周日',
+            '一': '周一', '���': '周二', '三': '周三', '四': '周四', '五': '周五', '六': '周六', '日': '周日',
             '1': '周一', '2': '周二', '3': '周三', '4': '周四', '5': '周五', '6': '周六', '7': '周日'
         }; // 定义星期映射
 
         for (let line of lines) {
             // 匹配格式：课程名 星期 时间 地点
-            const match = line.match(/(.+?)\s+([\u4e00-\u9fa5一��三四五六日1-7])\s*(\d{1,2}:\d{2})[-~](\d{1,2}:\d{2})\s*(.+)?/);
+            const match = line.match(/(.+?)\s+([\u4e00-\u9fa5一三四五六日1-7])\s*(\d{1,2}:\d{2})[-~](\d{1,2}:\d{2})\s*(.+)?/);
             if (match) {
                 classes.push({
                     name: match[1].trim(), // 课程名
@@ -271,7 +271,7 @@ const TaskManager = {
 
     // 获取周课表
     getWeeklySchedule: () => {
-        return Storage.getItem('weeklySchedule') || []; // 从存储中获取周课表，如果没��则返回空数组
+        return Storage.getItem('weeklySchedule') || []; // 从存储中获取周课表，如果没则返回空数组
     },
 };
 
