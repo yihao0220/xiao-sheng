@@ -87,8 +87,6 @@ function initializeApp() {
                 const index = parseInt(e.target.dataset.index);
                 showEditTaskForm(index);
             } else if (e.target.classList.contains('delete-button')) {
-                e.preventDefault(); // 阻止默认行为
-                e.stopPropagation(); // 阻止事件冒泡
                 const index = parseInt(e.target.dataset.index);
                 if (confirm('确定要删除这个任务吗？')) {
                     TaskManager.deleteTask(index);
@@ -151,11 +149,8 @@ function initializeApp() {
         TaskManager.loadClasses();
         TaskManager.loadTasks();
 
-        // 只在用户首次登录时显示未完成任务提醒
-        if (localStorage.getItem('isLoggedIn') === 'true' && !localStorage.getItem('reminderShown')) {
-            showAllReminders();
-            localStorage.setItem('reminderShown', 'true');
-        }
+        // 添加这行来显示未完成任务提醒
+        showUnfinishedTasksReminder();
 
         console.log("App initialization completed");
     } catch (error) {
@@ -208,6 +203,19 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
     UI.showSuccess("任务已更新");
 });
 
+// 添加这个新函数来显示未完成任务提醒
+function showUnfinishedTasksReminder() {
+    const tasks = Storage.getItem('tasks') || [];
+    const unfinishedTasks = tasks.filter(task => !task.completed);
+    if (unfinishedTasks.length > 0) {
+        let message = "您有以下未完成的任务:\n";
+        unfinishedTasks.forEach(task => {
+            message += `- ${task.name}\n`;
+        });
+        alert(message);
+    }
+}
+
 // 在 DOM 加载完成后初始化应用程序
 document.addEventListener('DOMContentLoaded', initializeApp);
 
@@ -228,28 +236,3 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log("DOM fully loaded");
     initializeApp();
 });
-
-function showAllReminders() {
-    let message = "";
-
-    // 未完成任务提醒
-    const unfinishedTasksMessage = UI.showUnfinishedTasks();
-    if (unfinishedTasksMessage) {
-        message += unfinishedTasksMessage + "\n\n";
-    }
-
-    // 今日课程提醒
-    const todayClasses = TaskManager.getClassesForToday();
-    if (todayClasses && todayClasses.length > 0) {
-        message += "今天的课程：\n";
-        todayClasses.forEach(classInfo => {
-            message += `- ${classInfo.name} (${classInfo.startTime} - ${classInfo.endTime})\n`;
-        });
-        message += "\n";
-    }
-
-    // 显示合并后的提醒
-    if (message) {
-        alert(message);
-    }
-}
