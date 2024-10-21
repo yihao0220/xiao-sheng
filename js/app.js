@@ -134,7 +134,7 @@ function initializeApp() {
             UI.clearTaskForm();
         });
 
-        // 为周课表列表添加点事件监听���，处理删除课程
+        // 为周课表列表添加点事件监听，处理删除课程
         elements.weeklyClassList?.addEventListener('click', (e) => {
             if (e.target.classList.contains('delete-class')) {
                 const index = parseInt(e.target.dataset.index);
