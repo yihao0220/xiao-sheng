@@ -230,3 +230,27 @@ document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
     document.getElementById('editTaskModal').style.display = 'none';
     UI.showSuccess("任务已更新");
 });
+
+function generateWeeklyScheduleTemplate() {
+    const timeSlots = [
+        "8:00 - 9:40", "10:00 - 11:40", "14:00 - 15:40", "16:00 - 17:40", "19:00 - 20:40"
+    ];
+    const tbody = document.querySelector("#weeklyScheduleTemplate tbody");
+    tbody.innerHTML = '';
+
+    timeSlots.forEach((slot, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${slot}</td>
+            ${Array(5).fill().map(() => `
+                <td>
+                    <input type="text" class="form-control course-input" data-time="${slot}" data-day="${index}">
+                </td>
+            `).join('')}
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// 在 initializeApp 函数中调用
+generateWeeklyScheduleTemplate();
