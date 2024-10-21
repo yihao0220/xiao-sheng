@@ -81,7 +81,7 @@ function initializeApp() {
             UI.updateClassList(weeklySchedule);
         });
 
-        // 为���务列表添加点击事件监听器，处理编辑和删除任务
+        // 为任务列表添加点击事件监听器，处理编辑和删除任务
         elements.allTasks?.addEventListener('click', (e) => {
             if (e.target.classList.contains('edit-button')) {
                 const index = parseInt(e.target.dataset.index);
@@ -103,8 +103,10 @@ function initializeApp() {
         elements.addTaskButton?.addEventListener('click', (e) => {
             e.preventDefault();
             console.log("Add task button clicked");
-            const taskName = document.getElementById('taskName').value.trim();
+            // 获取任务信息
+            const taskName = document.getElementById('taskName').value.trim(); // 使用 trim() 去除首尾空格
 
+            // 检查必要信息是否填写完整
             if (taskName) {
                 const newTask = { 
                     name: taskName, 
@@ -117,6 +119,7 @@ function initializeApp() {
                     location: document.getElementById('location').value,
                     completed: false 
                 };
+                console.log("New task object:", newTask);
                 const success = TaskManager.addTask(newTask);
                 if (success) {
                     elements.addTaskModal.style.display = 'none';
