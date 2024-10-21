@@ -87,9 +87,10 @@ function initializeApp() {
                 const index = parseInt(e.target.dataset.index);
                 showEditTaskForm(index);
             } else if (e.target.classList.contains('delete-button')) {
+                e.preventDefault(); // 阻止默认行为
+                e.stopPropagation(); // 阻止事件冒泡
                 const index = parseInt(e.target.dataset.index);
                 if (confirm('确定要删除这个任务吗？')) {
-                    e.stopPropagation(); // 阻止事件冒泡
                     TaskManager.deleteTask(index);
                 }
             }
@@ -150,9 +151,10 @@ function initializeApp() {
         TaskManager.loadClasses();
         TaskManager.loadTasks();
 
-        // 只在用户登录时显示一次未完成任务提醒
-        if (localStorage.getItem('isLoggedIn') === 'true') {
+        // 只在用户首次登录时显示未完成任务提醒
+        if (localStorage.getItem('isLoggedIn') === 'true' && !localStorage.getItem('reminderShown')) {
             showAllReminders();
+            localStorage.setItem('reminderShown', 'true');
         }
 
         console.log("App initialization completed");
