@@ -20,6 +20,10 @@ const TaskManager = {
             tasks.push(newTask);
             Storage.setItem('tasks', tasks);
             console.log("TaskManager: Task added to storage, total tasks:", tasks.length);
+            
+            // 更新UI，但不触发提醒
+            UI.updateTaskList(tasks);
+            
             return true;
         } catch (error) {
             console.error("TaskManager: Error adding task:", error);
@@ -177,7 +181,7 @@ const TaskManager = {
                     day: dayMap[match[2]] || match[2], // 星期
                     startTime: match[3], // 开始时间
                     endTime: match[4], // 结束时间
-                    location: (match[5] || '').trim() // 地点（如果有）
+                    location: (match[5] || '').trim() // ��点（如果有）
                 });
             }
         }
@@ -283,3 +287,4 @@ setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 window.TaskManager = TaskManager;
 
 // 注意：这里不需要额外的闭合大括号和分号，因为它们已经在对象定义的末尾了
+
