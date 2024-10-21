@@ -74,7 +74,6 @@
         <!-- 添加任务模态框 -->
         <div id="addTaskModal" class="modal" style="display: none;">
             <div class="modal-content">
-                <span class="close-modal">&times;</span>
                 <h2>添加任务</h2>
                 <form id="addTaskForm">
                     <div class="mb-3">
@@ -107,14 +106,13 @@
                     </div>
                 </form>
                 <button type="button" id="cancelAddTaskButton" class="btn-secondary close-modal">取消</button>
-                <button type="button" id="addTaskButton">添加任务</button>
+                <button type="button" id="addTaskButton" class="btn-primary">添加任务</button>
             </div>
         </div>
 
         <!-- 编辑任务模态框 -->
         <div id="editTaskModal" class="modal" style="display: none;">
             <div class="modal-content">
-                <span class="close-modal">&times;</span>
                 <h2>编辑任务</h2>
                 <form id="editTaskForm">
                     <input type="text" id="editTaskName" placeholder="任务名称" required>
