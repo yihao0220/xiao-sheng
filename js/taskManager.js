@@ -5,7 +5,18 @@ const TaskManager = {
         try {
             console.log("TaskManager: Adding task:", task);
             const tasks = Storage.getItem('tasks') || [];
-            tasks.push(task);
+            const newTask = {
+                name: task.name,
+                startDate: task.startDate || null,
+                startTime: task.startTime || null,
+                endDate: task.endDate || null,
+                endTime: task.endTime || null,
+                priority: task.priority || 'medium',
+                category: task.category || '',
+                location: task.location || '',
+                completed: false
+            };
+            tasks.push(newTask);
             Storage.setItem('tasks', tasks);
             console.log("TaskManager: Task added to storage, total tasks:", tasks.length);
             return true;
@@ -158,7 +169,7 @@ const TaskManager = {
 
         for (let line of lines) {
             // 匹配格式：课程名 星期 时间 地点
-            const match = line.match(/(.+?)\s+([\u4e00-\u9fa5一二三四五六日1-7])\s*(\d{1,2}:\d{2})[-~](\d{1,2}:\d{2})\s*(.+)?/);
+            const match = line.match(/(.+?)\s+([\u4e00-\u9fa5一��三四五六日1-7])\s*(\d{1,2}:\d{2})[-~](\d{1,2}:\d{2})\s*(.+)?/);
             if (match) {
                 classes.push({
                     name: match[1].trim(), // 课程名
@@ -260,7 +271,7 @@ const TaskManager = {
 
     // 获取周课表
     getWeeklySchedule: () => {
-        return Storage.getItem('weeklySchedule') || []; // 从存储中获取周课表，如果没有则返回空数组
+        return Storage.getItem('weeklySchedule') || []; // 从存储中获取周课表，如果没��则返回空数组
     },
 };
 
