@@ -53,7 +53,7 @@ function initializeApp() {
         // 为登出按钮添加点击事件监听器
         elements.logoutButton?.addEventListener('click', Auth.logout);
 
-        // 为添加课程按钮添加点击事件监听器
+        // 为添加课程按钮添加点击��件监听器
         elements.addClassButton?.addEventListener('click', (e) => {
             e.preventDefault();
             // 获取课程信息
@@ -155,3 +155,48 @@ function initializeApp() {
 
 // 在 DOM 加载完成后初始化应用程序
 document.addEventListener('DOMContentLoaded', initializeApp);
+
+// 显示编辑任务表单的函数
+function showEditTaskForm(index) {
+    const tasks = Storage.getItem('tasks') || [];
+    const task = tasks[index];
+
+    if (task) {
+        document.getElementById('editTaskName').value = task.name;
+        document.getElementById('editStartDate').value = task.startDate || '';
+        document.getElementById('editStartTime').value = task.startTime || '';
+        document.getElementById('editEndDate').value = task.endDate || '';
+        document.getElementById('editEndTime').value = task.endTime || '';
+        document.getElementById('editPriority').value = task.priority || 'medium';
+        document.getElementById('editCategory').value = task.category || '';
+        document.getElementById('editLocation').value = task.location || '';
+
+        document.getElementById('editTaskForm').dataset.taskIndex = index;
+
+        const editTaskModal = document.getElementById('editTaskModal');
+        editTaskModal.style.display = 'block';
+    } else {
+        console.error("Task not found");
+        UI.showError("未找到任务");
+    }
+}
+
+// 为保存编辑任务按钮添加点击事件监听器
+document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
+    const taskIndex = document.getElementById('editTaskForm').dataset.taskIndex;
+    const updatedTask = {
+        name: document.getElementById('editTaskName').value,
+        startDate: document.getElementById('editStartDate').value,
+        startTime: document.getElementById('editStartTime').value,
+        endDate: document.getElementById('editEndDate').value,
+        endTime: document.getElementById('editEndTime').value,
+        priority: document.getElementById('editPriority').value,
+        category: document.getElementById('editCategory').value,
+        location: document.getElementById('editLocation').value,
+        completed: false
+    };
+
+    TaskManager.editTask(taskIndex, updatedTask);
+    document.getElementById('editTaskModal').style.display = 'none';
+    UI.showSuccess("任务已更新");
+});
