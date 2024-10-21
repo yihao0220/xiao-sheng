@@ -58,14 +58,14 @@ const UI = {
 
     // 显示错误消息
     showError: (message) => {
-        console.error("UI Error:", message);
-        alert(`错误: ${message}`);
+        console.error(message); // 在控制台输出错误消息
+        alert(`错误: ${message}`); // 使用浏览器的 alert 显示错误消息给用户
     },
 
     // 显示成功消息
     showSuccess: (message) => {
-        console.log("UI Success:", message);
-        alert(message);
+        console.log(message); // 在控制台输出成功消息
+        alert(message); // 使用浏览器的 alert 显示成功消息给用户
     },
 
     // 显示今天的课程
@@ -180,7 +180,7 @@ const UI = {
         // 定义需要清空的表单元素 ID 数组
         const formElements = ['taskName', 'startDate', 'startTime', 'endDate', 'endTime', 'priority', 'category', 'location'];
         formElements.forEach(elementId => {
-            const element = document.getElementById(elementId); // 获取每个表单元素
+            const element = document.getElementById(elementId); // ��取每个表单元素
             if (element) {
                 element.value = ''; // 如果元素存在，清空其值
             } else {
@@ -191,6 +191,6 @@ const UI = {
     }
 };
 
-window.UI = UI;  // 将 UI 对���添加到全局作用域，使其他脚本可以访问
+window.UI = UI;  // 将 UI 对象添加到全局作用域，使其他脚本可以访问
 
 console.log("UI.js end"); // 输出日志，表示 UI.js 文件执行结束
