@@ -11,7 +11,7 @@ window.addEventListener('unhandledrejection', function(event) {
 
 // 应用程序初始化函数
 function initializeApp() {
-    console.log("Initializing app...");
+    console.log("正在初始化应用...");
     try {
         // 定义包含所有重要 DOM 元素的对象
         const elements = {
@@ -30,167 +30,119 @@ function initializeApp() {
         // 检查所有 DOM 元素是否存在
         for (const [key, value] of Object.entries(elements)) {
             if (!value) {
-                console.error(`Element ${key} not found`);
+                console.error(`元素 ${key} 未找到`);
             }
         }
 
-        // 为登录按钮添加点击事件监听器
-        elements.loginButton?.addEventListener('click', () => {
-            console.log("Login button clicked");
-            UI.showElement('authForm');
-            UI.hideElement('loginButton');
-        });
+        // 设置事件监听器
+        setupEventListeners(elements);
 
-        // 为提交登录按钮添加点击事件监听器
-        elements.submitLoginButton?.addEventListener('click', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('loginUsername').value;
-            const password = document.getElementById('loginPassword').value;
-            Auth.login(username, password);
-        });
-
-        // 为登出按钮添加点击事件监听器
-        elements.logoutButton?.addEventListener('click', Auth.logout);
-
-        // 为保存周课表按钮添加点击事件监听器
-        document.getElementById('saveWeeklyScheduleButton')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            TaskManager.addWeeklySchedule();
-        });
-
-        // 为任务列表添加点击事件监听器，处理编辑和删除任务
-        elements.allTasks?.addEventListener('click', (e) => {
-            if (e.target.classList.contains('edit-button')) {
-                const index = parseInt(e.target.dataset.index);
-                showEditTaskForm(index);
-            } else if (e.target.classList.contains('delete-button')) {
-                const index = parseInt(e.target.dataset.index);
-                if (confirm('确定要删除这个任务吗？')) {
-                    TaskManager.deleteTask(index);
-                }
-            }
-        });
-
-        // 为显示添加任务模态框按钮添加点击事件监听器
-        elements.showAddTaskFormButton?.addEventListener('click', () => {
-            elements.addTaskModal.style.display = 'block';
-        });
-
-        // 为添加任务按钮添加点击事件监听器
-        elements.addTaskButton?.addEventListener('click', (e) => {
-            e.preventDefault();
-            console.log("Add task button clicked");
-            const taskName = document.getElementById('taskName').value.trim();
-
-            if (taskName) {
-                const newTask = { 
-                    name: taskName, 
-                    startDate: document.getElementById('startDate').value,
-                    startTime: document.getElementById('startTime').value,
-                    endDate: document.getElementById('endDate').value,
-                    endTime: document.getElementById('endTime').value,
-                    priority: document.getElementById('priority').value,
-                    category: document.getElementById('category').value,
-                    location: document.getElementById('location').value,
-                    completed: false 
-                };
-                const success = TaskManager.addTask(newTask);
-                if (success) {
-                    elements.addTaskModal.style.display = 'none';
-                    UI.clearTaskForm();
-                    UI.showSuccess("任务已添加");
-                    TaskManager.loadTasks();
-                }
-            } else {
-                UI.showError("请至少填写任务名称");
-            }
-        });
-
-        // 为取消添加任务按钮添加点击事件监听器
-        elements.cancelAddTaskButton?.addEventListener('click', (e) => {
-            e.preventDefault();
-            elements.addTaskModal.style.display = 'none';
-            UI.clearTaskForm();
-        });
-
-        // 为所有关闭模态框的元素添加事件监听器
-        const closeModalButtons = document.querySelectorAll('.close-modal');
-        closeModalButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const modal = button.closest('.modal');
-                if (modal) {
-                    modal.style.display = 'none';
-                    // 如果是编辑任务模态框，清空表单
-                    if (modal.id === 'editTaskModal') {
-                        UI.clearTaskForm();
-                    }
-                }
-            });
-        });
-
-        // 为取消按钮添加事件监听器
-        const cancelButtons = document.querySelectorAll('.btn-secondary.close-modal');
-        cancelButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const modal = button.closest('.modal');
-                if (modal) {
-                    modal.style.display = 'none';
-                    // 如果是编辑任务模态框，清空表单
-                    if (modal.id === 'editTaskModal') {
-                        UI.clearTaskForm();
-                    }
-                }
-            });
-        });
-
-        // 显示注册表单
-        document.getElementById('showRegisterForm')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            UI.hideElement('authForm');
-            UI.showElement('registerForm');
-        });
-
-        // 显示登录表单
-        document.getElementById('showLoginForm')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            UI.hideElement('registerForm');
-            UI.showElement('authForm');
-        });
-
-        // 处理注册表单提交
-        document.getElementById('signupForm')?.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('registerUsername').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            if (password !== confirmPassword) {
-                UI.showError("两次输入的密码不一致");
-                return;
-            }
-            
-            Auth.register(username, password);
-        });
-
-        // 初始化应用程序
+        // 初始化应用程序状态
         Auth.checkLoginStatus();
         TaskManager.loadClasses();
         TaskManager.loadTasks();
 
-        // 添加这行来显示未完成任务提醒
+        // 显示未完成任务提醒
         if (localStorage.getItem('isLoggedIn') === 'true') {
             UI.showUnfinishedTasks();
         }
 
-        console.log("App initialization completed");
+        console.log("应用程序初始化完成");
     } catch (error) {
-        console.error("Error during app initialization:", error);
+        console.error("应用程序初始化过程中出错:", error);
         alert("初始化应用时出错，请刷新页面或联系管理员。");
     }
 }
 
-// 在 DOM 加载完成后初始化应用程序
-document.addEventListener('DOMContentLoaded', initializeApp);
+// 设置事件监听器
+function setupEventListeners(elements) {
+    // 登录按钮点击事件
+    elements.loginButton?.addEventListener('click', () => {
+        console.log("登录按钮被点击");
+        UI.showElement('authForm');
+        UI.hideElement('loginButton');
+    });
+
+    // 提交登录按钮点击事件
+    elements.submitLoginButton?.addEventListener('click', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        Auth.login(username, password);
+    });
+
+    // 登出按钮点击事件
+    elements.logoutButton?.addEventListener('click', Auth.logout);
+
+    // 保存周课表按钮点击事件
+    elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
+        e.preventDefault();
+        TaskManager.addWeeklySchedule();
+    });
+
+    // 任务列表点击事件（用于编辑和删除任务）
+    elements.allTasks?.addEventListener('click', handleTaskListClick);
+
+    // 显示添加任务模态框按钮点击事件
+    elements.showAddTaskFormButton?.addEventListener('click', () => {
+        elements.addTaskModal.style.display = 'block';
+    });
+
+    // 添加任务按钮点击事件
+    elements.addTaskButton?.addEventListener('click', handleAddTask);
+
+    // 取消添加任务按钮点击事件
+    elements.cancelAddTaskButton?.addEventListener('click', (e) => {
+        e.preventDefault();
+        elements.addTaskModal.style.display = 'none';
+        UI.clearTaskForm();
+    });
+
+    // 设置其他事件监听器...
+}
+
+// 处理任务列表点击事件
+function handleTaskListClick(e) {
+    if (e.target.classList.contains('edit-button')) {
+        const index = parseInt(e.target.dataset.index);
+        showEditTaskForm(index);
+    } else if (e.target.classList.contains('delete-button')) {
+        const index = parseInt(e.target.dataset.index);
+        if (confirm('确定要删除这个任务吗？')) {
+            TaskManager.deleteTask(index);
+        }
+    }
+}
+
+// 处理添加任务事件
+function handleAddTask(e) {
+    e.preventDefault();
+    console.log("添加任务按钮被点击");
+    const taskName = document.getElementById('taskName').value.trim();
+
+    if (taskName) {
+        const newTask = { 
+            name: taskName, 
+            startDate: document.getElementById('startDate').value,
+            startTime: document.getElementById('startTime').value,
+            endDate: document.getElementById('endDate').value,
+            endTime: document.getElementById('endTime').value,
+            priority: document.getElementById('priority').value,
+            category: document.getElementById('category').value,
+            location: document.getElementById('location').value,
+            completed: false 
+        };
+        const success = TaskManager.addTask(newTask);
+        if (success) {
+            document.getElementById('addTaskModal').style.display = 'none';
+            UI.clearTaskForm();
+            UI.showSuccess("任务已添加");
+            TaskManager.loadTasks();
+        }
+    } else {
+        UI.showError("请至少填写任务名称");
+    }
+}
 
 // 显示编辑任务表单的函数
 function showEditTaskForm(index) {
@@ -285,3 +237,6 @@ function generateWeeklyScheduleTemplate() {
 
 // 在 initializeApp 函数中调用
 generateWeeklyScheduleTemplate();
+
+// 在 DOM 加载完成后初始化应用程序
+document.addEventListener('DOMContentLoaded', initializeApp);
