@@ -184,22 +184,73 @@ const UI = {
 
     // 改进提醒功能
     showReminder: (title, message) => {
-        // 检查浏览器是否支持通知
-        if (!("Notification" in window)) {
-            alert("此浏览器不支持桌面通知");
-            return;
-        }
+        // 检查是否为移动设备
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-        // 检查通知权限
-        if (Notification.permission === "granted") {
-            new Notification(title, { body: message });
-        } else if (Notification.permission !== "denied") {
-            Notification.requestPermission().then(permission => {
-                if (permission === "granted") {
+        if (isMobile) {
+            // 移动设备：使用自定义的浮动提示框
+            UI.showMobileReminder(title, message);
+        } else {
+            // 桌面设备：使用之前的通知逻辑
+            if ("Notification" in window) {
+                if (Notification.permission === "granted") {
                     new Notification(title, { body: message });
+                } else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === "granted") {
+                            new Notification(title, { body: message });
+                        } else {
+                            alert(`${title}\n\n${message}`);
+                        }
+                    });
+                } else {
+                    alert(`${title}\n\n${message}`);
                 }
-            });
+            } else {
+                alert(`${title}\n\n${message}`);
+            }
         }
+    },
+
+    // 添加新的函数来处理移动设备的提醒
+    showMobileReminder: (title, message) => {
+        // 创建提醒容器
+        const reminderContainer = document.createElement('div');
+        reminderContainer.className = 'mobile-reminder';
+        reminderContainer.innerHTML = `
+            <h3>${title}</h3>
+            <p>${message}</p>
+        `;
+
+        // 添加样式
+        reminderContainer.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            max-width: 80%;
+            text-align: center;
+            transition: opacity 0.5s ease-in-out;
+        `;
+
+        // 将提醒添加到页面
+        document.body.appendChild(reminderContainer);
+
+        // 设置淡出效果
+        setTimeout(() => {
+            reminderContainer.style.opacity = '0';
+        }, 3000); // 3秒后开始淡出
+
+        // 移除元素
+        setTimeout(() => {
+            document.body.removeChild(reminderContainer);
+        }, 3500); // 3.5秒后移除元素
     }
 };
 
