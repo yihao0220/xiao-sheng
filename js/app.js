@@ -101,6 +101,18 @@ function setupEventListeners(elements) {
         UI.clearTaskForm();
     });
 
+    // 为编辑任务模态框的取消按钮添加事件监听器
+    const cancelEditTaskButton = document.getElementById('cancelEditTaskButton');
+    if (cancelEditTaskButton) {
+        cancelEditTaskButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            document.getElementById('editTaskModal').style.display = 'none';
+            UI.clearTaskForm();
+        });
+    } else {
+        console.error("Cancel edit task button not found");
+    }
+
     // 设置其他事件监听器...
 }
 
@@ -163,7 +175,8 @@ function showEditTaskForm(index) {
             editCategory: document.getElementById('editCategory'),
             editLocation: document.getElementById('editLocation'),
             editTaskForm: document.getElementById('editTaskForm'),
-            editTaskModal: document.getElementById('editTaskModal')
+            editTaskModal: document.getElementById('editTaskModal'),
+            cancelEditTaskButton: document.getElementById('cancelEditTaskButton')
         };
 
         // 检查所有必要的元素是否存在
