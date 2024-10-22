@@ -1,28 +1,29 @@
 /* 定义全局 CSS 变量，用于统一管理颜色、字体等样式 */
 :root {
-    --color-primary: #4285f4;    /* 主要颜色，用于重要元素如按钮 */
-    --color-secondary: #f1f3f4;  /* 次要颜色，用于背景等次要元素 */
-    --color-background: #ffffff; /* 页面背景色 */
-    --color-text: #202124;       /* 主要文本颜色 */
-    --color-border: #dadce0;     /* 边框颜色 */
-    --font-size-base: 16px;      /* 基础字体大小 */
-    --font-family-main: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif; /* 主要字体族 */
+    --color-primary: #457B9D;
+    --color-secondary: #A8DADC;
+    --color-accent: #E63946;
+    --color-background: #F1FAEE;
+    --color-text: #1D3557;
+    --color-border: #A8DADC;
+    --font-size-base: 16px;
+    --font-family-main: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 /* 设置全局基础样式 */
 body {
-    font-family: var(--font-family-main); /* 使用定义的主要字体 */
-    font-size: var(--font-size-base);     /* 使用定义的基础字体大小 */
-    color: var(--color-text);             /* 使用定义的文本颜色 */
-    background-color: var(--color-background); /* 使用定义的背景色 */
-    margin: 0;  /* 移除默认外边距 */
-    padding: 0; /* 移除默认内边距 */
+    font-family: var(--font-family-main);
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    background-color: var(--color-background);
+    margin: 0;
+    padding: 0;
     line-height: 1.6;
 }
 
 /* 设置应用容器的最大宽度和居中 */
 .app-container {
-    max-width: 600px; /* 限最���宽度 */
+    max-width: 600px; /* 限最宽度 */
     margin: 0 auto;   /* 水平居中 */
     padding: 20px;    /* 添加内边距 */
 }
@@ -66,7 +67,7 @@ body {
 /* 设置全宽元素样式 */
 .full-width {
     width: 100%;       /* 宽度占满父元素 */
-    margin-bottom: 20px; /* 底���外边距 */
+    margin-bottom: 20px; /* 底部外边距 */
 }
 
 /* 设置任务和课程部分的共同样式 */
@@ -577,3 +578,98 @@ th {
     }
 }
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 20px 0;
+    margin-bottom: 30px;
+}
+
+h1, h2 {
+    color: var(--color-primary);
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--color-text);
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.list-group-item {
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.mobile-reminder {
+    background-color: white;
+    border: 2px solid var(--color-accent);
+}
+
+.mobile-reminder .reminder-header {
+    background-color: var(--color-accent);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+    }
+}
+
+/* 添加更多自定义样式... */
