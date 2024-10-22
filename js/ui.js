@@ -1,704 +1,326 @@
-/* 定义全局 CSS 变量，用于统一管理颜色、字体等样式 */
-:root {
-    --color-primary: #457B9D;
-    --color-secondary: #A8DADC;
-    --color-accent: #E63946;
-    --color-background: #F1FAEE;
-    --color-text: #1D3557;
-    --color-border: #A8DADC;
-    --font-size-base: 16px;
-    --font-family-main: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-}
+console.log("UI.js start"); // 输出日志，表示 UI.js 文件开始执行
 
-/* 设置全局基础样式 */
-body {
-    font-family: var(--font-family-main);
-    font-size: var(--font-size-base);
-    color: var(--color-text);
-    background-color: var(--color-background);
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-}
+// UI 对象：包含所有与用户界面相关的功能
+const UI = {
+    // 显示指定 ID 的元素
+    showElement: (elementId) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.style.display = 'block';
+        } else {
+            console.error(`Element with id ${elementId} not found`);
+        }
+    },
 
-/* 设置应用容器的最大宽度和居中 */
-.app-container {
-    max-width: 600px; /* 限最宽度 */
-    margin: 0 auto;   /* 水平居中 */
-    padding: 20px;    /* 添加内边距 */
-}
+    // 隐藏指定 ID 的元素
+    hideElement: (elementId) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.style.display = 'none';
+        } else {
+            console.error(`Element with id ${elementId} not found`);
+        }
+    },
 
-/* 设置应用头部样式 */
-.app-header {
-    display: flex; /* 使用弹性布局 */
-    justify-content: space-between; /* 两端对齐 */
-    align-items: center; /* 垂直居中对齐 */
-    margin-bottom: 20px; /* 底部外边距 */
-}
+    // 更新任务列表的显示
+    updateTaskList: (tasks) => {
+        console.log("UI: Updating task list:", tasks);
+        const allTasks = document.getElementById('allTasks');
+        if (!allTasks) {
+            console.error("UI: allTasks element not found");
+            return;
+        }
+        allTasks.innerHTML = '';
+        tasks.forEach((task, index) => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item';
+            
+            // 创建任务信息字符串，包含更多细节
+            let taskInfo = `<strong>${task.name}</strong>`;
+            if (task.startDate) {
+                taskInfo += `<br>开始: ${task.startDate}`;
+                if (task.startTime) {
+                    taskInfo += ` ${task.startTime}`;
+                }
+            }
+            if (task.endDate) {
+                taskInfo += `<br>结束: ${task.endDate}`;
+                if (task.endTime) {
+                    taskInfo += ` ${task.endTime}`;
+                }
+            }
+            if (task.priority) {
+                taskInfo += `<br>优先级: ${task.priority}`;
+            }
+            if (task.category) {
+                taskInfo += `<br>分类: ${task.category}`;
+            }
+            if (task.location) {
+                taskInfo += `<br>地点: ${task.location}`;
+            }
 
-/* ���置头部标题样式 */
-.app-header h1 {
-    font-size: 24px; /* 设置字体大小 */
-    margin: 0;       /* 移除默认外边距 */
-}
+            li.innerHTML = `
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>${taskInfo}</div>
+                    <div>
+                        <button class="btn btn-sm btn-outline-primary edit-button" data-index="${index}">编辑</button>
+                        <button class="btn btn-sm btn-outline-danger delete-button" data-index="${index}">删除</button>
+                    </div>
+                </div>
+            `;
+            allTasks.appendChild(li);
+        });
+        console.log("UI: Task list updated");
+    },
 
-/* 设置按钮基础样式 */
-.btn {
-    padding: 10px 20px; /* 设置内边距 */
-    border: none;       /* 移除边框 */
-    border-radius: 4px; /* 添加圆角 */
-    cursor: pointer;    /* 鼠标悬停时显示手型光标 */
-    font-size: 16px;    /* 设置字体大小 */
-    transition: background-color 0.3s ease;
-}
+    // 显示错误消息
+    showError: (message) => {
+        console.error(message); // 在控制台输出错误消息
+        alert(`错误: ${message}`); // 使用浏览器的 alert 显示错误消息给用户
+    },
 
-/* 设置主要按钮样式 */
-.btn-primary {
-    background-color: var(--color-primary); /* 使用主要颜色作为背景 */
-    color: white; /* 文字颜色设为白色 */
-}
+    // 显示成功消息
+    showSuccess: (message) => {
+        console.log("Success:", message);
+        alert(message); // 或者使用其他更友好的方式显示成功消息
+    },
 
-/* 设置次要按钮样式 */
-.btn-secondary {
-    background-color: var(--color-secondary); /* 使用次要颜色作为背景 */
-    color: var(--color-text); /* 使用定义的文本颜色 */
-}
+    // 显示今天的课程
+    showTodayClasses: () => {
+        const todayClasses = TaskManager.getClassesForToday();
+        if (todayClasses && todayClasses.length > 0) {
+            let message = `今天的课程：\n\n`;
+            todayClasses.forEach(classInfo => {
+                message += `${classInfo.name} (${classInfo.time})\n`;
+            });
+            UI.showReminder("今日课程提醒", message);
+        } else {
+            console.log("今天没有课程");
+        }
+    },
 
-/* 设置全宽元素样式 */
-.full-width {
-    width: 100%;       /* 宽度占满父元素 */
-    margin-bottom: 20px; /* 底部外边距 */
-}
+    // 显示未完成的任务
+    showUnfinishedTasks: () => {
+        const tasks = Storage.getItem('tasks') || [];
+        const unfinishedTasks = tasks.filter(task => !task.completed);
+        if (unfinishedTasks.length > 0) {
+            let message = "您有以下未完成的任务:\n";
+            unfinishedTasks.forEach(task => {
+                message += `- ${task.name}\n`;
+            });
+            UI.showReminder("未完成任务提醒", message);
+        }
+    },
 
-/* 设置任务和课程部分的共同样式 */
-.task-section, .class-section {
-    background-color: var(--color-secondary); /* 使用次要颜色作为背景 */
-    border-radius: 8px; /* 添加圆角 */
-    padding: 20px;      /* 添加内边距 */
-    margin-bottom: 20px; /* 底部外边距 */
-}
+    // 更新课程列表的显示
+    updateClassList: (classes) => {
+        console.log("Updating class list:", classes);
+        const weeklyClassList = document.getElementById('weeklyClassList');
+        if (!weeklyClassList) {
+            console.error("weeklyClassList element not found");
+            return;
+        }
+        weeklyClassList.innerHTML = '';
+        classes.forEach((classInfo) => {
+            const li = document.createElement('li');
+            li.className = 'list-group-item';
+            li.innerHTML = `
+                <span>${classInfo.name} - ${classInfo.day} ${classInfo.time}</span>
+            `;
+            weeklyClassList.appendChild(li);
+        });
+        console.log("Class list updated");
+    },
 
-/* 设置任务过滤器样式 */
-.task-filters {
-    display: flex; /* 使用弹性布局 */
-    gap: 10px;     /* 设置元素间距 */
-    margin-bottom: 15px; /* 底部外边距 */
-}
+    // 显示早上的提醒
+    showMorningReminder: () => {
+        const todayClasses = TaskManager.getClassesForToday(); // 获取今天的课程
+        if (todayClasses.length > 0) {
+            let message = "今天需要预习的课程：\n"; // 构建消息开头
+            todayClasses.forEach(classInfo => {
+                message += `- ${classInfo.name} (${classInfo.time})\n`; // 为每个课程添加一行
+            });
+            alert(message); // 显示提醒消息
+        }
+    },
 
-/* 设置务过滤器中的选择框和输入框样式 */
-.task-filters select, .task-filters input {
-    flex: 1;       /* 均分可用空间 */
-    padding: 8px;  /* 添加内边距 */
-    border: 1px solid var(--color-border); /* 添加边框 */
-    border-radius: 4px; /* 添加圆角 */
-}
+    // 显示下午的提醒
+    showAfternoonReminder: () => {
+        const morningClasses = TaskManager.getMorningClasses(); // 获取上午的课程
+        if (morningClasses.length > 0) {
+            let message = "上午上过的课程，请记得完成作业：\n"; // 构建消息开头
+            morningClasses.forEach(classInfo => {
+                message += `- ${classInfo.name}\n`; // 为每个上午的课程添加一行
+            });
+            alert(message); // 显示提醒消息
+        }
+    },
 
-/* 设置任务列表样式 */
-.task-list {
-    list-style-type: none; /* 移除默认列表样式 */
-    padding: 0;            /* 移除默认内边距 */
-}
+    // 显示课程提醒
+    showClassReminders: () => {
+        const todayClasses = TaskManager.getClassesForToday();
+        
+        if (todayClasses && todayClasses.length > 0) {
+            let message = "今天的课程提醒：\n\n";
+            todayClasses.forEach(classInfo => {
+                message += `预习提醒：${classInfo.name}\n`;
+                message += `时间：${classInfo.time}\n\n`;
+            });
+            alert(message);
+        } else {
+            console.log("No classes to remind for today");
+        }
 
-/* 设置任务项样式 */
-.task-item {
-    background-color: #f8f9fa; /* 设置背景色 */
-    border: 1px solid #e9ecef; /* 添加边框 */
-    border-radius: 12px;       /* 添加圆角 */
-    padding: 15px;             /* 添加内边距 */
-    margin-bottom: 15px;       /* 底部外边距 */
-    transition: all 0.3s ease; /* 添加过渡效果 */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 添加阴影 */
-}
+        // 注意：由于新的结构不包含具体日期，我们无法显示昨天的课程复习提醒
+        // 如果需要这个功能，可能需要重新设计数据结构或存储方式
+    },
 
-/* 设置任务项悬停效果 */
-.task-item:hover {
-    transform: translateY(-3px); /* 上移3素 */
-    box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* 增强阴影 */
-}
+    // 清空课程表单
+    clearClassForm: () => {
+        document.getElementById('className').value = ''; // 清空课程名称输入框
+        document.getElementById('classDay').value = '周一'; // 重置上课日期为周一
+        document.getElementById('classStartTime').value = ''; // 清空开始时间输入框
+        document.getElementById('classEndTime').value = ''; // 清空结束时间输入框
+        document.getElementById('classLocation').value = ''; // 清空上课地点输入框
+    },
 
-/* 设置任务项标题样式 */
-.task-item h3 {
-    margin-top: 0;     /* 移除顶部外边距 */
-    margin-bottom: 10px; /* 底部外边距 */
-    color: #343a40;    /* 设置颜色 */
-}
+    // 清空任务表单
+    clearTaskForm: () => {
+        // 定义需要清空的表单元素 ID 数组
+        const formElements = ['taskName', 'startDate', 'startTime', 'endDate', 'endTime', 'priority', 'category', 'location'];
+        formElements.forEach(elementId => {
+            const element = document.getElementById(elementId); // 取每个表单元素
+            if (element) {
+                element.value = ''; // 如果元素存在，清空其值
+            } else {
+                console.error(`Form element ${elementId} not found`); // 如果元素不存在，输出错误日志
+            }
+        });
+        console.log("Task form cleared"); // 输出任务表单已清空的日志
+    },
 
-/* 设置任务项段落样式 */
-.task-item p {
-    margin: 5px 0; /* 设置上下外边距 */
-    color: #6c757d; /* 设置颜色 */
-}
+    // 改进提醒功能
+    showReminder: (title, message) => {
+        // 检查是否为移动设备
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-/* 设置任务操作区域样式 */
-.task-actions {
-    display: flex; /* 使用弹性布局 */
-    justify-content: flex-end; /* 右对齐 */
-    margin-top: 10px; /* 顶部外边距 */
-}
+        if (isMobile) {
+            // 移动设备：使用自定义的浮动提示框
+            UI.showMobileReminder(title, message);
+        } else {
+            // 桌面设备：使用之前的通知逻辑
+            if ("Notification" in window) {
+                if (Notification.permission === "granted") {
+                    new Notification(title, { body: message });
+                } else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === "granted") {
+                            new Notification(title, { body: message });
+                        } else {
+                            alert(`${title}\n\n${message}`);
+                        }
+                    });
+                } else {
+                    alert(`${title}\n\n${message}`);
+                }
+            } else {
+                alert(`${title}\n\n${message}`);
+            }
+        }
+    },
 
-/* 设置任务操作按钮样式 */
-.task-actions button {
-    margin-left: 10px; /* 左侧外边距 */
-    padding: 5px 10px; /* 添加内边距 */
-    border: none;      /* 移除边框 */
-    border-radius: 5px; /* 添加圆角 */
-    cursor: pointer;   /* 鼠标悬停时显示手型光标 */
-    transition: background-color 0.3s ease; /* 添加背景色过渡效果 */
-}
+    // 添加新的函数来处理移动设备的提醒
+    showMobileReminder: (title, message) => {
+        // 创建提醒容器
+        const reminderContainer = document.createElement('div');
+        reminderContainer.className = 'mobile-reminder';
+        
+        // 使用模板字符串创建内容，添加更多的结构和样式类
+        reminderContainer.innerHTML = `
+            <div class="reminder-header">
+                <h3>${title}</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="reminder-body">
+                <p>${message.replace(/\n/g, '<br>')}</p>
+            </div>
+        `;
 
-/* 设置编辑按钮样式 */
-.edit-button {
-    background-color: #ffc107; /* 设置背景色 */
-    color: #212529; /* 设置文字颜色 */
-}
+        // 添加样式
+        reminderContainer.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ffffff;
+            color: #333333;
+            padding: 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            max-width: 90%;
+            width: 300px;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        `;
 
-/* 设置删除按钮样式 */
-.delete-button {
-    background-color: #dc3545; /* 置背景色 */
-    color: white; /* 设置文字颜色 */
-}
+        // 添加子元素样式
+        const style = document.createElement('style');
+        style.textContent = `
+            .mobile-reminder .reminder-header {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 15px;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .mobile-reminder .reminder-header h3 {
+                margin: 0;
+                font-size: 16px;
+            }
+            .mobile-reminder .close-btn {
+                cursor: pointer;
+                font-size: 20px;
+            }
+            .mobile-reminder .reminder-body {
+                padding: 15px;
+                font-size: 14px;
+                line-height: 1.4;
+            }
+        `;
+        document.head.appendChild(style);
 
-/* 设置完成按钮样式 */
-.complete-button {
-    background-color: #28a745; /* 设置背景色 */
-    color: white; /* 设置文字颜色 */
-}
+        // 将提醒添加到页面
+        document.body.appendChild(reminderContainer);
 
-/* 设置任务操作按钮悬停效果 */
-.task-actions button:hover {
-    opacity: 0.8; /* 降低不透明度 */
-}
+        // 添加关闭按钮功能
+        const closeBtn = reminderContainer.querySelector('.close-btn');
+        closeBtn.addEventListener('click', () => {
+            reminderContainer.style.opacity = '0';
+            reminderContainer.style.transform = 'translateX(-50%) translateY(20px)';
+            setTimeout(() => {
+                document.body.removeChild(reminderContainer);
+            }, 300);
+        });
 
-/* 设置优先级指示器基础样式 */
-.priority-indicator {
-    display: inline-block; /* 行内块级显示 */
-    width: 12px;  /* 设置宽度 */
-    height: 12px; /* 设置高度 */
-    border-radius: 50%; /* 设置为圆形 */
-    margin-right: 5px; /* 右侧外边距 */
-}
+        // 设置自动淡出效果
+        setTimeout(() => {
+            reminderContainer.style.opacity = '0';
+            reminderContainer.style.transform = 'translateX(-50%) translateY(20px)';
+        }, 5000); // 5秒后开始淡出
 
-/* 设置低优先级指器颜色 */
-.priority-low {
-    background-color: #28a745; /* 绿色 */
-}
-
-/* 设置中优先级指示器颜色 */
-.priority-medium {
-    background-color: #ffc107; /* 黄色 */
-}
-
-/* 设置高优先级指示器颜色 */
-.priority-high {
-    background-color: #dc3545; /* 红色 */
-}
-
-/* 设置课程表单样式 */
-.class-form {
-    display: grid; /* 使用网格布局 */
-    gap: 10px;     /* 设置元素间距 */
-}
-
-/* 设置课程表单输入框和选择框样式 */
-.class-form input, .class-form select {
-    width: 100%; /* 宽度占满父元素 */
-    padding: 8px; /* 添加内边距 */
-    border: 1px solid var(--color-border); /* 添加边框 */
-    border-radius: 4px; /* 添加圆角 */
-}
-
-/* 设置移动设备响应式样式 */
-@media (max-width: 480px) {
-    .app-container {
-        padding: 10px; /* 减小内边距 */
+        // 移除元素
+        setTimeout(() => {
+            if (document.body.contains(reminderContainer)) {
+                document.body.removeChild(reminderContainer);
+            }
+        }, 5300); // 5.3秒后移除元素
     }
-    
-    .btn {
-        padding: 8px 16px; /* 减小按钮内边距 */
-    }
-}
+};
 
-/* 设置遮罩层样式 */
-.overlay {
-    position: fixed; /* 固定定位 */
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
-    display: flex; /* 使用弹性布局 */
-    justify-content: center; /* 水平居中 */
-    align-items: center; /* 垂直居中 */
-    z-index: 1000; /* 确保在最上层 */
-}
+window.UI = UI;  // 将 UI 对象添加到全局作用域，使其他脚本可以访问
 
-/* 设置任务表单样式 */
-.task-form {
-    background-color: white; /* 白色背景 */
-    padding: 30px; /* 添加内边距 */
-    border-radius: 12px; /* 添加圆角 */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* 添加阴影 */
-    width: 90%; /* 设置宽度 */
-    max-width: 500px; /* 设置最大宽度 */
-}
-
-/* 设置任务表单标题样式 */
-.task-form h2 {
-    margin-top: 0; /* 移除顶部外边距 */
-    margin-bottom: 25px; /* 底部外边距 */
-    text-align: center; /* 文字居中 */
-    color: #333; /* 设置颜色 */
-    font-size: 24px; /* 设置字体大小 */
-}
-
-/* 设置任务表单布局 */
-.task-form form {
-    display: flex; /* 使用弹性布局 */
-    flex-direction: column; /* 垂直排列 */
-    gap: 20px; /* 设置元素间距 */
-}
-
-/* 设置表单组样式 */
-.form-group {
-    display: flex; /* 使用弹性布局 */
-    flex-direction: column; /* 垂直排列 */
-}
-
-/* 设置表单标签样式 */
-.form-group label {
-    margin-bottom: 5px; /* 底部外边距 */
-    font-weight: bold; /* 加粗字体 */
-    color: #555; /* 设置颜色 */
-}
-
-/* 设置表单输入框和选择框样式 */
-.form-group input,
-.form-group select {
-    padding: 10px; /* 添加内边距 */
-    border: 1px solid #ddd; /* 添加边框 */
-    border-radius: 6px; /* 添加圆角 */
-    font-size: 16px; /* 设置字体大小 */
-}
-
-/* 设置表单行样式 */
-.form-row {
-    display: flex; /* 使用弹性布局 */
-    gap: 15px; /* 设置元素间距 */
-}
-
-/* 设置表单行中的表单组样式 */
-.form-row .form-group {
-    flex: 1; /* 均分可用空间 */
-}
-
-/* 设置表单操作区域样式 */
-.form-actions {
-    display: flex; /* 使用弹性布局 */
-    justify-content: space-between; /* 两端对齐 */
-    margin-top: 30px; /* 顶部外边距 */
-}
-
-/* 设置按钮样式（重复定义，可能是为了覆盖之前的样式） */
-.btn {
-    padding: 12px 24px; /* 添加内边距 */
-    border: none; /* 移除边框 */
-    border-radius: 6px; /* 添加圆角 */
-    cursor: pointer; /* 鼠标悬停时显示手型光标 */
-    font-size: 16px; /* 设置字体大小 */
-    transition: all 0.3s ease; /* 添加过渡效果 */
-}
-
-/* 设置主要按钮样式（重复定义） */
-.btn-primary {
-    background-color: #4285f4; /* 设置背景色 */
-    color: white; /* 设置文字颜色 */
-}
-
-/* 设置次要按钮样式（重复定义） */
-.btn-secondary {
-    background-color: #f1f3f4; /* 设置背景色 */
-    color: #202124; /* 设置文字颜色 */
-}
-
-/* 设置按钮悬停效果 */
-.btn:hover {
-    opacity: 0.9; /* 降低不透明度 */
-    transform: translateY(-2px); /* 上移2像素 */
-}
-
-/* 以下是重复定义的优先级指示器样式，可能是为了确保样式被正确应用 */
-.priority-indicator {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 5px;
-}
-
-.priority-low {
-    background-color: #28a745;
-}
-
-.priority-medium {
-    background-color: #ffc107;
-}
-
-.priority-high {
-    background-color: #dc3545;
-}
-
-/* 文件结束，可以在这里添加其他需要的自定义样式 */
-
-/* 添加基本的模态框样式 */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    max-width: 500px;
-    width: 90%;
-    margin: 20px auto;
-}
-
-.modal-content h2 {
-    margin-top: 0;
-    margin-bottom: 20px;
-    color: #333;
-    font-size: 24px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-    color: #555;
-}
-
-.form-control {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-.form-row {
-    display: flex;
-    justify-content: space-between;
-}
-
-.form-row .form-group {
-    width: 48%;
-}
-
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-}
-
-.modal-actions button {
-    margin-left: 10px;
-}
-
-.btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.btn-primary {
-    background-color: #4285f4;
-    color: white;
-}
-
-.btn-secondary {
-    background-color: #f1f3f4;
-    color: #202124;
-}
-
-.btn:hover {
-    opacity: 0.9;
-}
-
-/* 添加其他必要的样式来替代 Bootstrap 的样式 */
-/* ... */
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--color-border);
-}
-
-h1, h2 {
-    color: var(--color-primary);
-}
-
-.card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.form-group input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-}
-
-.list-group {
-    list-style-type: none;
-    padding: 0;
-}
-
-.list-group-item {
-    background-color: #f8f9fa;
-    border: 1px solid #e9ecef;
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.4);
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
-    border-radius: 8px;
-}
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-th, td {
-    border: 1px solid var(--color-border);
-    padding: 10px;
-    text-align: left;
-}
-
-th {
-    background-color: var(--color-secondary);
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-    
-    .btn {
-        padding: 8px 16px;
-    }
-}
-
-.auth-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.auth-image {
-    flex: 1;
-    max-width: 50%;
-}
-
-.login-image {
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-}
-
-.auth-form {
-    flex: 1;
-}
-
-@media (max-width: 768px) {
-    .auth-container {
-        flex-direction: column;
-    }
-
-    .auth-image {
-        max-width: 100%;
-    }
-}
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-header {
-    background-color: var(--color-primary);
-    color: white;
-    padding: 20px 0;
-    margin-bottom: 30px;
-}
-
-h1, h2 {
-    color: var(--color-primary);
-}
-
-.btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: background-color 0.3s ease;
-}
-
-.btn-primary {
-    background-color: var(--color-primary);
-    color: white;
-}
-
-.btn-secondary {
-    background-color: var(--color-secondary);
-    color: var(--color-text);
-}
-
-.btn:hover {
-    opacity: 0.9;
-}
-
-.card {
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 20px;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-    color: var(--color-text);
-}
-
-.form-group input, .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-.list-group-item {
-    background-color: white;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.mobile-reminder {
-    background-color: white;
-    border: 2px solid var(--color-accent);
-}
-
-.mobile-reminder .reminder-header {
-    background-color: var(--color-accent);
-    color: white;
-}
-
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-    
-    .btn {
-        padding: 8px 16px;
-    }
-}
-
-/* 添加更多自定义样式... */
-
-/* 在 styles.css 文件中添加或更新以下样式 */
-.list-group-item {
-    margin-bottom: 10px;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    padding: 15px;
-}
-
-.list-group-item strong {
-    font-size: 18px;
-    color: var(--color-primary);
-}
-
-.list-group-item .btn {
-    margin-left: 5px;
-}
-
-.d-flex {
-    display: flex;
-}
-
-.justify-content-between {
-    justify-content: space-between;
-}
-
-.align-items-center {
-    align-items: center;
-}
+console.log("UI.js end"); // 输出日志，表示 UI.js 文件执行结束
