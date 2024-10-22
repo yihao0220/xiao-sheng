@@ -76,9 +76,9 @@ const UI = {
             todayClasses.forEach(classInfo => {
                 message += `${classInfo.name} (${classInfo.time})\n`;
             });
-            alert(message);
+            UI.showReminder("今日课程提醒", message);
         } else {
-            console.log("No classes for today");
+            console.log("今天没有课程");
         }
     },
 
@@ -91,7 +91,7 @@ const UI = {
             unfinishedTasks.forEach(task => {
                 message += `- ${task.name}\n`;
             });
-            alert(message);
+            UI.showReminder("未完成任务提醒", message);
         }
     },
 
@@ -180,6 +180,26 @@ const UI = {
             }
         });
         console.log("Task form cleared"); // 输出任务表单已清空的日志
+    },
+
+    // 改进提醒功能
+    showReminder: (title, message) => {
+        // 检查浏览器是否支持通知
+        if (!("Notification" in window)) {
+            alert("此浏览器不支持桌面通知");
+            return;
+        }
+
+        // 检查通知权限
+        if (Notification.permission === "granted") {
+            new Notification(title, { body: message });
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                if (permission === "granted") {
+                    new Notification(title, { body: message });
+                }
+            });
+        }
     }
 };
 
