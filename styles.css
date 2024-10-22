@@ -250,7 +250,7 @@ body {
     font-size: 24px; /* 设置字体大小 */
 }
 
-/* ���置任务表单布局 */
+/* 设置任务表单布局 */
 .task-form form {
     display: flex; /* 使用弹性布局 */
     flex-direction: column; /* 垂直排列 */
@@ -362,13 +362,81 @@ body {
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-    max-width: 500px;
+    background-color: #fff;
+    padding: 30px;
     border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+    margin: 20px auto;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-row .form-group {
+    width: 48%;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    margin-left: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #4285f4;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #f1f3f4;
+    color: #202124;
+}
+
+.btn:hover {
+    opacity: 0.9;
 }
 
 /* 添加其他必要的样式来替代 Bootstrap 的样式 */
@@ -477,18 +545,3 @@ th {
     }
 }
 
-/* 添加以下样式到现有的 styles.css 文件中 */
-#authForm {
-    max-width: 400px;
-    margin: 0 auto;
-}
-
-#authForm hr {
-    margin: 20px 0;
-    border: 0;
-    border-top: 1px solid var(--color-border);
-}
-
-#registerForm {
-    margin-top: 20px;
-}
