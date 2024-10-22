@@ -84,7 +84,7 @@ body {
     margin-bottom: 15px; /* 底部外边距 */
 }
 
-/* 设置任务过滤器中的选择框和输入框样式 */
+/* 设置务过滤器中的选择框和输入框样式 */
 .task-filters select, .task-filters input {
     flex: 1;       /* 均分可用空间 */
     padding: 8px;  /* 添加内边距 */
@@ -545,3 +545,34 @@ th {
     }
 }
 
+.auth-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.auth-image {
+    flex: 1;
+    max-width: 50%;
+}
+
+.login-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.auth-form {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+    }
+
+    .auth-image {
+        max-width: 100%;
+    }
+}
