@@ -217,9 +217,16 @@ const UI = {
         // 创建提醒容器
         const reminderContainer = document.createElement('div');
         reminderContainer.className = 'mobile-reminder';
+        
+        // 使用模板字符串创建内容，添加更多的结构和样式类
         reminderContainer.innerHTML = `
-            <h3>${title}</h3>
-            <p>${message}</p>
+            <div class="reminder-header">
+                <h3>${title}</h3>
+                <span class="close-btn">&times;</span>
+            </div>
+            <div class="reminder-body">
+                <p>${message.replace(/\n/g, '<br>')}</p>
+            </div>
         `;
 
         // 添加样式
@@ -228,29 +235,72 @@ const UI = {
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background-color: #333;
-            color: white;
-            padding: 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            background-color: #ffffff;
+            color: #333333;
+            padding: 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 1000;
-            max-width: 80%;
-            text-align: center;
-            transition: opacity 0.5s ease-in-out;
+            max-width: 90%;
+            width: 300px;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         `;
+
+        // 添加子元素样式
+        const style = document.createElement('style');
+        style.textContent = `
+            .mobile-reminder .reminder-header {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 15px;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .mobile-reminder .reminder-header h3 {
+                margin: 0;
+                font-size: 16px;
+            }
+            .mobile-reminder .close-btn {
+                cursor: pointer;
+                font-size: 20px;
+            }
+            .mobile-reminder .reminder-body {
+                padding: 15px;
+                font-size: 14px;
+                line-height: 1.4;
+            }
+        `;
+        document.head.appendChild(style);
 
         // 将提醒添加到页面
         document.body.appendChild(reminderContainer);
 
-        // 设置淡出效果
+        // 添加关闭按钮功能
+        const closeBtn = reminderContainer.querySelector('.close-btn');
+        closeBtn.addEventListener('click', () => {
+            reminderContainer.style.opacity = '0';
+            reminderContainer.style.transform = 'translateX(-50%) translateY(20px)';
+            setTimeout(() => {
+                document.body.removeChild(reminderContainer);
+            }, 300);
+        });
+
+        // 设置自动淡出效果
         setTimeout(() => {
             reminderContainer.style.opacity = '0';
-        }, 3000); // 3秒后开始淡出
+            reminderContainer.style.transform = 'translateX(-50%) translateY(20px)';
+        }, 5000); // 5秒后开始淡出
 
         // 移除元素
         setTimeout(() => {
-            document.body.removeChild(reminderContainer);
-        }, 3500); // 3.5秒后移除元素
+            if (document.body.contains(reminderContainer)) {
+                document.body.removeChild(reminderContainer);
+            }
+        }, 5300); // 5.3秒后移除元素
     }
 };
 
