@@ -153,6 +153,21 @@ function initializeApp() {
             UI.showUnfinishedTasks();
         }
 
+        // 添加注册表单提交事件监听器
+        document.getElementById('registerForm')?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (password !== confirmPassword) {
+                UI.showError("两次输入的密码不一致");
+                return;
+            }
+            
+            Auth.register(username, password);
+        });
+
         console.log("App initialization completed");
     } catch (error) {
         console.error("Error during app initialization:", error);
