@@ -555,12 +555,14 @@ th {
 .auth-image {
     flex: 1;
     max-width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .login-image {
-    width: 100%;
+    max-width: 100%;
     height: auto;
-    border-radius: 8px;
 }
 
 .auth-form {
