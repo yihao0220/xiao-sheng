@@ -250,7 +250,7 @@ body {
     font-size: 24px; /* 设置字体大小 */
 }
 
-/* 设置任务表单布局 */
+/* ���置任务表单布局 */
 .task-form form {
     display: flex; /* 使用弹性布局 */
     flex-direction: column; /* 垂直排列 */
@@ -475,4 +475,20 @@ th {
     .btn {
         padding: 8px 16px;
     }
+}
+
+/* 添加以下样式到现有的 styles.css 文件中 */
+#authForm {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+#authForm hr {
+    margin: 20px 0;
+    border: 0;
+    border-top: 1px solid var(--color-border);
+}
+
+#registerForm {
+    margin-top: 20px;
 }
