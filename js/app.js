@@ -143,18 +143,22 @@ function initializeApp() {
             });
         });
 
-        // 初始化应用程序
-        Auth.checkLoginStatus();
-        TaskManager.loadClasses();
-        TaskManager.loadTasks();
+        // 显示注册表单
+        document.getElementById('showRegisterForm')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            UI.hideElement('authForm');
+            UI.showElement('registerForm');
+        });
 
-        // 添加这行来显示未完成任务提醒
-        if (localStorage.getItem('isLoggedIn') === 'true') {
-            UI.showUnfinishedTasks();
-        }
+        // 显示登录表单
+        document.getElementById('showLoginForm')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            UI.hideElement('registerForm');
+            UI.showElement('authForm');
+        });
 
-        // 添加注册表单提交事件监听器
-        document.getElementById('registerForm')?.addEventListener('submit', (e) => {
+        // 处理注册表单提交
+        document.getElementById('signupForm')?.addEventListener('submit', (e) => {
             e.preventDefault();
             const username = document.getElementById('registerUsername').value;
             const password = document.getElementById('registerPassword').value;
@@ -167,6 +171,16 @@ function initializeApp() {
             
             Auth.register(username, password);
         });
+
+        // 初始化应用程序
+        Auth.checkLoginStatus();
+        TaskManager.loadClasses();
+        TaskManager.loadTasks();
+
+        // 添加这行来显示未完成任务提醒
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            UI.showUnfinishedTasks();
+        }
 
         console.log("App initialization completed");
     } catch (error) {
