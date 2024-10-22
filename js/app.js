@@ -47,6 +47,9 @@ function initializeApp() {
             UI.showUnfinishedTasks();
         }
 
+        // 设置提醒
+        setupReminders();
+
         console.log("应用程序初始化完成");
     } catch (error) {
         console.error("应用程序初始化过程中出错:", error);
@@ -240,3 +243,21 @@ generateWeeklyScheduleTemplate();
 
 // 在 DOM 加载完成后初始化应用程序
 document.addEventListener('DOMContentLoaded', initializeApp);
+
+// 设置提醒
+function setupReminders() {
+    // 每小时检查一次
+    setInterval(() => {
+        const now = new Date();
+        // 检查未完成任务
+        UI.showUnfinishedTasks();
+        // 检查今日课程
+        UI.showTodayClasses();
+        // 根据时间显示早晨或下午的提醒
+        if (now.getHours() === 8) {  // 假设早上8点显示
+            UI.showMorningReminder();
+        } else if (now.getHours() === 14) {  // 假设下午2点显示
+            UI.showAfternoonReminder();
+        }
+    }, 3600000); // 3600000 毫秒 = 1 小时
+}
