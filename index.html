@@ -87,64 +87,69 @@
         </main>
 
         <!-- 添加任务模态框 -->
-        <div id="addTaskModal" class="modal" style="display: none;">
+        <div id="addTaskModal" class="modal">
             <div class="modal-content">
                 <h2><i class="fas fa-plus-circle"></i> 添加任务</h2>
                 <form id="addTaskForm">
-                    <div class="mb-3">
-                        <input type="text" id="taskName" class="form-control" placeholder="任务名称" required> <!-- 任务名称输入框 -->
+                    <div class="form-group">
+                        <label for="taskName">任务名称</label>
+                        <input type="text" id="taskName" class="form-control" placeholder="输入任务名称" required>
                     </div>
-                    <div class="mb-3">
-                        <input type="date" id="startDate" class="form-control" required> <!-- 开始日期输入框 -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="startDate">开始日期</label>
+                            <input type="date" id="startDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="startTime">开始时间</label>
+                            <input type="time" id="startTime" class="form-control">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <input type="time" id="startTime" class="form-control" required> <!-- 开始时间输入框 -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="endDate">结束日期</label>
+                            <input type="date" id="endDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="endTime">结束时间</label>
+                            <input type="time" id="endTime" class="form-control">
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <input type="date" id="endDate" class="form-control" required> <!-- 结束日期输入框 -->
-                    </div>
-                    <div class="mb-3">
-                        <input type="time" id="endTime" class="form-control" required> <!-- 结束时间输入框 -->
-                    </div>
-                    <div class="mb-3">
-                        <select id="priority" class="form-select" required> <!-- 优先级选择下拉菜单 -->
-                            <option value="low">低优先级</option>
-                            <option value="medium">中优先级</option>
-                            <option value="high">高优先级</option>
+                    <div class="form-group">
+                        <label for="priority">优先级</label>
+                        <select id="priority" class="form-control">
+                            <option value="low">低</option>
+                            <option value="medium">中</option>
+                            <option value="high">高</option>
                         </select>
                     </div>
-                    <div class="mb-3">
-                        <input type="text" id="category" class="form-control" placeholder="分类"> <!-- 分类输入框 -->
+                    <div class="form-group">
+                        <label for="category">分类</label>
+                        <input type="text" id="category" class="form-control" placeholder="输入分类">
                     </div>
-                    <div class="mb-3">
-                        <input type="text" id="location" class="form-control" placeholder="地点"> <!-- 地点输入框 -->
+                    <div class="form-group">
+                        <label for="location">地点</label>
+                        <input type="text" id="location" class="form-control" placeholder="输入地点">
                     </div>
                 </form>
-                <button type="button" id="cancelAddTaskButton" class="btn btn-secondary"><i class="fas fa-times"></i> 取消</button>
-                <button type="button" id="addTaskButton" class="btn btn-primary"><i class="fas fa-plus"></i> 添加任务</button>
+                <div class="modal-actions">
+                    <button type="button" id="cancelAddTaskButton" class="btn btn-secondary"><i class="fas fa-times"></i> 取消</button>
+                    <button type="button" id="addTaskButton" class="btn btn-primary"><i class="fas fa-plus"></i> 添加任务</button>
+                </div>
             </div>
         </div>
 
         <!-- 编辑任务模态框 -->
-        <div id="editTaskModal" class="modal" style="display: none;">
+        <div id="editTaskModal" class="modal">
             <div class="modal-content">
                 <h2><i class="fas fa-edit"></i> 编辑任务</h2>
                 <form id="editTaskForm">
-                    <input type="text" id="editTaskName" placeholder="任务名称" required>
-                    <input type="date" id="editStartDate">
-                    <input type="time" id="editStartTime">
-                    <input type="date" id="editEndDate">
-                    <input type="time" id="editEndTime">
-                    <select id="editPriority">
-                        <option value="low">低优先级</option>
-                        <option value="medium">中优先级</option>
-                        <option value="high">高优先级</option>
-                    </select>
-                    <input type="text" id="editCategory" placeholder="分类">
-                    <input type="text" id="editLocation" placeholder="地点">
+                    <!-- 与添加任务表单相同的结构，但使用 "edit" 前缀 -->
                 </form>
-                <button type="button" class="btn btn-secondary close-modal"><i class="fas fa-times"></i> 取消</button>
-                <button type="button" class="btn btn-primary" id="saveEditTaskButton"><i class="fas fa-save"></i> 保存修改</button>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary close-modal"><i class="fas fa-times"></i> 取消</button>
+                    <button type="button" class="btn btn-primary" id="saveEditTaskButton"><i class="fas fa-save"></i> 保存修改</button>
+                </div>
             </div>
         </div>
     </div>
