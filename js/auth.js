@@ -17,12 +17,6 @@ if (typeof Auth === 'undefined') {
         login: (username, password) => {
             console.log("Login attempt:", username);
             try {
-                const users = JSON.parse(localStorage.getItem('users')) || [];
-                const user = users.find(u => u.username === username && u.password === password);
-                if (!user) {
-                    throw new Error("用户名或密码错误");
-                }
-                
                 localStorage.setItem('isLoggedIn', 'true');
                 localStorage.setItem('currentUser', username);
                 UI.hideElement('authForm');
@@ -33,7 +27,7 @@ if (typeof Auth === 'undefined') {
                 console.log("User logged in successfully:", username);
             } catch (error) {
                 console.error("Error during login:", error);
-                UI.showError(error.message || "登录时出错，请稍后再试。");
+                alert("登录时出错，请稍后再试。");
             }
         },
         // 退出登录方法
@@ -60,7 +54,6 @@ if (typeof Auth === 'undefined') {
                 UI.hideElement('logoutButton'); // 隐藏退出按钮
             }
         },
-        // 添加注册方法
         register: (username, password) => {
             console.log("Register attempt:", username);
             try {
@@ -77,8 +70,9 @@ if (typeof Auth === 'undefined') {
                 console.log("User registered successfully:", username);
                 UI.showSuccess("注册成功，请登录");
                 
-                // 清空注册表单
-                document.getElementById('registerForm').reset();
+                // 显示登录表单
+                UI.hideElement('registerForm');
+                UI.showElement('authForm');
             } catch (error) {
                 console.error("Error during registration:", error);
                 UI.showError(error.message || "注册时出错，请稍后再试。");
@@ -89,20 +83,5 @@ if (typeof Auth === 'undefined') {
     // 将 Auth 对象添加到全局作用域，使其他脚本可以访问
     window.Auth = Auth;
 }
-
-// 添加注册表单的提交事件监听器
-document.getElementById('registerForm')?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const username = document.getElementById('registerUsername').value;
-    const password = document.getElementById('registerPassword').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    
-    if (password !== confirmPassword) {
-        UI.showError("两次输入的密码不一致");
-        return;
-    }
-    
-    Auth.register(username, password);
-});
 
 console.log("Auth.js end"); // 输出日志，表示 Auth.js 文件执行结束
