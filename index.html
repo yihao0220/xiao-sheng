@@ -144,11 +144,50 @@
             <div class="modal-content">
                 <h2><i class="fas fa-edit"></i> 编辑任务</h2>
                 <form id="editTaskForm">
-                    <!-- 与添加任务表单相同的结构，但使用 "edit" 前缀 -->
+                    <div class="form-group">
+                        <label for="editTaskName">任务名称</label>
+                        <input type="text" id="editTaskName" class="form-control" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editStartDate">开始日期</label>
+                            <input type="date" id="editStartDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editStartTime">开始时间</label>
+                            <input type="time" id="editStartTime" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editEndDate">结束日期</label>
+                            <input type="date" id="editEndDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="editEndTime">结束时间</label>
+                            <input type="time" id="editEndTime" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editPriority">优先级</label>
+                        <select id="editPriority" class="form-control">
+                            <option value="low">低</option>
+                            <option value="medium">中</option>
+                            <option value="high">高</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCategory">分类</label>
+                        <input type="text" id="editCategory" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="editLocation">地点</label>
+                        <input type="text" id="editLocation" class="form-control">
+                    </div>
                 </form>
                 <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary close-modal"><i class="fas fa-times"></i> 取消</button>
-                    <button type="button" class="btn btn-primary" id="saveEditTaskButton"><i class="fas fa-save"></i> 保存修改</button>
+                    <button type="button" class="btn btn-secondary close-modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="saveEditTaskButton">保存修改</button>
                 </div>
             </div>
         </div>
