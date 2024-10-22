@@ -198,19 +198,40 @@ function showEditTaskForm(index) {
     const task = tasks[index];
 
     if (task) {
-        document.getElementById('editTaskName').value = task.name;
-        document.getElementById('editStartDate').value = task.startDate || '';
-        document.getElementById('editStartTime').value = task.startTime || '';
-        document.getElementById('editEndDate').value = task.endDate || '';
-        document.getElementById('editEndTime').value = task.endTime || '';
-        document.getElementById('editPriority').value = task.priority || 'medium';
-        document.getElementById('editCategory').value = task.category || '';
-        document.getElementById('editLocation').value = task.location || '';
+        const elements = {
+            editTaskName: document.getElementById('editTaskName'),
+            editStartDate: document.getElementById('editStartDate'),
+            editStartTime: document.getElementById('editStartTime'),
+            editEndDate: document.getElementById('editEndDate'),
+            editEndTime: document.getElementById('editEndTime'),
+            editPriority: document.getElementById('editPriority'),
+            editCategory: document.getElementById('editCategory'),
+            editLocation: document.getElementById('editLocation'),
+            editTaskForm: document.getElementById('editTaskForm'),
+            editTaskModal: document.getElementById('editTaskModal')
+        };
 
-        document.getElementById('editTaskForm').dataset.taskIndex = index;
+        // 检查所有必要的元素是否存在
+        for (const [key, element] of Object.entries(elements)) {
+            if (!element) {
+                console.error(`Element ${key} not found`);
+                UI.showError(`编辑任务表单缺少必要元素: ${key}`);
+                return; // 如果缺少任何元素，直接返回
+            }
+        }
 
-        const editTaskModal = document.getElementById('editTaskModal');
-        editTaskModal.style.display = 'block';
+        // 设置表单值
+        elements.editTaskName.value = task.name;
+        elements.editStartDate.value = task.startDate || '';
+        elements.editStartTime.value = task.startTime || '';
+        elements.editEndDate.value = task.endDate || '';
+        elements.editEndTime.value = task.endTime || '';
+        elements.editPriority.value = task.priority || 'medium';
+        elements.editCategory.value = task.category || '';
+        elements.editLocation.value = task.location || '';
+
+        elements.editTaskForm.dataset.taskIndex = index;
+        elements.editTaskModal.style.display = 'block';
     } else {
         console.error("Task not found");
         UI.showError("未找到任务");
