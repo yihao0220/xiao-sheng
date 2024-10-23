@@ -66,10 +66,26 @@ const TaskManager = {
     loadTasks: () => {
         try {
             console.log("Loading tasks");
-            let tasks = Storage.getItem('tasks') || [];
+            let tasks = Storage.getItem('tasks');
+            console.log("Raw tasks from storage:", tasks);
+            
+            if (tasks === null || tasks === undefined) {
+                console.log("No tasks found in storage, initializing empty array");
+                tasks = [];
+            } else if (!Array.isArray(tasks)) {
+                console.error("Invalid tasks data in storage:", tasks);
+                tasks = [];
+            }
+            
             console.log("Tasks from storage:", tasks);
             tasks = TaskManager.removeExpiredTasks(tasks);
             console.log("Tasks after removing expired:", tasks);
+            
+            if (!Array.isArray(tasks)) {
+                console.error("removeExpiredTasks returned invalid data:", tasks);
+                tasks = [];
+            }
+            
             UI.updateTaskList(tasks);
             console.log("Task list updated, total tasks:", tasks.length);
         } catch (error) {
@@ -80,20 +96,24 @@ const TaskManager = {
 
     // 除过期任务
     removeExpiredTasks: (tasks) => {
-        const now = new Date(); // 获取当前时间
-        const updatedTasks = tasks.filter(task => {
-            if (!task.endDate || !task.endTime) {
-                console.warn("Task missing end date or time:", task); // 警告日志：任务缺少结束日期或时间
-                return true; // 保留没有结束日期或时间的任务
-            }
-            const endDate = new Date(task.endDate + 'T' + task.endTime); // 创建任务结束时间的Date对象
-            return endDate > now; // 保留未过期的任务
-        });
-        if (updatedTasks.length !== tasks.length) {
-            Storage.setItem('tasks', updatedTasks); // 如果有任务被移除，更新存储
-            console.log("Expired tasks removed, remaining tasks:", updatedTasks.length); // 日志：显示移除过期任务后的剩余任务数
+        if (!Array.isArray(tasks)) {
+            console.error("Invalid tasks array in removeExpiredTasks:", tasks);
+            return [];
         }
-        return updatedTasks; // 返回更新后的任务数组
+        const now = new Date();
+        const updatedTasks = tasks.filter(task => {
+            if (!task || !task.times || !Array.isArray(task.times) || task.times.length === 0) {
+                console.warn("Task with invalid structure:", task);
+                return false;
+            }
+            return task.times.some(time => {
+                if (!time.date) return true; // 如果没有日期，认为任务未过期
+                const taskEndDate = new Date(time.date + 'T' + (time.endTime || '23:59:59'));
+                return taskEndDate > now;
+            });
+        });
+        console.log("Removed expired tasks, remaining tasks:", updatedTasks.length);
+        return updatedTasks;
     },
 
     // 添加课程信息
@@ -290,39 +310,6 @@ const TaskManager = {
         } catch (error) {
             console.error("TaskManager: 获取任务统计时出错:", error.message);
             return { totalTasks: 0, completedTasks: 0, pendingTasks: 0 };
-        }
-    },
-
-    // 新增方法：删除过期任务
-    removeExpiredTasks: () => {
-        try {
-            const tasks = Storage.getItem('tasks') || [];
-            const currentDate = new Date();
-            
-            const updatedTasks = tasks.filter(task => {
-                // 如果任务没有设置结束日期，保留该任务
-                if (!task.times || task.times.length === 0) {
-                    return true;
-                }
-                
-                // 检查任务的所有时间段
-                const isExpired = task.times.every(time => {
-                    if (!time.date) return false; // 如果没有日期，认为任务未过期
-                    const taskEndDate = new Date(time.date);
-                    taskEndDate.setHours(23, 59, 59, 999); // 设置为当天的最后一刻
-                    return taskEndDate < currentDate;
-                });
-
-                return !isExpired; // 保留未过期的任务
-            });
-
-            if (updatedTasks.length !== tasks.length) {
-                Storage.setItem('tasks', updatedTasks);
-                console.log(`已删除 ${tasks.length - updatedTasks.length} 个过期任务`);
-                UI.updateTaskList(updatedTasks);
-            }
-        } catch (error) {
-            console.error("删除过期任务时出错:", error);
         }
     }
 };
