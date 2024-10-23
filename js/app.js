@@ -51,7 +51,7 @@ function initializeApp() {
         // 设置提醒
         setupReminders();
 
-        console.log("应用程序初始化完成");
+        console.log("应用程序初始化完成，登录按钮应该可以使用了");
 
         // 设置定时器，每天凌晨执行一次删除过期任务的操作
         setDailyTaskCleanup();
@@ -64,11 +64,16 @@ function initializeApp() {
 // 设置事件监听器
 function setupEventListeners(elements) {
     // 登录按钮点击事件
-    elements.loginButton?.addEventListener('click', () => {
-        console.log("登录按钮被点击");
-        UI.showElement('authForm');
-        UI.hideElement('loginButton');
-    });
+    const loginButton = document.getElementById('loginButton');
+    if (loginButton) {
+        loginButton.addEventListener('click', () => {
+            console.log("登录按钮被点击");
+            UI.showElement('authForm');
+            UI.hideElement('loginButton');
+        });
+    } else {
+        console.error("登录按钮未找到");
+    }
 
     // 提交登录表单事件
     elements.loginForm?.addEventListener('submit', (e) => {
@@ -291,20 +296,15 @@ function setDailyTaskCleanup() {
     const night = new Date(
         now.getFullYear(),
         now.getMonth(),
-        now.getDate() + 1,
-        0, 0, 0
+        now.getDate() + 1, // 明天
+        0, 0, 0 // 凌晨 00:00:00
     );
     const msToMidnight = night.getTime() - now.getTime();
 
+    // 首次执行
     setTimeout(() => {
         TaskManager.removeExpiredTasks();
+        // 之后每24小时执行一次
         setInterval(TaskManager.removeExpiredTasks, 24 * 60 * 60 * 1000);
     }, msToMidnight);
-}
-
-// 在 initializeApp 函数中调用 setDailyTaskCleanup
-function initializeApp() {
-    // ... 现有代码 ...
-    setDailyTaskCleanup();
-    // ... 现有代码 ...
 }
