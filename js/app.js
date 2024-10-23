@@ -16,7 +16,7 @@ function initializeApp() {
         // 定义包含所有重要 DOM 元素的对象
         const elements = {
             loginButton: document.getElementById('loginButton'),
-            submitLoginButton: document.getElementById('submitLoginButton'),
+            loginForm: document.getElementById('loginForm'),  // 更新这里
             logoutButton: document.getElementById('logoutButton'),
             saveWeeklyScheduleButton: document.getElementById('saveWeeklyScheduleButton'),
             allTasks: document.getElementById('allTasks'),
@@ -64,13 +64,14 @@ function initializeApp() {
 function setupEventListeners(elements) {
     // 登录按钮点击事件
     elements.loginButton?.addEventListener('click', () => {
-        console.log("登录钮被点击");
+        console.log("登录按钮被点击");
         UI.showElement('authForm');
         UI.hideElement('loginButton');
     });
 
-    // 提交登录按钮点击事件
-    elements.submitLoginButton?.addEventListener('click', (e) => {
+    // 提交登录表单事件
+    const loginForm = document.getElementById('loginForm');
+    loginForm?.addEventListener('submit', (e) => {
         e.preventDefault();
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
