@@ -15,9 +15,15 @@ const Storage = {
     // 获取存储项
     getItem: (key) => {
         try {
-            const value = JSON.parse(localStorage.getItem(key));
-            console.log(`Getting ${key} from storage:`, value);
-            return value;
+            const value = localStorage.getItem(key);
+            console.log(`Raw value for ${key} from localStorage:`, value);
+            if (value === null) {
+                console.log(`No data found for key: ${key}`);
+                return null;
+            }
+            const parsedValue = JSON.parse(value);
+            console.log(`Parsed value for ${key}:`, parsedValue);
+            return parsedValue;
         } catch (error) {
             console.error(`Error getting ${key} from storage:`, error);
             return null;
