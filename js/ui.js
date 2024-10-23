@@ -35,19 +35,12 @@ const UI = {
             const li = document.createElement('li');
             li.className = 'list-group-item';
             
-            // 创建任务信息字符串，包含更多细节
             let taskInfo = `<strong>${task.name}</strong>`;
-            if (task.startDate) {
-                taskInfo += `<br>开始: ${task.startDate}`;
-                if (task.startTime) {
-                    taskInfo += ` ${task.startTime}`;
-                }
-            }
-            if (task.endDate) {
-                taskInfo += `<br>结束: ${task.endDate}`;
-                if (task.endTime) {
-                    taskInfo += ` ${task.endTime}`;
-                }
+            if (task.times && task.times.length > 0) {
+                taskInfo += '<br>时间段:';
+                task.times.forEach(time => {
+                    taskInfo += `<br>${time.date} ${time.startTime}-${time.endTime}`;
+                });
             }
             if (task.priority) {
                 taskInfo += `<br>优先级: ${task.priority}`;
@@ -186,17 +179,11 @@ const UI = {
 
     // 清空任务表单
     clearTaskForm: () => {
-        // 定义需要清空的表单元素 ID 数组
-        const formElements = ['taskName', 'startDate', 'startTime', 'endDate', 'endTime', 'priority', 'category', 'location'];
-        formElements.forEach(elementId => {
-            const element = document.getElementById(elementId); // 取每个表单元素
-            if (element) {
-                element.value = ''; // 如果元素存在，清空其值
-            } else {
-                console.error(`Form element ${elementId} not found`); // 如果元素不存在，输出错误日志
-            }
-        });
-        console.log("Task form cleared"); // 输出任务表单已清空的日志
+        document.getElementById('taskName').value = '';
+        document.getElementById('taskTimesList').innerHTML = '';
+        document.getElementById('priority').value = 'medium';
+        document.getElementById('category').value = '';
+        document.getElementById('location').value = '';
     },
 
     // 改进提醒功能
@@ -318,9 +305,35 @@ const UI = {
                 document.body.removeChild(reminderContainer);
             }
         }, 5300); // 5.3秒后移除元素
+    },
+
+    // 添加时间段输入
+    addTimeSlotInput: () => {
+        const taskTimesList = document.getElementById('taskTimesList');
+        const timeSlotDiv = document.createElement('div');
+        timeSlotDiv.className = 'time-slot mb-2';
+        timeSlotDiv.innerHTML = `
+            <input type="date" class="form-control mb-1" required>
+            <div class="d-flex">
+                <input type="time" class="form-control mr-1" required>
+                <input type="time" class="form-control ml-1" required>
+                <button type="button" class="btn btn-danger ml-2 remove-time-slot">删除</button>
+            </div>
+        `;
+        taskTimesList.appendChild(timeSlotDiv);
     }
 };
 
 window.UI = UI;  // 将 UI 对象添加到全局作用域，使其他脚本可以访问
 
 console.log("UI.js end"); // 输出日志，表示 UI.js 文件执行结束
+
+// 添加事件监听器
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('addTimeSlot').addEventListener('click', UI.addTimeSlotInput);
+    document.getElementById('taskTimesList').addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-time-slot')) {
+            e.target.closest('.time-slot').remove();
+        }
+    });
+});
