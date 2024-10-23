@@ -60,25 +60,6 @@ function initializeApp() {
     }
 }
 
-// 添加新函数来设置每日任务清理
-function setDailyTaskCleanup() {
-    const now = new Date();
-    const night = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate() + 1, // 明天
-        0, 0, 0 // 凌晨 00:00:00
-    );
-    const msToMidnight = night.getTime() - now.getTime();
-
-    // 首次执行
-    setTimeout(() => {
-        TaskManager.removeExpiredTasks();
-        // 之后每24小时执行一次
-        setInterval(TaskManager.removeExpiredTasks, 24 * 60 * 60 * 1000);
-    }, msToMidnight);
-}
-
 // 设置事件监听器
 function setupEventListeners(elements) {
     // 登录按钮点击事件
@@ -301,4 +282,23 @@ function setupReminders() {
             UI.showAfternoonReminder();
         }
     }, 3600000); // 3600000 毫秒 = 1 小时
+}
+
+// 添加新函数来设置每日任务清理
+function setDailyTaskCleanup() {
+    const now = new Date();
+    const night = new Date(
+        now.getFullYear(),
+        now.getMonth(),
+        now.getDate() + 1, // 明天
+        0, 0, 0 // 凌晨 00:00:00
+    );
+    const msToMidnight = night.getTime() - now.getTime();
+
+    // 首次执行
+    setTimeout(() => {
+        TaskManager.removeExpiredTasks();
+        // 之后每24小时执行一次
+        setInterval(TaskManager.removeExpiredTasks, 24 * 60 * 60 * 1000);
+    }, msToMidnight);
 }
