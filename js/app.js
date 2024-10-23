@@ -277,7 +277,7 @@ function setupReminders() {
         // 检查今日课程
         UI.showTodayClasses();
         // 根据时间显示早晨或下午的提醒
-        if (now.getHours() === 8) {  // 假���早上8点显示
+        if (now.getHours() === 8) {  // 假设早上8点显示
             UI.showMorningReminder();
         } else if (now.getHours() === 14) {  // 假设下午2点显示
             UI.showAfternoonReminder();
@@ -291,15 +291,20 @@ function setDailyTaskCleanup() {
     const night = new Date(
         now.getFullYear(),
         now.getMonth(),
-        now.getDate() + 1, // 明天
-        0, 0, 0 // 凌晨 00:00:00
+        now.getDate() + 1,
+        0, 0, 0
     );
     const msToMidnight = night.getTime() - now.getTime();
 
-    // 首次执行
     setTimeout(() => {
         TaskManager.removeExpiredTasks();
-        // 之后每24小时执行一次
         setInterval(TaskManager.removeExpiredTasks, 24 * 60 * 60 * 1000);
     }, msToMidnight);
+}
+
+// 在 initializeApp 函数中调用 setDailyTaskCleanup
+function initializeApp() {
+    // ... 现有代码 ...
+    setDailyTaskCleanup();
+    // ... 现有代码 ...
 }
