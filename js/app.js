@@ -16,7 +16,8 @@ function initializeApp() {
         // 定义包含所有重要 DOM 元素的对象
         const elements = {
             loginButton: document.getElementById('loginButton'),
-            loginForm: document.getElementById('loginForm'),  // 更新这里
+            authForm: document.getElementById('authForm'),  // 更新这里
+            loginForm: document.getElementById('loginForm'),  // 添加这行
             logoutButton: document.getElementById('logoutButton'),
             saveWeeklyScheduleButton: document.getElementById('saveWeeklyScheduleButton'),
             allTasks: document.getElementById('allTasks'),
@@ -70,8 +71,7 @@ function setupEventListeners(elements) {
     });
 
     // 提交登录表单事件
-    const loginForm = document.getElementById('loginForm');
-    loginForm?.addEventListener('submit', (e) => {
+    elements.loginForm?.addEventListener('submit', (e) => {
         e.preventDefault();
         const username = document.getElementById('loginUsername').value;
         const password = document.getElementById('loginPassword').value;
@@ -277,7 +277,7 @@ function setupReminders() {
         // 检查今日课程
         UI.showTodayClasses();
         // 根据时间显示早晨或下午的提醒
-        if (now.getHours() === 8) {  // 假设早上8点显示
+        if (now.getHours() === 8) {  // 假���早上8点显示
             UI.showMorningReminder();
         } else if (now.getHours() === 14) {  // 假设下午2点显示
             UI.showAfternoonReminder();
