@@ -36,7 +36,7 @@ body {
     margin-bottom: 20px; /* 底部外边距 */
 }
 
-/* ���置头部标题样式 */
+/* 置头部标题样式 */
 .app-header h1 {
     font-size: 24px; /* 设置字体大小 */
     margin: 0;       /* 移除默认外边距 */
