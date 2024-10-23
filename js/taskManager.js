@@ -5,7 +5,6 @@ const TaskManager = {
         try {
             console.log("TaskManager: 正在添加任务:", task);
             const tasks = Storage.getItem('tasks') || [];
-            console.log("当前任务列表:", tasks);
             if (!task.name) {
                 throw new Error("任务名称不能为空");
             }
@@ -67,11 +66,11 @@ const TaskManager = {
     loadTasks: () => {
         try {
             console.log("Loading tasks");
-            let tasks = Storage.getItem('tasks') || [];
+            let tasks = Storage.getItem('tasks');
             console.log("Raw tasks from storage:", tasks);
             
             if (!Array.isArray(tasks)) {
-                console.error("Invalid tasks data in storage:", tasks);
+                console.log("Tasks is not an array, initializing empty array");
                 tasks = [];
             }
             
@@ -81,7 +80,7 @@ const TaskManager = {
             
             if (!Array.isArray(tasks)) {
                 console.error("removeExpiredTasks returned invalid data:", tasks);
-                tasks = []; // 确保 tasks 始终是一个数组
+                tasks = [];
             }
             
             UI.updateTaskList(tasks);
@@ -92,11 +91,11 @@ const TaskManager = {
         }
     },
 
-    // 除过期任务
+    // 移除过期任务
     removeExpiredTasks: (tasks) => {
         if (!Array.isArray(tasks)) {
             console.error("Invalid tasks array in removeExpiredTasks:", tasks);
-            return []; // 返回空数组而不是 undefined
+            return [];
         }
         const now = new Date();
         const updatedTasks = tasks.filter(task => {
@@ -111,7 +110,7 @@ const TaskManager = {
             });
         });
         console.log("Removed expired tasks, remaining tasks:", updatedTasks.length);
-        return updatedTasks; // 确保返回更新后的任务数组
+        return updatedTasks;
     },
 
     // 添加课程信息
@@ -216,7 +215,7 @@ const TaskManager = {
             console.log("Task completion toggled:", tasks[index]); // 日志：显示切换的务状态
         } catch (error) {
             console.error("Error toggling task completion:", error); // 错误日志：切换任务完成状态时出错
-            alert("更新任务态时出错，请稍后再试。"); // 显示错误消息给用户
+            alert("更新任务状态时出错，请稍后再试。"); // 显示错误消息给用户
         }
     },
 
@@ -319,4 +318,3 @@ setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 window.TaskManager = TaskManager;
 
 // 注意：这里不需要额外的闭合大括号和分号，因为它们已经在对象定义的末尾了
-
