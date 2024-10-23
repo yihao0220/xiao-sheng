@@ -195,7 +195,7 @@ const TaskManager = {
             tasks[index].completed = !tasks[index].completed; // 切换任务的完成状态
             Storage.setItem('tasks', tasks); // 保存更新后的任务数组
             UI.updateTaskList(tasks); // 更新UI显示的任务列表
-            console.log("Task completion toggled:", tasks[index]); // 日志：显示切换的��务状态
+            console.log("Task completion toggled:", tasks[index]); // 日志：显示切换的务状态
         } catch (error) {
             console.error("Error toggling task completion:", error); // 错误日志：切换任务完成状态时出错
             alert("更新任务状态时出错，请稍后再试。"); // 显示错误消息给用户
@@ -290,6 +290,39 @@ const TaskManager = {
         } catch (error) {
             console.error("TaskManager: 获取任务统计时出错:", error.message);
             return { totalTasks: 0, completedTasks: 0, pendingTasks: 0 };
+        }
+    },
+
+    // 新增方法：删除过期任务
+    removeExpiredTasks: () => {
+        try {
+            const tasks = Storage.getItem('tasks') || [];
+            const currentDate = new Date();
+            
+            const updatedTasks = tasks.filter(task => {
+                // 如果任务没有设置结束日期，保留该任务
+                if (!task.times || task.times.length === 0) {
+                    return true;
+                }
+                
+                // 检查任务的所有时间段
+                const isExpired = task.times.every(time => {
+                    if (!time.date) return false; // 如果没有日期，认为任务未过期
+                    const taskEndDate = new Date(time.date);
+                    taskEndDate.setHours(23, 59, 59, 999); // 设置为当天的最后一刻
+                    return taskEndDate < currentDate;
+                });
+
+                return !isExpired; // 保留未过期的任务
+            });
+
+            if (updatedTasks.length !== tasks.length) {
+                Storage.setItem('tasks', updatedTasks);
+                console.log(`已删除 ${tasks.length - updatedTasks.length} 个过期任务`);
+                UI.updateTaskList(updatedTasks);
+            }
+        } catch (error) {
+            console.error("删除过期任务时出错:", error);
         }
     }
 };
