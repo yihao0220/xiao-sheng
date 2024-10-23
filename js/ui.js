@@ -135,7 +135,7 @@ const UI = {
         if (todayClasses.length > 0) {
             let message = "今天需要预习的课程：\n"; // 构建消息开头
             todayClasses.forEach(classInfo => {
-                message += `- ${classInfo.name} (${classInfo.time})\n`; // 为每个课程添加一行
+                message += `- ${classInfo.name} (${classInfo.time})\n`; // 为每个课程��加一行
             });
             alert(message); // 显示提醒消息
         }
@@ -169,7 +169,7 @@ const UI = {
         }
 
         // 注意：由于新的结构不包含具体日期，我们无法显示昨天的课程复习提醒
-        // 如果需要这个功能，可能需要重新设计数据结构或存储方式
+        // 如果需要这个功能，可能需��重新设计数据结构或存储方式
     },
 
     // 清空课程表单
