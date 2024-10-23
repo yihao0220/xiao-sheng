@@ -266,7 +266,7 @@ body {
 
 /* 设置表单标签样式 */
 .form-group label {
-    margin-bottom: 5px; /* 底部外边距 */
+    margin-bottom: 5px; /* 底部外边��� */
     font-weight: bold; /* 加粗字体 */
     color: #555; /* 设置颜色 */
 }
@@ -547,15 +547,22 @@ th {
 }
 
 .auth-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    background-image: url('../images/ocean-3605547.jpg');
-    /* 或者 */
-    background-image: url('/images/ocean-3605547.jpg');
-    /* 或者 */
     background-image: url('images/ocean-3605547.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-form {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
 }
 
 .auth-image {
