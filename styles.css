@@ -169,7 +169,7 @@ body {
     opacity: 0.8; /* 降低不透明度 */
 }
 
-/* 设置优先级指示器基础样式 */
+/* 设置优��级指示器基础样式 */
 .priority-indicator {
     display: inline-block; /* 行内块级显示 */
     width: 12px;  /* 设置宽度 */
@@ -748,4 +748,37 @@ header {
 header h1 {
     color: var(--color-primary); /* 使用主色调，确保标题可读 */
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); /* 添加轻微阴影提高可读性 */
+}
+
+/* 在文件末尾添加以下代码 */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('ocean-3605547.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0.8;
+    z-index: -1;
+}
+
+.container {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    background-color: transparent;
+}
+
+header h1 {
+    color: var(--color-primary);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
