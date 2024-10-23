@@ -198,7 +198,7 @@ const TaskManager = {
                 classes.push({
                     name: match[1].trim(), // 课程名
                     day: dayMap[match[2]] || match[2], // 星期
-                    startTime: match[3], // 开始时���
+                    startTime: match[3], // 开始时
                     endTime: match[4], // 结束时间
                     location: (match[5] || '').trim() // 地点（如果有）
                 });
@@ -310,6 +310,34 @@ const TaskManager = {
         } catch (error) {
             console.error("TaskManager: 获取任务统计时出错:", error.message);
             return { totalTasks: 0, completedTasks: 0, pendingTasks: 0 };
+        }
+    },
+
+    // 在 TaskManager 对象中添加以下方法
+    removeExpiredTasks: () => {
+        try {
+            const tasks = Storage.getItem('tasks') || [];
+            const currentDate = new Date();
+            
+            const updatedTasks = tasks.filter(task => {
+                if (!task.times || task.times.length === 0) {
+                    return true;
+                }
+                
+                return task.times.some(time => {
+                    if (!time.date) return true;
+                    const taskEndDate = new Date(time.date + 'T' + (time.endTime || '23:59:59'));
+                    return taskEndDate > currentDate;
+                });
+            });
+
+            if (updatedTasks.length !== tasks.length) {
+                Storage.setItem('tasks', updatedTasks);
+                console.log(`已删除 ${tasks.length - updatedTasks.length} 个过期任务`);
+                UI.updateTaskList(updatedTasks);
+            }
+        } catch (error) {
+            console.error("删除过期任务时出错:", error);
         }
     }
 };
