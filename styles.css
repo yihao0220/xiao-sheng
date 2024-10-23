@@ -704,7 +704,7 @@ h1, h2 {
 }
 
 .auth-container {
-    background-image: url('images/ocean-3605547.jpg');  /* 更新这里的图片路径 */
+    background-image: url('../images/ocean-3605547.jpg');  /* 注意这里的路径 */
     background-size: cover;
     background-position: center;
     min-height: 100vh;
@@ -736,3 +736,4 @@ h1, h2 {
     width: 100%;
     margin-top: 10px;
 }
+
