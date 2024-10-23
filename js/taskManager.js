@@ -198,7 +198,7 @@ const TaskManager = {
                 classes.push({
                     name: match[1].trim(), // 课程名
                     day: dayMap[match[2]] || match[2], // 星期
-                    startTime: match[3], // 开始时间
+                    startTime: match[3], // 开始时���
                     endTime: match[4], // 结束时间
                     location: (match[5] || '').trim() // 地点（如果有）
                 });
