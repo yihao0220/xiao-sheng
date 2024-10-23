@@ -8,6 +8,9 @@ const TaskManager = {
             if (!task.name) {
                 throw new Error("任务名称不能为空");
             }
+            if (!task.times || task.times.length === 0) {
+                throw new Error("至少需要添加一个时间段");
+            }
             tasks.push(task);
             Storage.setItem('tasks', tasks);
             console.log("TaskManager: 任务已添加到存储，总任务数:", tasks.length);
@@ -192,7 +195,7 @@ const TaskManager = {
             tasks[index].completed = !tasks[index].completed; // 切换任务的完成状态
             Storage.setItem('tasks', tasks); // 保存更新后的任务数组
             UI.updateTaskList(tasks); // 更新UI显示的任务列表
-            console.log("Task completion toggled:", tasks[index]); // 日志：显示切换的任务状态
+            console.log("Task completion toggled:", tasks[index]); // 日志：显示切换的��务状态
         } catch (error) {
             console.error("Error toggling task completion:", error); // 错误日志：切换任务完成状态时出错
             alert("更新任务状态时出错，请稍后再试。"); // 显示错误消息给用户
@@ -223,7 +226,7 @@ const TaskManager = {
             UI.showSuccess("周课表已成功保存！");
         } catch (error) {
             console.error("Error adding weekly schedule:", error);
-            UI.showError("添加周课表时��错，请稍后再试");
+            UI.showError("添加周课表时错，请稍后再试");
         }
     },
 
