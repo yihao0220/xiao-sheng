@@ -61,7 +61,7 @@ function initializeApp() {
 function setupEventListeners(elements) {
     // 登录按钮点击事件
     elements.loginButton?.addEventListener('click', () => {
-        console.log("登录按钮被点击");
+        console.log("登录��钮被点击");
         UI.showElement('authForm');
         UI.hideElement('loginButton');
     });
@@ -134,14 +134,20 @@ function handleAddTask(e) {
     e.preventDefault();
     console.log("添加任务按钮被点击");
     const taskName = document.getElementById('taskName').value.trim();
+    const timeSlots = document.querySelectorAll('.time-slot');
+    const times = Array.from(timeSlots).map(slot => {
+        const [dateInput, startTimeInput, endTimeInput] = slot.querySelectorAll('input');
+        return {
+            date: dateInput.value,
+            startTime: startTimeInput.value,
+            endTime: endTimeInput.value
+        };
+    });
 
-    if (taskName) {
+    if (taskName && times.length > 0) {
         const newTask = { 
             name: taskName, 
-            startDate: document.getElementById('startDate').value,
-            startTime: document.getElementById('startTime').value,
-            endDate: document.getElementById('endDate').value,
-            endTime: document.getElementById('endTime').value,
+            times: times,
             priority: document.getElementById('priority').value,
             category: document.getElementById('category').value,
             location: document.getElementById('location').value,
@@ -155,7 +161,7 @@ function handleAddTask(e) {
             TaskManager.loadTasks();
         }
     } else {
-        UI.showError("请至少填写任务名称");
+        UI.showError("请填写任务名称并至少添加一个时间段");
     }
 }
 
