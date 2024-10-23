@@ -31,6 +31,10 @@ const UI = {
             return;
         }
         allTasks.innerHTML = '';
+        if (!Array.isArray(tasks)) {
+            console.error("UI: Invalid tasks data:", tasks);
+            return;
+        }
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
             li.className = 'list-group-item';
