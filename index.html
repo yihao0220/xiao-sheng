@@ -1,194 +1,760 @@
-<!DOCTYPE html> <!-- 声明文档类型为HTML5 -->
-<html lang="zh-CN"> <!-- 开始HTML文档，设置语言为中文简体 -->
-<head> <!-- 头部信息开始 -->
-    <meta charset="UTF-8"> <!-- 设置字符编码为UTF-8 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 设置视口，确保在移动设备上正确显示 -->
-    <title>大学任务提醒</title> <!-- 设置页面标题 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" href="./styles.css"> <!-- 引入自定义CSS文件 -->
-</head>
-<body> <!-- 页面主体开始 -->
-    <div class="container"> <!-- 创建一个容器 -->
-        <header> <!-- 页面头部 -->
-            <h1><i class="fas fa-tasks"></i> 大学任务提醒</h1> <!-- 居中显示的标题 -->
-            <div> <!-- 右对齐的容器 -->
-                <button id="loginButton" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> 登录</button> <!-- 登录按钮 -->
-                <button id="logoutButton" class="btn btn-secondary" style="display: none;"><i class="fas fa-sign-out-alt"></i> 退出</button> <!-- 退出按钮，初始隐藏 -->
-            </div>
-        </header>
+/* 定义全局 CSS 变量，用于统一管理颜色、字体等样式 */
+:root {
+    --color-primary: #457B9D;
+    --color-secondary: #A8DADC;
+    --color-accent: #E63946;
+    --color-background: #F1FAEE;
+    --color-text: #1D3557;
+    --color-border: #A8DADC;
+    --font-size-base: 16px;
+    --font-family-main: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
 
-        <main> <!-- 主要内容区域 -->
-            <div id="authForm" class="auth-container" style="display: none;">
-                <div class="auth-form">
-                    <h2><i class="fas fa-user"></i> 用户登录</h2>
-                    <form id="loginForm">
-                        <div class="form-group">
-                            <label for="loginUsername"><i class="fas fa-user"></i> 用户名</label>
-                            <input type="text" id="loginUsername" placeholder="请输入用户名" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="loginPassword"><i class="fas fa-lock"></i> 密码</label>
-                            <input type="password" id="loginPassword" placeholder="请输入密码" required>
-                        </div>
-                        <button type="submit" id="submitLoginButton" class="btn btn-primary"><i class="fas fa-sign-in-alt"></i> 登录</button>
-                    </form>
-                    <p class="mt-3 text-center">还没有账号？<a href="#" id="showRegisterForm">点击这里注册</a></p>
-                </div>
-            </div>
+/* 设置全局基础样式 */
+body {
+    font-family: var(--font-family-main);
+    font-size: var(--font-size-base);
+    color: var(--color-text);
+    background-color: var(--color-background);
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+}
 
-            <div id="registerForm" class="card" style="display: none;">
-                <h2><i class="fas fa-user-plus"></i> 新用户注册</h2>
-                <form id="signupForm">
-                    <div class="form-group">
-                        <label for="registerUsername"><i class="fas fa-user"></i> 用户名</label>
-                        <input type="text" id="registerUsername" placeholder="请输入用户名" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="registerPassword"><i class="fas fa-lock"></i> 密码</label>
-                        <input type="password" id="registerPassword" placeholder="请输入密码" required>
-                    </div>
-                    <button type="submit" id="submitRegisterButton" class="btn btn-primary"><i class="fas fa-user-plus"></i> 注册</button>
-                </form>
-                <p class="mt-3 text-center">已有账号？<a href="#" id="showLoginForm">返回登录</a></p>
-            </div>
+/* 设置应用容器的最大宽度和居中 */
+.app-container {
+    max-width: 600px; /* 限最宽度 */
+    margin: 0 auto;   /* 水平居中 */
+    padding: 20px;    /* 添加内边距 */
+}
 
-            <div id="taskManager" style="display: none;"> <!-- 任务管理区域，初始隐藏 -->
-                <button id="showAddTaskFormButton" class="btn btn-primary mb-4 w-100"><i class="fas fa-plus"></i> 添加任务</button> <!-- 显示添加任务模态框的按钮 -->
+/* 设置应用头部样式 */
+.app-header {
+    display: flex; /* 使用弹性布局 */
+    justify-content: space-between; /* 两端对齐 */
+    align-items: center; /* 垂直居中对齐 */
+    margin-bottom: 20px; /* 底部外边距 */
+}
 
-                <div class="card mb-4">
-                    <h2><i class="fas fa-list"></i> 任务列表</h2>
-                    <ul id="allTasks" class="list-group"></ul> <!-- 用于显示所有任务的列表 -->
-                </div>
+/* 置头部标题样式 */
+.app-header h1 {
+    font-size: 24px; /* 设置字体大小 */
+    margin: 0;       /* 移除默认外边距 */
+}
 
-                <!-- 添加周课表模板部分 -->
-                <div class="card mb-4">
-                    <h2><i class="fas fa-calendar-alt"></i> 周课表</h2>
-                    <table id="weeklyScheduleTemplate" class="table">
-                        <thead>
-                            <tr>
-                                <th>时间段</th>
-                                <th>周一</th>
-                                <th>周二</th>
-                                <th>周三</th>
-                                <th>周四</th>
-                                <th>周五</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <!-- 这里将根据常见的课程时间段生成行 -->
-                        </tbody>
-                    </table>
-                    <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3"><i class="fas fa-save"></i> 保存周课表</button>
-                    <ul id="weeklyClassList" class="list-group mt-3"></ul>
-                </div>
+/* 设置按钮基础样式 */
+.btn {
+    padding: 10px 20px; /* 设置内边距 */
+    border: none;       /* 移除边框 */
+    border-radius: 4px; /* 添加圆角 */
+    cursor: pointer;    /* 鼠标悬停时显示手型光标 */
+    font-size: 16px;    /* 设置字体大小 */
+    transition: background-color 0.3s ease;
+}
 
-                <!-- 添加日历容器 -->
-                <div class="card mb-4">
-                    <h2><i class="fas fa-calendar-alt"></i> 任务日历</h2>
-                    <div id="taskCalendar"></div>
-                </div>
-            </div>
-        </main>
+/* 设置主要按钮样式 */
+.btn-primary {
+    background-color: var(--color-primary); /* 使用主要颜色作为背景 */
+    color: white; /* 文字颜色设为白色 */
+}
 
-        <!-- 添加任务模态框 -->
-        <div id="addTaskModal" class="modal">
-            <div class="modal-content">
-                <h2><i class="fas fa-plus-circle"></i> 添加任务</h2>
-                <form id="addTaskForm">
-                    <div class="form-group">
-                        <label for="taskName">任务名称</label>
-                        <input type="text" id="taskName" class="form-control" placeholder="输入任务名称" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="taskTimes">任务时间</label>
-                        <div id="taskTimesList">
-                            <!-- 时间段将在这里动态添加 -->
-                        </div>
-                        <button type="button" id="addTimeSlot" class="btn btn-secondary mt-2">添加时间段</button>
-                    </div>
-                    <div class="form-group">
-                        <label for="priority">优先级</label>
-                        <select id="priority" class="form-control">
-                            <option value="low">低</option>
-                            <option value="medium">中</option>
-                            <option value="high">高</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="category">分类</label>
-                        <input type="text" id="category" class="form-control" placeholder="输入分类">
-                    </div>
-                    <div class="form-group">
-                        <label for="location">地点</label>
-                        <input type="text" id="location" class="form-control" placeholder="输入地点">
-                    </div>
-                </form>
-                <div class="modal-actions">
-                    <button type="button" id="cancelAddTaskButton" class="btn btn-secondary"><i class="fas fa-times"></i> 取消</button>
-                    <button type="button" id="addTaskButton" class="btn btn-primary"><i class="fas fa-plus"></i> 添加任务</button>
-                </div>
-            </div>
-        </div>
+/* 设置次要按钮样式 */
+.btn-secondary {
+    background-color: var(--color-secondary); /* 使用次要颜色作为背景 */
+    color: var(--color-text); /* 使用定义的文本颜色 */
+}
 
-        <!-- 编辑任务模态框 -->
-        <div id="editTaskModal" class="modal">
-            <div class="modal-content">
-                <h2><i class="fas fa-edit"></i> 编辑任务</h2>
-                <form id="editTaskForm">
-                    <div class="form-group">
-                        <label for="editTaskName">任务名称</label>
-                        <input type="text" id="editTaskName" class="form-control" required>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="editStartDate">开始日期</label>
-                            <input type="date" id="editStartDate" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="editStartTime">开始时间</label>
-                            <input type="time" id="editStartTime" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="editEndDate">结束日期</label>
-                            <input type="date" id="editEndDate" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="editEndTime">结束时间</label>
-                            <input type="time" id="editEndTime" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="editPriority">优先级</label>
-                        <select id="editPriority" class="form-control">
-                            <option value="low">低</option>
-                            <option value="medium">中</option>
-                            <option value="high">高</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="editCategory">分类</label>
-                        <input type="text" id="editCategory" class="form-control">
-                    </div>
-                    <div class="form-group">
-                        <label for="editLocation">地点</label>
-                        <input type="text" id="editLocation" class="form-control">
-                    </div>
-                </form>
-                <div class="modal-actions">
-                    <button type="button" id="cancelEditTaskButton" class="btn btn-secondary">取消</button>
-                    <button type="button" id="saveEditTaskButton" class="btn btn-primary">保存修改</button>
-                </div>
-            </div>
-        </div>
-    </div>
+/* 设置全宽元素样式 */
+.full-width {
+    width: 100%;       /* 宽度占满父元素 */
+    margin-bottom: 20px; /* 底部外边距 */
+}
 
-    <!-- 然后加载你的自定义脚本 -->
-    <script src="js/storage.js"></script>
-    <script src="js/ui.js"></script>
-    <script src="js/taskManager.js"></script>
-    <script src="js/auth.js"></script>
-    <script src="js/app.js"></script>
-</body>
-</html>
+/* 设置任务和课程部分的共同样式 */
+.task-section, .class-section {
+    background-color: var(--color-secondary); /* 使用次要颜色作为背景 */
+    border-radius: 8px; /* 添加圆角 */
+    padding: 20px;      /* 添加内边距 */
+    margin-bottom: 20px; /* 底部外边距 */
+}
+
+/* 设置任务过滤器样式 */
+.task-filters {
+    display: flex; /* 使用弹性布局 */
+    gap: 10px;     /* 设置元素间距 */
+    margin-bottom: 15px; /* 底部外边距 */
+}
+
+/* 设置务过滤器中的选择框和输入框样式 */
+.task-filters select, .task-filters input {
+    flex: 1;       /* 均分可用空间 */
+    padding: 8px;  /* 添加内边距 */
+    border: 1px solid var(--color-border); /* 添加边框 */
+    border-radius: 4px; /* 添加圆角 */
+}
+
+/* 设置任务列表样式 */
+.task-list {
+    list-style-type: none; /* 移除默认列表样式 */
+    padding: 0;            /* 移除默认内边距 */
+}
+
+/* 设置任务项样式 */
+.task-item {
+    background-color: #f8f9fa; /* 设置背景色 */
+    border: 1px solid #e9ecef; /* 添加边框 */
+    border-radius: 12px;       /* 添加圆角 */
+    padding: 15px;             /* 添加内边距 */
+    margin-bottom: 15px;       /* 底部外边距 */
+    transition: all 0.3s ease; /* 添加过渡效果 */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 添加阴影 */
+}
+
+/* 设置任务项悬停效果 */
+.task-item:hover {
+    transform: translateY(-3px); /* 上移3素 */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15); /* 增强阴影 */
+}
+
+/* 设置任务项标题样式 */
+.task-item h3 {
+    margin-top: 0;     /* 移除顶部外边距 */
+    margin-bottom: 10px; /* 底部外边距 */
+    color: #343a40;    /* 设置颜色 */
+}
+
+/* 设置任务项段落样式 */
+.task-item p {
+    margin: 5px 0; /* 设置上下外边距 */
+    color: #6c757d; /* 设置颜色 */
+}
+
+/* 设置任务操作区域样式 */
+.task-actions {
+    display: flex; /* 使用弹性布局 */
+    justify-content: flex-end; /* 右对齐 */
+    margin-top: 10px; /* 顶部外边距 */
+}
+
+/* 设置任务操作按钮样式 */
+.task-actions button {
+    margin-left: 10px; /* 左侧外边距 */
+    padding: 5px 10px; /* 添加内边距 */
+    border: none;      /* 移除边框 */
+    border-radius: 5px; /* 添加圆角 */
+    cursor: pointer;   /* 鼠标悬停时显示手型光标 */
+    transition: background-color 0.3s ease; /* 添加背景色过渡效果 */
+}
+
+/* 设置编辑按钮样式 */
+.edit-button {
+    background-color: #ffc107; /* 设置背景色 */
+    color: #212529; /* 设置文字颜色 */
+}
+
+/* 设置删除按钮样式 */
+.delete-button {
+    background-color: #dc3545; /* 置背景色 */
+    color: white; /* 设置文字颜色 */
+}
+
+/* 设置完成按钮样式 */
+.complete-button {
+    background-color: #28a745; /* 设置背景色 */
+    color: white; /* 设置文字颜色 */
+}
+
+/* 设置任务操作按钮悬停效果 */
+.task-actions button:hover {
+    opacity: 0.8; /* 降低不透明度 */
+}
+
+/* 设置优先级指示器基础样式 */
+.priority-indicator {
+    display: inline-block; /* 行内块级显示 */
+    width: 12px;  /* 设置宽度 */
+    height: 12px; /* 设置高度 */
+    border-radius: 50%; /* 设置为圆形 */
+    margin-right: 5px; /* 右侧外边距 */
+}
+
+/* 设置低优先级指器颜色 */
+.priority-low {
+    background-color: #28a745; /* 绿色 */
+}
+
+/* 设置中优先级指示器颜色 */
+.priority-medium {
+    background-color: #ffc107; /* 黄色 */
+}
+
+/* 设置高优先级指示器颜色 */
+.priority-high {
+    background-color: #dc3545; /* 红色 */
+}
+
+/* 设置课程表单样式 */
+.class-form {
+    display: grid; /* 使用网格布局 */
+    gap: 10px;     /* 设置元素间距 */
+}
+
+/* 设置课程表单输入框和选择框样式 */
+.class-form input, .class-form select {
+    width: 100%; /* 宽度占满父元素 */
+    padding: 8px; /* 添加内边距 */
+    border: 1px solid var(--color-border); /* 添加边框 */
+    border-radius: 4px; /* 添加圆角 */
+}
+
+/* 设置移动设备响应式样式 */
+@media (max-width: 480px) {
+    .app-container {
+        padding: 10px; /* 减小内边距 */
+    }
+    
+    .btn {
+        padding: 8px 16px; /* 减小按钮内边距 */
+    }
+}
+
+/* 设置遮罩层样式 */
+.overlay {
+    position: fixed; /* 固定定位 */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* 半透明黑色背景 */
+    display: flex; /* 使用弹性布局 */
+    justify-content: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
+    z-index: 1000; /* 确保在最上层 */
+}
+
+/* 设置任务表单样式 */
+.task-form {
+    background-color: white; /* 白色背景 */
+    padding: 30px; /* 添加内边距 */
+    border-radius: 12px; /* 添加圆角 */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15); /* 添加阴影 */
+    width: 90%; /* 设置宽度 */
+    max-width: 500px; /* 设置最大宽度 */
+}
+
+/* 设置任务表单标题样式 */
+.task-form h2 {
+    margin-top: 0; /* 移除顶部外边距 */
+    margin-bottom: 25px; /* 底部外边距 */
+    text-align: center; /* 文字居中 */
+    color: #333; /* 设置颜色 */
+    font-size: 24px; /* 设置字体大小 */
+}
+
+/* 设置任务表单布局 */
+.task-form form {
+    display: flex; /* 使用弹性布局 */
+    flex-direction: column; /* 垂直排列 */
+    gap: 20px; /* 设置元素间距 */
+}
+
+/* 设置表单组样式 */
+.form-group {
+    display: flex; /* 使用弹性布局 */
+    flex-direction: column; /* 垂直排列 */
+}
+
+/* 设置表单标签样式 */
+.form-group label {
+    margin-bottom: 5px; /* 底部外边 */
+    font-weight: bold; /* 加粗字体 */
+    color: #555; /* 设置颜色 */
+}
+
+/* 设置表单输入框和选择框样式 */
+.form-group input,
+.form-group select {
+    padding: 10px; /* 添加内边距 */
+    border: 1px solid #ddd; /* 添加边框 */
+    border-radius: 6px; /* 添加圆角 */
+    font-size: 16px; /* 设置字体大小 */
+}
+
+/* 设置表单行样式 */
+.form-row {
+    display: flex; /* 使用弹性布局 */
+    gap: 15px; /* 设置元素间距 */
+}
+
+/* 设置表单行中的表单组样式 */
+.form-row .form-group {
+    flex: 1; /* 均分可用空间 */
+}
+
+/* 设置表单操作区域样式 */
+.form-actions {
+    display: flex; /* 使用弹性布局 */
+    justify-content: space-between; /* 两端对齐 */
+    margin-top: 30px; /* 顶部外边距 */
+}
+
+/* 设置按钮样式（重复定义，可能是为了覆盖之前的样式） */
+.btn {
+    padding: 12px 24px; /* 添加内边距 */
+    border: none; /* 移除边框 */
+    border-radius: 6px; /* 添加圆角 */
+    cursor: pointer; /* 鼠标悬停时显示手型光标 */
+    font-size: 16px; /* 设置字体大小 */
+    transition: all 0.3s ease; /* 添加过渡效果 */
+}
+
+/* 设置主要按钮样式（重复定义） */
+.btn-primary {
+    background-color: #4285f4; /* 设置背景色 */
+    color: white; /* 设置文字颜色 */
+}
+
+/* 设置次要按钮样式（重复定义） */
+.btn-secondary {
+    background-color: #f1f3f4; /* 设置背景色 */
+    color: #202124; /* 设置文字颜色 */
+}
+
+/* 设置按钮悬停效果 */
+.btn:hover {
+    opacity: 0.9; /* 降低不透明度 */
+    transform: translateY(-2px); /* 上移2像素 */
+}
+
+/* 以下是重复定义的优先级指示器样式，可能是为了确保样式被正确应用 */
+.priority-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.priority-low {
+    background-color: #28a745;
+}
+
+.priority-medium {
+    background-color: #ffc107;
+}
+
+.priority-high {
+    background-color: #dc3545;
+}
+
+/* 文件结束，可以在这里添加其他需要的自定义样式 */
+
+/* 添加基本的模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 90%;
+    margin: 20px auto;
+}
+
+.modal-content h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+}
+
+.form-row .form-group {
+    width: 48%;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.modal-actions button {
+    margin-left: 10px;
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #4285f4;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #f1f3f4;
+    color: #202124;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+/* 添加其他必要的样式来替代 Bootstrap 的样式 */
+/* ... */
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--color-border);
+}
+
+h1, h2 {
+    color: var(--color-primary);
+}
+
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+.list-group {
+    list-style-type: none;
+    padding: 0;
+}
+
+.list-group-item {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid var(--color-border);
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: var(--color-secondary);
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+    }
+}
+
+.auth-container {
+    background-image: url('images/ocean-3605547.jpg');
+    background-size: cover;
+    background-position: center;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth-form {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.auth-image {
+    flex: 1;
+    max-width: 50%;
+}
+
+.login-image {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+}
+
+.auth-form {
+    flex: 1;
+}
+
+@media (max-width: 768px) {
+    .auth-container {
+        flex-direction: column;
+    }
+
+    .auth-image {
+        max-width: 100%;
+    }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+header {
+    background-color: var(--color-primary);
+    color: white;
+    padding: 20px 0;
+    margin-bottom: 30px;
+}
+
+h1, h2 {
+    color: var(--color-primary);
+}
+
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+
+.btn-secondary {
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: var(--color-text);
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+.list-group-item {
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.mobile-reminder {
+    background-color: white;
+    border: 2px solid var(--color-accent);
+}
+
+.mobile-reminder .reminder-header {
+    background-color: var(--color-accent);
+    color: white;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .btn {
+        padding: 8px 16px;
+    }
+}
+
+/* 添加更多自定义样式... */
+
+/* 在 styles.css 文件中添加或更新以下样式 */
+.list-group-item {
+    margin-bottom: 10px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 15px;
+}
+
+.list-group-item strong {
+    font-size: 18px;
+    color: var(--color-primary);
+}
+
+.list-group-item .btn {
+    margin-left: 5px;
+}
+
+.d-flex {
+    display: flex;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+#loginButton {
+    z-index: 1000;
+    position: relative;
+}
+
+.auth-container {
+    z-index: 999;
+}
+
+.calendar {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.calendar th, .calendar td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+.calendar th {
+    background-color: #f2f2f2;
+}
+
+.calendar-day {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.calendar-tasks {
+    font-size: 0.8em;
+}
+
+.calendar-task {
+    background-color: #e6f3ff;
+    margin: 2px 0;
+    padding: 2px;
+    border-radius: 3px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
