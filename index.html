@@ -53,7 +53,7 @@
             </div>
 
             <div id="taskManager" style="display: none;"> <!-- 任务管理区域，初始隐藏 -->
-                <button id="showAddTaskFormButton" class="btn btn-primary mb-4 w-100"><i class="fas fa-plus"></i> 添加任务</button> <!-- 显示添加任务模态框的按钮 -->
+                <button id="showAddTaskFormButton" class="btn btn-primary mb-4 w-100"><i class="fas fa-plus"></i> 添加任务</button> <!-- ���示添加任务模态框的按钮 -->
 
                 <div class="card mb-4">
                     <h2><i class="fas fa-list"></i> 任务列表</h2>
@@ -99,41 +99,28 @@
                         <label for="taskName">任务名称</label>
                         <input type="text" id="taskName" class="form-control" placeholder="输入任务名称" required>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="taskStartDate">开始日期</label>
-                            <input type="date" id="taskStartDate" class="form-control" required>
+                    <div class="form-group">
+                        <label for="taskTimes">任务时间</label>
+                        <div id="taskTimesList">
+                            <!-- 时间段将在这里动态添加 -->
                         </div>
-                        <div class="form-group">
-                            <label for="taskStartTime">开始时间</label>
-                            <input type="time" id="taskStartTime" class="form-control" required>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="taskEndDate">结束日期</label>
-                            <input type="date" id="taskEndDate" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="taskEndTime">结束时间</label>
-                            <input type="time" id="taskEndTime" class="form-control">
-                        </div>
+                        <button type="button" id="addTimeSlot" class="btn btn-secondary mt-2">添加时间段</button>
                     </div>
                     <div class="form-group">
-                        <label for="taskPriority">优先级</label>
-                        <select id="taskPriority" class="form-control">
+                        <label for="priority">优先级</label>
+                        <select id="priority" class="form-control">
                             <option value="low">低</option>
                             <option value="medium">中</option>
                             <option value="high">高</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="taskCategory">分类</label>
-                        <input type="text" id="taskCategory" class="form-control" placeholder="输入分类">
+                        <label for="category">分类</label>
+                        <input type="text" id="category" class="form-control" placeholder="输入分类">
                     </div>
                     <div class="form-group">
-                        <label for="taskLocation">地点</label>
-                        <input type="text" id="taskLocation" class="form-control" placeholder="输入地点">
+                        <label for="location">地点</label>
+                        <input type="text" id="location" class="form-control" placeholder="输入地点">
                     </div>
                 </form>
                 <div class="modal-actions">
@@ -152,25 +139,12 @@
                         <label for="editTaskName">任务名称</label>
                         <input type="text" id="editTaskName" class="form-control" required>
                     </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="editStartDate">开始日期</label>
-                            <input type="date" id="editStartDate" class="form-control">
+                    <div class="form-group">
+                        <label for="editTaskTimes">任务时间</label>
+                        <div id="editTaskTimesList">
+                            <!-- 时间段将在这里动态添加 -->
                         </div>
-                        <div class="form-group">
-                            <label for="editStartTime">开始时间</label>
-                            <input type="time" id="editStartTime" class="form-control">
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="editEndDate">结束日期</label>
-                            <input type="date" id="editEndDate" class="form-control">
-                        </div>
-                        <div class="form-group">
-                            <label for="editEndTime">结束时间</label>
-                            <input type="time" id="editEndTime" class="form-control">
-                        </div>
+                        <button type="button" id="editAddTimeSlot" class="btn btn-secondary mt-2">添加时间段</button>
                     </div>
                     <div class="form-group">
                         <label for="editPriority">优先级</label>
