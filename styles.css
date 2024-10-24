@@ -727,17 +727,20 @@ h1, h2 {
 .calendar {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+    table-layout: fixed;
 }
 
 .calendar th, .calendar td {
     border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
+    padding: 5px;
+    text-align: left;
+    vertical-align: top;
+    height: 100px;
 }
 
 .calendar th {
     background-color: #f2f2f2;
+    text-align: center;
 }
 
 .calendar-day {
@@ -747,6 +750,8 @@ h1, h2 {
 
 .calendar-tasks {
     font-size: 0.8em;
+    overflow-y: auto;
+    max-height: 80px;
 }
 
 .calendar-task {
