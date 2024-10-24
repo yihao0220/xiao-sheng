@@ -727,6 +727,7 @@ h1, h2 {
 .calendar {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
 }
 
 .calendar th, .calendar td {
