@@ -195,7 +195,7 @@ const UI = {
 
     // 改进提醒功能
     showReminder: (title, message) => {
-        // 检查是否为移动��备
+        // 检查是否为移动备
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         if (isMobile) {
