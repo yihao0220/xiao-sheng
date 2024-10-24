@@ -116,8 +116,21 @@ function setupEventListeners(elements) {
     // 取消添加任务按钮点击事件
     elements.cancelAddTaskButton?.addEventListener('click', (e) => {
         e.preventDefault();
-        elements.addTaskModal.style.display = 'none';
-        UI.clearTaskForm();
+        if (elements.addTaskModal) {
+            elements.addTaskModal.style.display = 'none';
+            // 确保所有必要的元素都存在后再调用 clearTaskForm
+            if (document.getElementById('taskName') && 
+                document.getElementById('taskTimesList') && 
+                document.getElementById('priority') && 
+                document.getElementById('category') && 
+                document.getElementById('location')) {
+                UI.clearTaskForm();
+            } else {
+                console.error("Some task form elements are missing");
+            }
+        } else {
+            console.error("Add task modal not found");
+        }
     });
 
     // 为编辑任务模态框的取消按钮添加事件监听器
@@ -125,8 +138,22 @@ function setupEventListeners(elements) {
     if (cancelEditTaskButton) {
         cancelEditTaskButton.addEventListener('click', (e) => {
             e.preventDefault();
-            document.getElementById('editTaskModal').style.display = 'none';
-            UI.clearTaskForm();
+            const editTaskModal = document.getElementById('editTaskModal');
+            if (editTaskModal) {
+                editTaskModal.style.display = 'none';
+                // 确保所有必要的元素都存在后再调用 clearTaskForm
+                if (document.getElementById('taskName') && 
+                    document.getElementById('taskTimesList') && 
+                    document.getElementById('priority') && 
+                    document.getElementById('category') && 
+                    document.getElementById('location')) {
+                    UI.clearTaskForm();
+                } else {
+                    console.error("Some task form elements are missing");
+                }
+            } else {
+                console.error("Edit task modal not found");
+            }
         });
     } else {
         console.error("Cancel edit task button not found");
@@ -355,7 +382,7 @@ function setupReminders() {
     }, 3600000); // 3600000 毫秒 = 1 小时
 }
 
-// 添加新函数来设置��日任务清理
+// 添加新函数来设置日任务清理
 function setDailyTaskCleanup() {
     const now = new Date();
     const night = new Date(
