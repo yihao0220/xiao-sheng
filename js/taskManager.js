@@ -78,7 +78,7 @@ const TaskManager = {
     loadTasks: () => {
         try {
             console.log("Loading tasks");
-            let tasks = Storage.getItem('tasks');
+            let tasks = Storage.getItem('tasks') || [];
             console.log("Raw tasks from storage:", tasks);
             
             if (!Array.isArray(tasks)) {
@@ -86,15 +86,10 @@ const TaskManager = {
                 tasks = [];
             }
             
-            console.log("Tasks from storage:", tasks);
             tasks = TaskManager.removeExpiredTasks(tasks);
             console.log("Tasks after removing expired:", tasks);
             
-            if (!Array.isArray(tasks)) {
-                console.error("removeExpiredTasks returned invalid data:", tasks);
-                tasks = [];
-            }
-            
+            Storage.setItem('tasks', tasks); // 保存更新后的任务列表
             UI.updateTaskList(tasks);
             UI.createTaskCalendar(tasks);
             console.log("Task list and calendar updated, total tasks:", tasks.length);
