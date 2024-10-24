@@ -9,15 +9,15 @@ window.addEventListener('unhandledrejection', function(event) {
     console.error('Unhandled promise rejection:', event.reason);
 });
 
-// 应用程序初始化函数
+// 将所有的初始化逻辑移到这个函数中
 function initializeApp() {
     console.log("正在初始化应用...");
     try {
         // 定义包含所有重要 DOM 元素的对象
         const elements = {
             loginButton: document.getElementById('loginButton'),
-            authForm: document.getElementById('authForm'),  // 更新这里
-            loginForm: document.getElementById('loginForm'),  // 添加这行
+            authForm: document.getElementById('authForm'),
+            loginForm: document.getElementById('loginForm'),
             logoutButton: document.getElementById('logoutButton'),
             saveWeeklyScheduleButton: document.getElementById('saveWeeklyScheduleButton'),
             allTasks: document.getElementById('allTasks'),
@@ -67,6 +67,9 @@ function initializeApp() {
         alert("初始化应用时出错，请刷新页面或联系管理员。");
     }
 }
+
+// 确保在 DOM 加载完成后执行初始化
+document.addEventListener('DOMContentLoaded', initializeApp);
 
 // 设置事件监听器
 function setupEventListeners(elements) {
@@ -269,22 +272,22 @@ function showEditTaskForm(index) {
 
 // 为保存编辑任务按钮添加点击事件监听器
 document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
-    const taskIndex = parseInt(document.getElementById('editTaskForm').dataset.taskIndex);
+    const taskIndex = document.getElementById('editTaskForm').dataset.taskIndex;
     const updatedTask = {
         name: document.getElementById('editTaskName').value,
         startDate: document.getElementById('editStartDate').value,
         startTime: document.getElementById('editStartTime').value,
+        endDate: document.getElementById('editEndDate').value,
         endTime: document.getElementById('editEndTime').value,
         priority: document.getElementById('editPriority').value,
         category: document.getElementById('editCategory').value,
         location: document.getElementById('editLocation').value,
+        completed: false
     };
 
-    if (TaskManager.editTask(taskIndex, updatedTask)) {
-        document.getElementById('editTaskModal').style.display = 'none';
-        UI.showSuccess("任务已更新");
-        TaskManager.loadTasks(); // 重新加载任务列表和日历
-    }
+    TaskManager.editTask(taskIndex, updatedTask);
+    document.getElementById('editTaskModal').style.display = 'none';
+    UI.showSuccess("任务已更新");
 });
 
 function generateWeeklyScheduleTemplate() {
@@ -314,9 +317,6 @@ function generateWeeklyScheduleTemplate() {
 
 // 在 initializeApp 函数中调用
 generateWeeklyScheduleTemplate();
-
-// 在 DOM 加载完成后初始化应用程序
-document.addEventListener('DOMContentLoaded', initializeApp);
 
 // 设置提醒
 function setupReminders() {
@@ -354,4 +354,3 @@ function setDailyTaskCleanup() {
         setInterval(TaskManager.removeExpiredTasks, 24 * 60 * 60 * 1000);
     }, msToMidnight);
 }
-
