@@ -272,41 +272,33 @@ function showEditTaskForm(index) {
     const task = tasks[index];
 
     if (task) {
-        const elements = {
-            editTaskName: document.getElementById('editTaskName'),
-            editStartDate: document.getElementById('editStartDate'),
-            editStartTime: document.getElementById('editStartTime'),
-            editEndDate: document.getElementById('editEndDate'),
-            editEndTime: document.getElementById('editEndTime'),
-            editPriority: document.getElementById('editPriority'),
-            editCategory: document.getElementById('editCategory'),
-            editLocation: document.getElementById('editLocation'),
-            editTaskForm: document.getElementById('editTaskForm'),
-            editTaskModal: document.getElementById('editTaskModal'),
-            cancelEditTaskButton: document.getElementById('cancelEditTaskButton')
-        };
+        const editTaskModal = document.getElementById('editTaskModal');
+        const editTaskForm = document.getElementById('editTaskForm');
+        const editTaskTimesList = document.getElementById('editTaskTimesList');
+        
+        document.getElementById('editTaskName').value = task.name;
+        document.getElementById('editPriority').value = task.priority || 'medium';
+        document.getElementById('editCategory').value = task.category || '';
+        document.getElementById('editLocation').value = task.location || '';
 
-        // 检查所有必要的元素是否存在
-        for (const [key, element] of Object.entries(elements)) {
-            if (!element) {
-                console.error(`Element ${key} not found`);
-                UI.showError(`编辑任务表单缺少必要元素: ${key}`);
-                return; // 如果缺少任何元素，直接返回
-            }
-        }
+        // 清空并重新填充时间段列表
+        editTaskTimesList.innerHTML = '';
+        task.times.forEach(time => {
+            const timeSlotDiv = document.createElement('div');
+            timeSlotDiv.className = 'time-slot mb-2';
+            timeSlotDiv.innerHTML = `
+                <input type="date" class="form-control mb-1" value="${time.date}" required>
+                <div class="d-flex">
+                    <input type="time" class="form-control mr-1" value="${time.startTime}" required>
+                    <input type="time" class="form-control ml-1" value="${time.endTime}" required>
+                    <button type="button" class="btn btn-danger ml-2 remove-time-slot">删除</button>
+                </div>
+            `;
+            editTaskTimesList.appendChild(timeSlotDiv);
+        });
 
-        // 设置表单值
-        elements.editTaskName.value = task.name;
-        elements.editStartDate.value = task.startDate || '';
-        elements.editStartTime.value = task.startTime || '';
-        elements.editEndDate.value = task.endDate || '';
-        elements.editEndTime.value = task.endTime || '';
-        elements.editPriority.value = task.priority || 'medium';
-        elements.editCategory.value = task.category || '';
-        elements.editLocation.value = task.location || '';
-
-        elements.editTaskForm.dataset.taskIndex = index;
-        elements.editTaskModal.style.display = 'block';
+        editTaskForm.dataset.taskIndex = index;
+        editTaskModal.style.display = 'block';
     } else {
         console.error("Task not found");
         UI.showError("未找到任务");
