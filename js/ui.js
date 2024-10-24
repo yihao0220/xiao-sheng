@@ -195,7 +195,7 @@ const UI = {
 
     // 改进提醒功能
     showReminder: (title, message) => {
-        // 检查是否为移动设备
+        // 检查是否为移动��备
         const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
         if (isMobile) {
@@ -315,8 +315,8 @@ const UI = {
     },
 
     // 添加时间段输入
-    addTimeSlotInput: () => {
-        const taskTimesList = document.getElementById('taskTimesList');
+    addTimeSlotInput: (containerId) => {
+        const container = document.getElementById(containerId);
         const timeSlotDiv = document.createElement('div');
         timeSlotDiv.className = 'time-slot mb-2';
         timeSlotDiv.innerHTML = `
@@ -327,7 +327,7 @@ const UI = {
                 <button type="button" class="btn btn-danger ml-2 remove-time-slot">删除</button>
             </div>
         `;
-        taskTimesList.appendChild(timeSlotDiv);
+        container.appendChild(timeSlotDiv);
     },
 
     // 创建并显示任务日历
@@ -428,6 +428,32 @@ const UI = {
             const bTime = b.times && b.times[0] && b.times[0].startTime ? b.times[0].startTime : '';
             return aTime.localeCompare(bTime);
         });
+    },
+
+    showEditTaskForm: (index) => {
+        const tasks = Storage.getItem('tasks') || [];
+        const task = tasks[index];
+
+        if (task) {
+            document.getElementById('editTaskName').value = task.name;
+            document.getElementById('editTaskTimesList').innerHTML = '';
+            task.times.forEach(time => {
+                UI.addTimeSlotInput('editTaskTimesList');
+                const timeSlot = document.getElementById('editTaskTimesList').lastElementChild;
+                timeSlot.querySelector('input[type="date"]').value = time.date;
+                timeSlot.querySelectorAll('input[type="time"]')[0].value = time.startTime;
+                timeSlot.querySelectorAll('input[type="time"]')[1].value = time.endTime;
+            });
+            document.getElementById('editPriority').value = task.priority || 'medium';
+            document.getElementById('editCategory').value = task.category || '';
+            document.getElementById('editLocation').value = task.location || '';
+
+            document.getElementById('editTaskForm').dataset.taskIndex = index;
+            document.getElementById('editTaskModal').style.display = 'block';
+        } else {
+            console.error("Task not found");
+            UI.showError("未找到任务");
+        }
     }
 };
 
@@ -461,3 +487,4 @@ function initializeUI() {
 
 // 确保在 DOM 加载完成后执行初始化
 document.addEventListener('DOMContentLoaded', initializeUI);
+
