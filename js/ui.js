@@ -171,7 +171,7 @@ const UI = {
             console.log("No classes to remind for today");
         }
 
-        // 注意：由于新的结构不包��具体日期，我们无法显示昨天的课程复习提醒
+        // 注意：由于新的结构不包含具体日期，我们无法显示昨天的课程复习提醒
         // 如果需要这个功能，可能需重新设计数据结构或存储方式
     },
 
@@ -428,30 +428,6 @@ const UI = {
             const bTime = b.times && b.times[0] && b.times[0].startTime ? b.times[0].startTime : '';
             return aTime.localeCompare(bTime);
         });
-    },
-
-    showEditTaskForm: (index) => {
-        const tasks = Storage.getItem('tasks') || [];
-        const task = tasks[index];
-
-        if (task) {
-            const editTaskModal = document.getElementById('editTaskModal');
-            const editTaskForm = document.getElementById('editTaskForm');
-            
-            document.getElementById('editTaskName').value = task.name;
-            document.getElementById('editStartDate').value = task.times[0]?.date || '';
-            document.getElementById('editStartTime').value = task.times[0]?.startTime || '';
-            document.getElementById('editEndTime').value = task.times[0]?.endTime || '';
-            document.getElementById('editPriority').value = task.priority || 'medium';
-            document.getElementById('editCategory').value = task.category || '';
-            document.getElementById('editLocation').value = task.location || '';
-
-            editTaskForm.dataset.taskIndex = index;
-            editTaskModal.style.display = 'block';
-        } else {
-            console.error("Task not found");
-            UI.showError("未找到任务");
-        }
     }
 };
 
@@ -459,13 +435,29 @@ window.UI = UI;  // 将 UI 对象添加到全局作用域，使其他脚本可�
 
 console.log("UI.js end"); // 输出日志，表示 UI.js 文件执行结束
 
-// 添加事件监听器
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('addTimeSlot').addEventListener('click', UI.addTimeSlotInput);
-    document.getElementById('taskTimesList').addEventListener('click', (e) => {
-        if (e.target.classList.contains('remove-time-slot')) {
-            e.target.closest('.time-slot').remove();
-        }
-    });
-});
+// 将所有的 DOM 操作和事件监听器设置移到这个函数中
+function initializeUI() {
+    const addTimeSlotButton = document.getElementById('addTimeSlot');
+    const taskTimesList = document.getElementById('taskTimesList');
 
+    if (addTimeSlotButton) {
+        addTimeSlotButton.addEventListener('click', UI.addTimeSlotInput);
+    } else {
+        console.error("Add time slot button not found");
+    }
+
+    if (taskTimesList) {
+        taskTimesList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-time-slot')) {
+                e.target.closest('.time-slot').remove();
+            }
+        });
+    } else {
+        console.error("Task times list not found");
+    }
+
+    // 在这里添加其他需要在 DOM 加载后执行的初始化代码
+}
+
+// 确保在 DOM 加载完成后执行初始化
+document.addEventListener('DOMContentLoaded', initializeUI);
