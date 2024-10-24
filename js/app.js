@@ -46,8 +46,13 @@ function initializeApp() {
         // 显示未完成任务提醒
         if (localStorage.getItem('isLoggedIn') === 'true') {
             UI.showUnfinishedTasks();
-            // 添加这一行来确保日历被创建
-            UI.createTaskCalendar(Storage.getItem('tasks') || []);
+            // 确保传入有效的任务数组
+            const tasks = Storage.getItem('tasks') || [];
+            if (Array.isArray(tasks)) {
+                UI.createTaskCalendar(tasks);
+            } else {
+                console.error('Invalid tasks data:', tasks);
+            }
         }
 
         // 设置提醒
@@ -88,7 +93,7 @@ function setupEventListeners(elements) {
     // 登出按钮点击事件
     elements.logoutButton?.addEventListener('click', Auth.logout);
 
-    // 保存周课表按钮点击事件
+    // 保存周课按钮点击事件
     elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
         e.preventDefault();
         TaskManager.addWeeklySchedule();
@@ -186,11 +191,13 @@ function handleAddTask(e) {
     const times = Array.from(timeSlots).map(slot => {
         const [dateInput, startTimeInput, endTimeInput] = slot.querySelectorAll('input');
         return {
-            date: dateInput.value,
+            date: dateInput.value, // 确保这里的日期格式为 "YYYY-MM-DD"
             startTime: startTimeInput.value,
             endTime: endTimeInput.value
         };
     });
+
+    console.log("任务时间段:", times); // 添加这行
 
     if (taskName && times.length > 0) {
         const newTask = { 
