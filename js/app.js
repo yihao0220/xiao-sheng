@@ -41,7 +41,7 @@ function initializeApp() {
         // 初始化应用程序状态
         Auth.checkLoginStatus();
         TaskManager.loadClasses();
-        TaskManager.loadTasks();
+        TaskManager.loadTasks(); // 确保这里调用了 loadTasks
 
         // 显示未完成任务提醒
         if (localStorage.getItem('isLoggedIn') === 'true') {
