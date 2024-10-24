@@ -103,12 +103,15 @@ const UI = {
     showUnfinishedTasks: () => {
         const tasks = Storage.getItem('tasks') || [];
         const unfinishedTasks = tasks.filter(task => !task.completed);
+        console.log("Unfinished tasks:", unfinishedTasks);
         if (unfinishedTasks.length > 0) {
             let message = "您有以下未完成的任务:\n";
             unfinishedTasks.forEach(task => {
                 message += `- ${task.name}\n`;
             });
             UI.showReminder("未完成任务提醒", message);
+        } else {
+            console.log("No unfinished tasks");
         }
     },
 
