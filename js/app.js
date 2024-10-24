@@ -170,6 +170,18 @@ function setupEventListeners(elements) {
     } else {
         console.error("Show login form button not found");
     }
+
+    // 添加时间段按钮点击事件
+    document.getElementById('addTimeSlot')?.addEventListener('click', () => {
+        UI.addTimeSlotInput('taskTimesList');
+    });
+
+    // 删除时间段按钮点击事件（使用事件委托）
+    document.getElementById('taskTimesList')?.addEventListener('click', (e) => {
+        if (e.target.classList.contains('remove-time-slot')) {
+            e.target.closest('.time-slot').remove();
+        }
+    });
 }
 
 // 处理任务列表点击事件
@@ -343,7 +355,7 @@ function setupReminders() {
     }, 3600000); // 3600000 毫秒 = 1 小时
 }
 
-// 添加新函数来设置每日任务清理
+// 添加新函数来设置��日任务清理
 function setDailyTaskCleanup() {
     const now = new Date();
     const night = new Date(
@@ -361,3 +373,4 @@ function setDailyTaskCleanup() {
         setInterval(TaskManager.removeExpiredTasks, 24 * 60 * 60 * 1000);
     }, msToMidnight);
 }
+
