@@ -187,27 +187,30 @@ function handleAddTask(e) {
     e.preventDefault();
     console.log("添加任务按钮被点击");
     const taskName = document.getElementById('taskName').value.trim();
-    const timeSlots = document.querySelectorAll('.time-slot');
-    const times = Array.from(timeSlots).map(slot => {
-        const [dateInput, startTimeInput, endTimeInput] = slot.querySelectorAll('input');
-        return {
-            date: dateInput.value, // 确保这里的日期格式为 "YYYY-MM-DD"
-            startTime: startTimeInput.value,
-            endTime: endTimeInput.value
-        };
-    });
+    const startDate = document.getElementById('taskStartDate').value;
+    const startTime = document.getElementById('taskStartTime').value;
+    const endDate = document.getElementById('taskEndDate').value;
+    const endTime = document.getElementById('taskEndTime').value;
+    const priority = document.getElementById('taskPriority').value;
+    const category = document.getElementById('taskCategory').value;
+    const location = document.getElementById('taskLocation').value;
 
-    console.log("任务时间段:", times); // 添加这行
-
-    if (taskName && times.length > 0) {
+    if (taskName && startDate && startTime) {
         const newTask = { 
             name: taskName, 
-            times: times,
-            priority: document.getElementById('priority').value,
-            category: document.getElementById('category').value,
-            location: document.getElementById('location').value,
+            times: [{
+                date: startDate,
+                startTime: startTime,
+                endTime: endTime
+            }],
+            priority: priority,
+            category: category,
+            location: location,
             completed: false 
         };
+        if (endDate) {
+            newTask.times[0].endDate = endDate;
+        }
         const success = TaskManager.addTask(newTask);
         if (success) {
             document.getElementById('addTaskModal').style.display = 'none';
@@ -216,7 +219,7 @@ function handleAddTask(e) {
             TaskManager.loadTasks();
         }
     } else {
-        UI.showError("请填写任务名称并至少添加一个时间段");
+        UI.showError("请填写任务名称、开始日期和开始时间");
     }
 }
 
