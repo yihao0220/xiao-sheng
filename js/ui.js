@@ -500,51 +500,27 @@ console.log("UI.js end"); // 输出日志，表示 UI.js 文件执行结束
 // 将所有的 DOM 操作和事件监听器设置移到这个函数中
 function initializeUI() {
     console.log("Initializing UI");
-    const addTimeSlotButton = document.getElementById('addTimeSlot');
+    
+    // 移除这里的事件监听器设置
+    // const addTimeSlotButton = document.getElementById('addTimeSlot');
+    // if (addTimeSlotButton) {
+    //     addTimeSlotButton.addEventListener('click', () => {
+    //         console.log("Add time slot button clicked");
+    //         UI.addTimeSlotInput('taskTimesList');
+    //     });
+    // }
+
     const taskTimesList = document.getElementById('taskTimesList');
-
-    if (addTimeSlotButton) {
-        console.log("Add time slot button found");
-        addTimeSlotButton.addEventListener('click', () => {
-            console.log("Add time slot button clicked");
-            UI.addTimeSlotInput('taskTimesList');
-        });
-    } else {
-        console.error("Add time slot button not found");
-    }
-
     if (taskTimesList) {
-        console.log("Task times list found");
         taskTimesList.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-time-slot')) {
                 e.target.closest('.time-slot').remove();
             }
         });
-    } else {
-        console.error("Task times list not found");
     }
 
-    const editAddTimeSlotButton = document.getElementById('editAddTimeSlot');
-    if (editAddTimeSlotButton) {
-        editAddTimeSlotButton.addEventListener('click', UI.addEditTimeSlotInput);
-    } else {
-        console.error("Edit add time slot button not found");
-    }
-
-    const editTaskTimesList = document.getElementById('editTaskTimesList');
-    if (editTaskTimesList) {
-        editTaskTimesList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-time-slot')) {
-                e.target.closest('.time-slot').remove();
-            }
-        });
-    } else {
-        console.error("Edit task times list not found");
-    }
-
-    // 在这里添加其他需要在 DOM 加载后执行的初始化代码
+    // 其他初始化代码...
 }
 
 // 确保在 DOM 加载完成后执行初始化
 document.addEventListener('DOMContentLoaded', initializeUI);
-
