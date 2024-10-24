@@ -11,6 +11,11 @@ const TaskManager = {
             if (!task.times || task.times.length === 0) {
                 throw new Error("至少需要添加一个时间段");
             }
+            // 确保每个时间段都有有效的日期和时间
+            task.times = task.times.filter(time => time.date && time.startTime);
+            if (task.times.length === 0) {
+                throw new Error("没有有效的时间段");
+            }
             tasks.push(task);
             Storage.setItem('tasks', tasks);
             console.log("TaskManager: 任务已添加到存储，总任务数:", tasks.length);
@@ -84,7 +89,6 @@ const TaskManager = {
             }
             
             UI.updateTaskList(tasks);
-            // 添加这一行来确保日历被更新
             UI.createTaskCalendar(tasks);
             console.log("Task list and calendar updated, total tasks:", tasks.length);
         } catch (error) {
@@ -118,7 +122,7 @@ const TaskManager = {
     // 添加课程信息
     addClass: (classInfo) => {
         try {
-            console.log("Adding class:", classInfo); // 日志：正在添加课程
+            console.log("Adding class:", classInfo); // 日志：正在加课程
             const classes = Storage.getItem('classes') || []; // 从存储中取课程数组
             classes.push(classInfo); // 添加新课程
             Storage.setItem('classes', classes); // 保存更新后的课程数组
@@ -256,7 +260,7 @@ const TaskManager = {
         const semesterClasses = []; // 初始化学期课程数组
 
         for (let date = new Date(semesterStart); date <= semesterEnd; date.setDate(date.getDate() + 1)) {
-            const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'}); // 获取星期几（中文）
+            const dayOfWeek = date.toLocaleString('zh-CN', {weekday: 'long'}); // 获取星几（中文）
             const dayClasses = weeklySchedule.filter(cls => cls.day === dayOfWeek); // 筛选出当天的课程
 
             dayClasses.forEach(cls => {
@@ -319,5 +323,5 @@ setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 // 将 TaskManager 对象添加到全局作用域
 window.TaskManager = TaskManager;
 
-// 注意：这里不需要额外的闭合大括号和分号，因为它们已经在对象定义的末尾了
+// 注意：这里不需要额外的闭合大括号和分号，因为它们已经在象定义的末尾了
 
