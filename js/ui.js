@@ -332,6 +332,7 @@ const UI = {
 
     // 创建并显示任务日历
     createTaskCalendar: (tasks) => {
+        console.log("Creating task calendar with tasks:", tasks);
         const calendarContainer = document.getElementById('taskCalendar');
         if (!calendarContainer) {
             console.error("Calendar container not found");
