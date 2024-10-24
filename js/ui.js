@@ -41,13 +41,10 @@ const UI = {
             
             let taskInfo = `<strong>${task.name}</strong>`;
             if (task.times && task.times.length > 0) {
-                const time = task.times[0];
-                taskInfo += `<br>开始：${time.date} ${time.startTime}`;
-                if (time.endDate && time.endTime) {
-                    taskInfo += `<br>结束：${time.endDate} ${time.endTime}`;
-                } else if (time.endTime) {
-                    taskInfo += `<br>结束时间：${time.endTime}`;
-                }
+                taskInfo += '<br>时间段:';
+                task.times.forEach(time => {
+                    taskInfo += `<br>${time.date} ${time.startTime}-${time.endTime}`;
+                });
             }
             if (task.priority) {
                 taskInfo += `<br>优先级: ${task.priority}`;
@@ -72,7 +69,7 @@ const UI = {
         });
         console.log("UI: Task list updated");
 
-        // 更新日历
+        // 添加更新日历的调用
         UI.createTaskCalendar(tasks);
     },
 
@@ -174,7 +171,7 @@ const UI = {
             console.log("No classes to remind for today");
         }
 
-        // 注意：由于新的结构不包含具体日期，我们无法显示昨天的课程复习提醒
+        // 注意：由于新的结构不包��具体日期，我们无法显示昨天的课程复习提醒
         // 如果需要这个功能，可能需重新设计数据结构或存储方式
     },
 
@@ -431,6 +428,30 @@ const UI = {
             const bTime = b.times && b.times[0] && b.times[0].startTime ? b.times[0].startTime : '';
             return aTime.localeCompare(bTime);
         });
+    },
+
+    showEditTaskForm: (index) => {
+        const tasks = Storage.getItem('tasks') || [];
+        const task = tasks[index];
+
+        if (task) {
+            const editTaskModal = document.getElementById('editTaskModal');
+            const editTaskForm = document.getElementById('editTaskForm');
+            
+            document.getElementById('editTaskName').value = task.name;
+            document.getElementById('editStartDate').value = task.times[0]?.date || '';
+            document.getElementById('editStartTime').value = task.times[0]?.startTime || '';
+            document.getElementById('editEndTime').value = task.times[0]?.endTime || '';
+            document.getElementById('editPriority').value = task.priority || 'medium';
+            document.getElementById('editCategory').value = task.category || '';
+            document.getElementById('editLocation').value = task.location || '';
+
+            editTaskForm.dataset.taskIndex = index;
+            editTaskModal.style.display = 'block';
+        } else {
+            console.error("Task not found");
+            UI.showError("未找到任务");
+        }
     }
 };
 
