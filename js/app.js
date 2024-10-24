@@ -199,9 +199,15 @@ function setupEventListeners(elements) {
     }
 
     // 添加时间段按钮点击事件
-    document.getElementById('addTimeSlot')?.addEventListener('click', () => {
-        UI.addTimeSlotInput('taskTimesList');
-    });
+    const addTimeSlotButton = document.getElementById('addTimeSlot');
+    if (addTimeSlotButton) {
+        addTimeSlotButton.addEventListener('click', () => {
+            console.log("Add time slot button clicked");
+            UI.addTimeSlotInput('taskTimesList');
+        });
+    } else {
+        console.error("Add time slot button not found");
+    }
 
     // 删除时间段按钮点击事件（使用事件委托）
     document.getElementById('taskTimesList')?.addEventListener('click', (e) => {
