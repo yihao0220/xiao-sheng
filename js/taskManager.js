@@ -8,18 +8,13 @@ const TaskManager = {
             if (!task.name) {
                 throw new Error("任务名称不能为空");
             }
-            if (!task.times || task.times.length === 0) {
-                throw new Error("至少需要添加一个时间段");
-            }
-            // 确保每个时间段都有有效的日期和时间
-            task.times = task.times.filter(time => time.date && time.startTime);
-            if (task.times.length === 0) {
-                throw new Error("没有有效的时间段");
+            if (!task.times || task.times.length === 0 || !task.times[0].date || !task.times[0].startTime) {
+                throw new Error("任务必须包含有效的开始日期和时间");
             }
             tasks.push(task);
             Storage.setItem('tasks', tasks);
             console.log("TaskManager: 任务已添加到存储，总任务数:", tasks.length);
-            console.log("当前所有任务:", tasks); // 添加这行
+            console.log("当前所有任务:", tasks);
             return true;
         } catch (error) {
             console.error("TaskManager: 添加任务时出错:", error.message);
@@ -35,6 +30,12 @@ const TaskManager = {
             const tasks = Storage.getItem('tasks') || [];
             if (index < 0 || index >= tasks.length) {
                 throw new Error("无效的任务索引");
+            }
+            if (!updatedTask.name) {
+                throw new Error("任务名称不能为空");
+            }
+            if (!updatedTask.times || updatedTask.times.length === 0 || !updatedTask.times[0].date || !updatedTask.times[0].startTime) {
+                throw new Error("任务必须包含有效的开始日期和时间");
             }
             tasks[index] = updatedTask;
             Storage.setItem('tasks', tasks);
@@ -202,7 +203,7 @@ const TaskManager = {
                 classes.push({
                     name: match[1].trim(), // 课程名
                     day: dayMap[match[2]] || match[2], // 星期
-                    startTime: match[3], // 开��时
+                    startTime: match[3], // 开时
                     endTime: match[4], // 结束时间
                     location: (match[5] || '').trim() // 地点（如果有）
                 });
