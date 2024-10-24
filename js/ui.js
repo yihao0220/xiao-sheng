@@ -379,7 +379,11 @@ const UI = {
                         <td>
                             <div class="calendar-day">${dayCount}</div>
                             <div class="calendar-tasks">
-                                ${dayTasks.map(task => `<div class="calendar-task">${task.name}</div>`).join('')}
+                                ${dayTasks.map(task => `
+                                    <div class="calendar-task" title="${task.name}">
+                                        ${task.times[0].startTime} ${task.name}
+                                    </div>
+                                `).join('')}
                             </div>
                         </td>
                     `;
@@ -396,16 +400,29 @@ const UI = {
 
     // 获取指定日期的任务
     getTasksForDay: (tasks, date) => {
+        if (!Array.isArray(tasks)) {
+            console.error('Tasks is not an array:', tasks);
+            return [];
+        }
         return tasks.filter(task => {
+            if (!task || !Array.isArray(task.times)) {
+                console.warn('Invalid task structure:', task);
+                return false;
+            }
             return task.times.some(time => {
+                if (!time || !time.date) {
+                    console.warn('Invalid time structure:', time);
+                    return false;
+                }
                 const taskDate = new Date(time.date);
                 return taskDate.getFullYear() === date.getFullYear() &&
                        taskDate.getMonth() === date.getMonth() &&
                        taskDate.getDate() === date.getDate();
             });
         }).sort((a, b) => {
-            const aTime = a.times[0].startTime;
-            const bTime = b.times[0].startTime;
+            // 确保任务有时间信息
+            const aTime = a.times && a.times[0] ? a.times[0].startTime : '';
+            const bTime = b.times && b.times[0] ? b.times[0].startTime : '';
             return aTime.localeCompare(bTime);
         });
     }
