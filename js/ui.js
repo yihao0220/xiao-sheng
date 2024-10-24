@@ -381,7 +381,7 @@ const UI = {
                             <div class="calendar-tasks">
                                 ${dayTasks.map(task => `
                                     <div class="calendar-task" title="${task.name}">
-                                        ${task.times[0].startTime} ${task.name}
+                                        ${task.times && task.times[0] && task.times[0].startTime ? task.times[0].startTime : ''} ${task.name}
                                     </div>
                                 `).join('')}
                             </div>
@@ -421,8 +421,8 @@ const UI = {
             });
         }).sort((a, b) => {
             // 确保任务有时间信息
-            const aTime = a.times && a.times[0] ? a.times[0].startTime : '';
-            const bTime = b.times && b.times[0] ? b.times[0].startTime : '';
+            const aTime = a.times && a.times[0] && a.times[0].startTime ? a.times[0].startTime : '';
+            const bTime = b.times && b.times[0] && b.times[0].startTime ? b.times[0].startTime : '';
             return aTime.localeCompare(bTime);
         });
     }
