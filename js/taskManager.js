@@ -39,19 +39,13 @@ const TaskManager = {
             if (!updatedTask.name) {
                 throw new Error("任务名称不能为空");
             }
-            // 确保更新后的任务包含所有必要的字段
-            tasks[index] = {
-                ...tasks[index],  // 保留原有任务的其他字段
-                ...updatedTask,   // 用更新的字段覆盖原有字段
-                times: [{
-                    date: updatedTask.startDate,
-                    startTime: updatedTask.startTime,
-                    endTime: updatedTask.endTime
-                }]
-            };
+            if (!updatedTask.times || updatedTask.times.length === 0) {
+                throw new Error("至少需要一个时间段");
+            }
+            tasks[index] = updatedTask;
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
-            console.log("TaskManager: 任务编辑成功，更新后的任务:", tasks[index]);
+            console.log("TaskManager: 任务编辑成功");
             return true;
         } catch (error) {
             console.error("TaskManager: 编辑任务时出错:", error.message);
