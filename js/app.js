@@ -190,17 +190,15 @@ function handleAddTask(e) {
     e.preventDefault();
     console.log("添加任务按钮被点击");
     const taskName = document.getElementById('taskName').value.trim();
-    const timeSlots = document.querySelectorAll('.time-slot');
+    const timeSlots = document.querySelectorAll('#taskTimesList .time-slot');
     const times = Array.from(timeSlots).map(slot => {
         const [dateInput, startTimeInput, endTimeInput] = slot.querySelectorAll('input');
         return {
-            date: dateInput.value, // 确保这里的日期格式为 "YYYY-MM-DD"
+            date: dateInput.value,
             startTime: startTimeInput.value,
             endTime: endTimeInput.value
         };
     });
-
-    console.log("任务时间段:", times); // 添加这行
 
     if (taskName && times.length > 0) {
         const newTask = { 
@@ -271,23 +269,32 @@ function showEditTaskForm(index) {
 }
 
 // 为保存编辑任务按钮添加点击事件监听器
-document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
+document.getElementById('saveEditTaskButton').addEventListener('click', () => {
     const taskIndex = document.getElementById('editTaskForm').dataset.taskIndex;
+    const timeSlots = document.querySelectorAll('#editTaskTimesList .time-slot');
+    const times = Array.from(timeSlots).map(slot => {
+        const [dateInput, startTimeInput, endTimeInput] = slot.querySelectorAll('input');
+        return {
+            date: dateInput.value,
+            startTime: startTimeInput.value,
+            endTime: endTimeInput.value
+        };
+    });
+
     const updatedTask = {
         name: document.getElementById('editTaskName').value,
-        startDate: document.getElementById('editStartDate').value,
-        startTime: document.getElementById('editStartTime').value,
-        endDate: document.getElementById('editEndDate').value,
-        endTime: document.getElementById('editEndTime').value,
+        times: times,
         priority: document.getElementById('editPriority').value,
         category: document.getElementById('editCategory').value,
         location: document.getElementById('editLocation').value,
         completed: false
     };
 
-    TaskManager.editTask(taskIndex, updatedTask);
-    document.getElementById('editTaskModal').style.display = 'none';
-    UI.showSuccess("任务已更新");
+    if (TaskManager.editTask(taskIndex, updatedTask)) {
+        document.getElementById('editTaskModal').style.display = 'none';
+        UI.showSuccess("任务已更新");
+        TaskManager.loadTasks();
+    }
 });
 
 function generateWeeklyScheduleTemplate() {
