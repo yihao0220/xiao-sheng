@@ -41,10 +41,13 @@ const UI = {
             
             let taskInfo = `<strong>${task.name}</strong>`;
             if (task.times && task.times.length > 0) {
-                taskInfo += '<br>时间段:';
-                task.times.forEach(time => {
-                    taskInfo += `<br>${time.date} ${time.startTime}-${time.endTime}`;
-                });
+                const time = task.times[0];
+                taskInfo += `<br>开始：${time.date} ${time.startTime}`;
+                if (time.endDate && time.endTime) {
+                    taskInfo += `<br>结束：${time.endDate} ${time.endTime}`;
+                } else if (time.endTime) {
+                    taskInfo += `<br>结束时间：${time.endTime}`;
+                }
             }
             if (task.priority) {
                 taskInfo += `<br>优先级: ${task.priority}`;
@@ -69,7 +72,7 @@ const UI = {
         });
         console.log("UI: Task list updated");
 
-        // 添加更新日历的调用
+        // 更新日历
         UI.createTaskCalendar(tasks);
     },
 
