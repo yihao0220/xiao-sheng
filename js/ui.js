@@ -186,11 +186,19 @@ const UI = {
 
     // 清空任务表单
     clearTaskForm: () => {
-        document.getElementById('taskName').value = '';
-        document.getElementById('taskTimesList').innerHTML = '';
-        document.getElementById('priority').value = 'medium';
-        document.getElementById('category').value = '';
-        document.getElementById('location').value = '';
+        const taskName = document.getElementById('taskName');
+        const taskTimesList = document.getElementById('taskTimesList');
+        const priority = document.getElementById('priority');
+        const category = document.getElementById('category');
+        const location = document.getElementById('location');
+
+        if (taskName) taskName.value = '';
+        if (taskTimesList) taskTimesList.innerHTML = '';
+        if (priority) priority.value = 'medium';
+        if (category) category.value = '';
+        if (location) location.value = '';
+
+        console.log('Task form cleared');
     },
 
     // 改进提醒功能
