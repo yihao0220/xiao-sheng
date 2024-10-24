@@ -84,7 +84,9 @@ const TaskManager = {
             }
             
             UI.updateTaskList(tasks);
-            console.log("Task list updated, total tasks:", tasks.length);
+            // 添加这一行来确保日历被更新
+            UI.createTaskCalendar(tasks);
+            console.log("Task list and calendar updated, total tasks:", tasks.length);
         } catch (error) {
             console.error("Error loading tasks:", error);
             UI.showError("加载任务列表时出错，请稍后再试。");
@@ -318,3 +320,4 @@ setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 window.TaskManager = TaskManager;
 
 // 注意：这里不需要额外的闭合大括号和分号，因为它们已经在对象定义的末尾了
+
