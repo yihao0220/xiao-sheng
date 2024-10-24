@@ -46,6 +46,8 @@ function initializeApp() {
         // 显示未完成任务提醒
         if (localStorage.getItem('isLoggedIn') === 'true') {
             UI.showUnfinishedTasks();
+            // 添加这一行来确保日历被创建
+            UI.createTaskCalendar(Storage.getItem('tasks') || []);
         }
 
         // 设置提醒
