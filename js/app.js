@@ -123,6 +123,43 @@ function setupEventListeners(elements) {
     }
 
     // 设置其他事件监听器...
+
+    // 在 setupEventListeners 函数中添加
+    const registerForm = document.getElementById('signupForm');
+    if (registerForm) {
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
+            Auth.register(username, password);
+        });
+    } else {
+        console.error("Register form not found");
+    }
+
+    // 添加显示注册表单的事件监听器
+    const showRegisterFormButton = document.getElementById('showRegisterForm');
+    if (showRegisterFormButton) {
+        showRegisterFormButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            UI.hideElement('authForm');
+            UI.showElement('registerForm');
+        });
+    } else {
+        console.error("Show register form button not found");
+    }
+
+    // 添加返回登录表单的事件监听器
+    const showLoginFormButton = document.getElementById('showLoginForm');
+    if (showLoginFormButton) {
+        showLoginFormButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            UI.hideElement('registerForm');
+            UI.showElement('authForm');
+        });
+    } else {
+        console.error("Show login form button not found");
+    }
 }
 
 // 处理任务列表点击事件
