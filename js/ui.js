@@ -233,7 +233,7 @@ const UI = {
 
     // 添加新的函数来处理移动设备的提醒
     showMobileReminder: (title, message) => {
-        // 创建提醒容器
+        // 创建提���容器
         const reminderContainer = document.createElement('div');
         reminderContainer.className = 'mobile-reminder';
         
@@ -324,7 +324,12 @@ const UI = {
 
     // 添加时间段输入
     addTimeSlotInput: (containerId) => {
+        console.log("Attempting to add time slot to container:", containerId);
         const container = document.getElementById(containerId);
+        if (!container) {
+            console.error(`Container with id '${containerId}' not found`);
+            return;
+        }
         const timeSlotDiv = document.createElement('div');
         timeSlotDiv.className = 'time-slot mb-2';
         timeSlotDiv.innerHTML = `
@@ -336,6 +341,7 @@ const UI = {
             </div>
         `;
         container.appendChild(timeSlotDiv);
+        console.log("Time slot added successfully");
     },
 
     // 创建并显示任务日历
@@ -471,16 +477,22 @@ console.log("UI.js end"); // 输出日志，表示 UI.js 文件执行结束
 
 // 将所有的 DOM 操作和事件监听器设置移到这个函数中
 function initializeUI() {
+    console.log("Initializing UI");
     const addTimeSlotButton = document.getElementById('addTimeSlot');
     const taskTimesList = document.getElementById('taskTimesList');
 
     if (addTimeSlotButton) {
-        addTimeSlotButton.addEventListener('click', UI.addTimeSlotInput);
+        console.log("Add time slot button found");
+        addTimeSlotButton.addEventListener('click', () => {
+            console.log("Add time slot button clicked");
+            UI.addTimeSlotInput('taskTimesList');
+        });
     } else {
         console.error("Add time slot button not found");
     }
 
     if (taskTimesList) {
+        console.log("Task times list found");
         taskTimesList.addEventListener('click', (e) => {
             if (e.target.classList.contains('remove-time-slot')) {
                 e.target.closest('.time-slot').remove();
@@ -495,4 +507,3 @@ function initializeUI() {
 
 // 确保在 DOM 加载完成后执行初始化
 document.addEventListener('DOMContentLoaded', initializeUI);
-
