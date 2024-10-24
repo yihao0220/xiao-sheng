@@ -233,7 +233,7 @@ const UI = {
 
     // 添加新的函数来处理移动设备的提醒
     showMobileReminder: (title, message) => {
-        // 创建提���容器
+        // 创建提醒容器
         const reminderContainer = document.createElement('div');
         reminderContainer.className = 'mobile-reminder';
         
@@ -468,6 +468,25 @@ const UI = {
             console.error("Task not found");
             UI.showError("未找到任务");
         }
+    },
+
+    addEditTimeSlotInput: () => {
+        const editTaskTimesList = document.getElementById('editTaskTimesList');
+        if (editTaskTimesList) {
+            const timeSlotDiv = document.createElement('div');
+            timeSlotDiv.className = 'time-slot mb-2';
+            timeSlotDiv.innerHTML = `
+                <input type="date" class="form-control mb-1" required>
+                <div class="d-flex">
+                    <input type="time" class="form-control mr-1" required>
+                    <input type="time" class="form-control ml-1" required>
+                    <button type="button" class="btn btn-danger ml-2 remove-time-slot">删除</button>
+                </div>
+            `;
+            editTaskTimesList.appendChild(timeSlotDiv);
+        } else {
+            console.error("Edit task times list not found");
+        }
     }
 };
 
@@ -502,8 +521,27 @@ function initializeUI() {
         console.error("Task times list not found");
     }
 
+    const editAddTimeSlotButton = document.getElementById('editAddTimeSlot');
+    if (editAddTimeSlotButton) {
+        editAddTimeSlotButton.addEventListener('click', UI.addEditTimeSlotInput);
+    } else {
+        console.error("Edit add time slot button not found");
+    }
+
+    const editTaskTimesList = document.getElementById('editTaskTimesList');
+    if (editTaskTimesList) {
+        editTaskTimesList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-time-slot')) {
+                e.target.closest('.time-slot').remove();
+            }
+        });
+    } else {
+        console.error("Edit task times list not found");
+    }
+
     // 在这里添加其他需要在 DOM 加载后执行的初始化代码
 }
 
 // 确保在 DOM 加载完成后执行初始化
 document.addEventListener('DOMContentLoaded', initializeUI);
+
