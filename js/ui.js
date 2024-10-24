@@ -68,6 +68,9 @@ const UI = {
             allTasks.appendChild(li);
         });
         console.log("UI: Task list updated");
+
+        // 添加更新日历的调用
+        UI.createTaskCalendar(tasks);
     },
 
     // 显示错误消息
@@ -325,6 +328,85 @@ const UI = {
             </div>
         `;
         taskTimesList.appendChild(timeSlotDiv);
+    },
+
+    // 创建并显示任务日历
+    createTaskCalendar: (tasks) => {
+        const calendarContainer = document.getElementById('taskCalendar');
+        if (!calendarContainer) {
+            console.error("Calendar container not found");
+            return;
+        }
+
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth();
+        const currentYear = currentDate.getFullYear();
+
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay();
+
+        let calendarHTML = `
+            <table class="calendar">
+                <thead>
+                    <tr>
+                        <th colspan="7">${currentYear}年${currentMonth + 1}月</th>
+                    </tr>
+                    <tr>
+                        <th>日</th>
+                        <th>一</th>
+                        <th>二</th>
+                        <th>三</th>
+                        <th>四</th>
+                        <th>五</th>
+                        <th>六</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        let dayCount = 1;
+        for (let i = 0; i < 6; i++) {
+            calendarHTML += '<tr>';
+            for (let j = 0; j < 7; j++) {
+                if (i === 0 && j < firstDayOfMonth) {
+                    calendarHTML += '<td></td>';
+                } else if (dayCount > daysInMonth) {
+                    calendarHTML += '<td></td>';
+                } else {
+                    const dayTasks = UI.getTasksForDay(tasks, new Date(currentYear, currentMonth, dayCount));
+                    calendarHTML += `
+                        <td>
+                            <div class="calendar-day">${dayCount}</div>
+                            <div class="calendar-tasks">
+                                ${dayTasks.map(task => `<div class="calendar-task">${task.name}</div>`).join('')}
+                            </div>
+                        </td>
+                    `;
+                    dayCount++;
+                }
+            }
+            calendarHTML += '</tr>';
+            if (dayCount > daysInMonth) break;
+        }
+
+        calendarHTML += '</tbody></table>';
+        calendarContainer.innerHTML = calendarHTML;
+    },
+
+    // 获取指定日期的任务
+    getTasksForDay: (tasks, date) => {
+        return tasks.filter(task => {
+            return task.times.some(time => {
+                const taskDate = new Date(time.date);
+                return taskDate.getFullYear() === date.getFullYear() &&
+                       taskDate.getMonth() === date.getMonth() &&
+                       taskDate.getDate() === date.getDate();
+            });
+        }).sort((a, b) => {
+            const aTime = a.times[0].startTime;
+            const bTime = b.times[0].startTime;
+            return aTime.localeCompare(bTime);
+        });
     }
 };
 
