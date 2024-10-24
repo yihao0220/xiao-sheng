@@ -8,13 +8,18 @@ const TaskManager = {
             if (!task.name) {
                 throw new Error("任务名称不能为空");
             }
-            if (!task.times || task.times.length === 0 || !task.times[0].date || !task.times[0].startTime) {
-                throw new Error("任务必须包含有效的开始日期和时间");
+            if (!task.times || task.times.length === 0) {
+                throw new Error("至少需要添加一个时间段");
+            }
+            // 确保每个时间段都有有效的日期和时间
+            task.times = task.times.filter(time => time.date && time.startTime);
+            if (task.times.length === 0) {
+                throw new Error("没有有效的时间段");
             }
             tasks.push(task);
             Storage.setItem('tasks', tasks);
             console.log("TaskManager: 任务已添加到存储，总任务数:", tasks.length);
-            console.log("当前所有任务:", tasks);
+            console.log("当前所有任务:", tasks); // 添加这行
             return true;
         } catch (error) {
             console.error("TaskManager: 添加任务时出错:", error.message);
@@ -34,13 +39,19 @@ const TaskManager = {
             if (!updatedTask.name) {
                 throw new Error("任务名称不能为空");
             }
-            if (!updatedTask.times || updatedTask.times.length === 0 || !updatedTask.times[0].date || !updatedTask.times[0].startTime) {
-                throw new Error("任务必须包含有效的开始日期和时间");
-            }
-            tasks[index] = updatedTask;
+            // 确保更新后的任务包含所有必要的字段
+            tasks[index] = {
+                ...tasks[index],  // 保留原有任务的其他字段
+                ...updatedTask,   // 用更新的字段覆盖原有字段
+                times: [{
+                    date: updatedTask.startDate,
+                    startTime: updatedTask.startTime,
+                    endTime: updatedTask.endTime
+                }]
+            };
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
-            console.log("TaskManager: 任务编辑成功");
+            console.log("TaskManager: 任务编辑成功，更新后的任务:", tasks[index]);
             return true;
         } catch (error) {
             console.error("TaskManager: 编辑任务时出错:", error.message);
