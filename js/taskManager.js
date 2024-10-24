@@ -19,6 +19,7 @@ const TaskManager = {
             tasks.push(task);
             Storage.setItem('tasks', tasks);
             console.log("TaskManager: 任务已添加到存储，总任务数:", tasks.length);
+            console.log("当前所有任务:", tasks); // 添加这行
             return true;
         } catch (error) {
             console.error("TaskManager: 添加任务时出错:", error.message);
@@ -201,7 +202,7 @@ const TaskManager = {
                 classes.push({
                     name: match[1].trim(), // 课程名
                     day: dayMap[match[2]] || match[2], // 星期
-                    startTime: match[3], // 开始时
+                    startTime: match[3], // 开��时
                     endTime: match[4], // 结束时间
                     location: (match[5] || '').trim() // 地点（如果有）
                 });
