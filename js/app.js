@@ -187,30 +187,27 @@ function handleAddTask(e) {
     e.preventDefault();
     console.log("添加任务按钮被点击");
     const taskName = document.getElementById('taskName').value.trim();
-    const startDate = document.getElementById('taskStartDate').value;
-    const startTime = document.getElementById('taskStartTime').value;
-    const endDate = document.getElementById('taskEndDate').value;
-    const endTime = document.getElementById('taskEndTime').value;
-    const priority = document.getElementById('taskPriority').value;
-    const category = document.getElementById('taskCategory').value;
-    const location = document.getElementById('taskLocation').value;
+    const timeSlots = document.querySelectorAll('.time-slot');
+    const times = Array.from(timeSlots).map(slot => {
+        const [dateInput, startTimeInput, endTimeInput] = slot.querySelectorAll('input');
+        return {
+            date: dateInput.value, // 确保这里的日期格式为 "YYYY-MM-DD"
+            startTime: startTimeInput.value,
+            endTime: endTimeInput.value
+        };
+    });
 
-    if (taskName && startDate && startTime) {
+    console.log("任务时间段:", times); // 添加这行
+
+    if (taskName && times.length > 0) {
         const newTask = { 
             name: taskName, 
-            times: [{
-                date: startDate,
-                startTime: startTime,
-                endTime: endTime
-            }],
-            priority: priority,
-            category: category,
-            location: location,
+            times: times,
+            priority: document.getElementById('priority').value,
+            category: document.getElementById('category').value,
+            location: document.getElementById('location').value,
             completed: false 
         };
-        if (endDate) {
-            newTask.times[0].endDate = endDate;
-        }
         const success = TaskManager.addTask(newTask);
         if (success) {
             document.getElementById('addTaskModal').style.display = 'none';
@@ -219,7 +216,7 @@ function handleAddTask(e) {
             TaskManager.loadTasks();
         }
     } else {
-        UI.showError("请填写任务名称、开始日期和开始时间");
+        UI.showError("请填写任务名称并至少添加一个时间段");
     }
 }
 
@@ -272,22 +269,22 @@ function showEditTaskForm(index) {
 
 // 为保存编辑任务按钮添加点击事件监听器
 document.getElementById('saveEditTaskButton')?.addEventListener('click', () => {
-    const taskIndex = document.getElementById('editTaskForm').dataset.taskIndex;
+    const taskIndex = parseInt(document.getElementById('editTaskForm').dataset.taskIndex);
     const updatedTask = {
         name: document.getElementById('editTaskName').value,
         startDate: document.getElementById('editStartDate').value,
         startTime: document.getElementById('editStartTime').value,
-        endDate: document.getElementById('editEndDate').value,
         endTime: document.getElementById('editEndTime').value,
         priority: document.getElementById('editPriority').value,
         category: document.getElementById('editCategory').value,
         location: document.getElementById('editLocation').value,
-        completed: false
     };
 
-    TaskManager.editTask(taskIndex, updatedTask);
-    document.getElementById('editTaskModal').style.display = 'none';
-    UI.showSuccess("任务已更新");
+    if (TaskManager.editTask(taskIndex, updatedTask)) {
+        document.getElementById('editTaskModal').style.display = 'none';
+        UI.showSuccess("任务已更新");
+        TaskManager.loadTasks(); // 重新加载任务列表和日历
+    }
 });
 
 function generateWeeklyScheduleTemplate() {
@@ -357,3 +354,4 @@ function setDailyTaskCleanup() {
         setInterval(TaskManager.removeExpiredTasks, 24 * 60 * 60 * 1000);
     }, msToMidnight);
 }
+
