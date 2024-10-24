@@ -374,7 +374,9 @@ const UI = {
                 } else if (dayCount > daysInMonth) {
                     calendarHTML += '<td></td>';
                 } else {
-                    const dayTasks = UI.getTasksForDay(tasks, new Date(currentYear, currentMonth, dayCount));
+                    const currentDate = new Date(currentYear, currentMonth, dayCount);
+                    const dayTasks = UI.getTasksForDay(tasks, currentDate);
+                    console.log(`Tasks for ${currentDate.toDateString()}:`, dayTasks); // 添加这行
                     calendarHTML += `
                         <td>
                             <div class="calendar-day">${dayCount}</div>
@@ -404,7 +406,7 @@ const UI = {
             console.error('Tasks is not an array:', tasks);
             return [];
         }
-        return tasks.filter(task => {
+        const tasksForDay = tasks.filter(task => {
             if (!task || !Array.isArray(task.times)) {
                 console.warn('Invalid task structure:', task);
                 return false;
@@ -419,8 +421,9 @@ const UI = {
                        taskDate.getMonth() === date.getMonth() &&
                        taskDate.getDate() === date.getDate();
             });
-        }).sort((a, b) => {
-            // 确保任务有时间信息
+        });
+        console.log(`Tasks for ${date.toDateString()}:`, tasksForDay); // 添加这行
+        return tasksForDay.sort((a, b) => {
             const aTime = a.times && a.times[0] && a.times[0].startTime ? a.times[0].startTime : '';
             const bTime = b.times && b.times[0] && b.times[0].startTime ? b.times[0].startTime : '';
             return aTime.localeCompare(bTime);
@@ -441,3 +444,4 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
