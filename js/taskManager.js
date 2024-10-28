@@ -57,7 +57,7 @@ const TaskManager = {
     // 删除任务
     deleteTask: (index) => {
         try {
-            console.log("TaskManager: 正在��除索引为", index, "的任务");
+            console.log("TaskManager: 正在除索引为", index, "的任务");
             const tasks = Storage.getItem('tasks') || [];
             if (index < 0 || index >= tasks.length) {
                 throw new Error("无效的任务索引");
@@ -177,7 +177,7 @@ const TaskManager = {
                     console.log("Recognized text:", text); // 日志：显示识别出的文字
                     const classes = TaskManager.parseSchedule(text); // 解析识别出的文字
                     Storage.setItem('classes', classes); // 保存解析后的课程信息
-                    UI.updateClassList(classes); // 更新UI显示的课��列表
+                    UI.updateClassList(classes); // 更新UI显示的课列表
                     resolve(classes); // 析成功，返回课程数组
                 })
                 .catch((error) => {
