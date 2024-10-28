@@ -62,6 +62,11 @@ function initializeApp() {
 
         // 设置定时器，每天凌晨执行一次删除过期任务的操作
         setDailyTaskCleanup();
+
+        // 启动课程提醒
+        if (localStorage.getItem('isLoggedIn') === 'true') {
+            TaskManager.startClassReminders();
+        }
     } catch (error) {
         console.error("应用程序初始化过程中出错:", error);
         alert("初始化应用时出错，请刷新页面或联系管理员。");
@@ -334,58 +339,29 @@ document.getElementById('saveEditTaskButton').addEventListener('click', () => {
     }
 });
 
-// 修改 generateWeeklyScheduleTemplate 函数
 function generateWeeklyScheduleTemplate() {
-    const defaultTimeSlots = [
+    const timeSlots = [
         "8:00 - 9:40", "10:00 - 11:40", "14:00 - 15:40", "16:00 - 17:40", "19:00 - 20:40"
     ];
     const tbody = document.querySelector("#weeklyScheduleTemplate tbody");
     if (!tbody) {
         console.error("Weekly schedule template tbody not found");
-        return;
+        return; // 如果找不到 tbody，直接返回
     }
     tbody.innerHTML = '';
 
-    // 添加"添加新行"按钮
-    const addRowButton = document.createElement('button');
-    addRowButton.className = 'btn btn-secondary mb-3';
-    addRowButton.innerHTML = '<i class="fas fa-plus"></i> 添加新时间段';
-    addRowButton.onclick = () => addNewTimeRow(); // 修改这里，不传参数
-    tbody.parentElement.parentElement.insertBefore(addRowButton, tbody.parentElement);
-
-    // 生成初始时间段
-    defaultTimeSlots.forEach((slot) => {
-        const [startTime, endTime] = slot.split(" - ");
-        addNewTimeRow(startTime, endTime);
-    });
-
-    // 修改添加新时间行的函数
-    function addNewTimeRow(defaultStartTime = '', defaultEndTime = '') {
+    timeSlots.forEach((slot, index) => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td>
-                <input type="time" class="form-control course-time-start" value="${defaultStartTime}" required>
-                -
-                <input type="time" class="form-control course-time-end" value="${defaultEndTime}" required>
-            </td>
+            <td>${slot}</td>
             ${Array(5).fill().map((_, dayIndex) => `
                 <td>
-                    <input type="text" class="form-control course-input" data-day="${dayIndex}">
+                    <input type="text" class="form-control course-input" data-time="${slot}" data-day="${dayIndex}">
                 </td>
             `).join('')}
-            <td>
-                <button type="button" class="btn btn-danger btn-sm remove-row">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
         `;
         tbody.appendChild(row);
-
-        // 添加删除行的事件监听器
-        row.querySelector('.remove-row').addEventListener('click', () => {
-            row.remove();
-        });
-    }
+    });
 }
 
 // 在 initializeApp 函数中调用
