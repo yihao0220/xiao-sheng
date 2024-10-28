@@ -763,3 +763,24 @@ h1, h2 {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+
+/* 添加新的样式 */
+.course-time-start,
+.course-time-end {
+    width: 100px;
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.remove-row {
+    padding: 5px 10px;
+}
+
+#weeklyScheduleTemplate td {
+    vertical-align: middle;
+}
+
+.btn-danger.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
