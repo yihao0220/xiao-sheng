@@ -339,6 +339,7 @@ document.getElementById('saveEditTaskButton').addEventListener('click', () => {
     }
 });
 
+// 修改 generateWeeklyScheduleTemplate 函数，恢复原来的版本
 function generateWeeklyScheduleTemplate() {
     const timeSlots = [
         "8:00 - 9:40", "10:00 - 11:40", "14:00 - 15:40", "16:00 - 17:40", "19:00 - 20:40"
