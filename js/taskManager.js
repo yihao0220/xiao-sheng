@@ -57,7 +57,7 @@ const TaskManager = {
     // 删除任务
     deleteTask: (index) => {
         try {
-            console.log("TaskManager: 正在除索引为", index, "的任务");
+            console.log("TaskManager: 正在删除索引为", index, "的任务");
             const tasks = Storage.getItem('tasks') || [];
             if (index < 0 || index >= tasks.length) {
                 throw new Error("无效的任务索引");
@@ -177,8 +177,8 @@ const TaskManager = {
                     console.log("Recognized text:", text); // 日志：显示识别出的文字
                     const classes = TaskManager.parseSchedule(text); // 解析识别出的文字
                     Storage.setItem('classes', classes); // 保存解析后的课程信息
-                    UI.updateClassList(classes); // 更新UI显示的课列表
-                    resolve(classes); // 析成功，返回课程数组
+                    UI.updateClassList(classes); // 更新UI显示的课��列表
+                    resolve(classes); // 解析成功，返回课程数组
                 })
                 .catch((error) => {
                     console.error("Error recognizing schedule:", error); // 错误日志：识别课程表时出错
@@ -231,13 +231,23 @@ const TaskManager = {
     addWeeklySchedule: () => {
         try {
             const weeklySchedule = [];
-            const inputs = document.querySelectorAll('#weeklyScheduleTemplate .course-input');
-            inputs.forEach(input => {
-                if (input.value.trim()) {
-                    weeklySchedule.push({
-                        name: input.value.trim(),
-                        day: ['周一', '周二', '周三', '周四', '周五'][input.dataset.day],
-                        time: input.dataset.time
+            const rows = document.querySelectorAll('#weeklyScheduleTemplate tbody tr');
+            
+            rows.forEach(row => {
+                const timeInput = row.querySelector('.time-slot-input');
+                const courseInputs = row.querySelectorAll('.course-input');
+                
+                if (timeInput) {
+                    const timeSlot = timeInput.value.trim();
+                    
+                    courseInputs.forEach((input, dayIndex) => {
+                        if (input.value.trim()) {
+                            weeklySchedule.push({
+                                name: input.value.trim(),
+                                day: ['周一', '周二', '周三', '周四', '周五'][dayIndex],
+                                time: timeSlot
+                            });
+                        }
                     });
                 }
             });
@@ -245,13 +255,10 @@ const TaskManager = {
             console.log("Adding weekly schedule:", weeklySchedule);
             Storage.setItem('weeklySchedule', weeklySchedule);
             UI.updateClassList(weeklySchedule);
-            console.log("Weekly schedule added successfully");
-            
-            // 添加成功保存的提醒
             UI.showSuccess("周课表已成功保存！");
         } catch (error) {
             console.error("Error adding weekly schedule:", error);
-            UI.showError("添加周课表时错，请稍后再试");
+            UI.showError("添加周课表时出错，请稍后再试");
         }
     },
 
@@ -316,50 +323,6 @@ const TaskManager = {
             console.error("TaskManager: 获取任务统计时出错:", error.message);
             return { totalTasks: 0, completedTasks: 0, pendingTasks: 0 };
         }
-    },
-
-    // 检查课程提醒
-    checkClassReminders: () => {
-        try {
-            const weeklySchedule = Storage.getItem('weeklySchedule') || [];
-            const now = new Date();
-            const currentDay = now.toLocaleString('zh-CN', {weekday: 'long'}); // 获取当前星期几
-            
-            weeklySchedule.forEach(classInfo => {
-                if (classInfo.day === currentDay) {
-                    const [startTime] = classInfo.time.split(' - ');
-                    const [hours, minutes] = startTime.split(':').map(Number);
-                    
-                    // 创建课程开始时间的Date对象
-                    const classTime = new Date(now);
-                    classTime.setHours(hours, minutes, 0);
-                    
-                    // 计算时间差（毫秒）
-                    const timeDiff = classTime.getTime() - now.getTime();
-                    
-                    // 如果时间差在25-30分钟之间，发送提醒
-                    if (timeDiff > 25 * 60 * 1000 && timeDiff <= 30 * 60 * 1000) {
-                        const message = `
-                            课程提醒：
-                            课程名称：${classInfo.name}
-                            上课时间：${classInfo.time}
-                            距离上课还有30分钟
-                        `;
-                        UI.showReminder('课前提醒', message);
-                    }
-                }
-            });
-        } catch (error) {
-            console.error("Error checking class reminders:", error);
-        }
-    },
-
-    // 启动课程提醒检查
-    startClassReminders: () => {
-        // 每分钟检查一次
-        setInterval(TaskManager.checkClassReminders, 60000);
-        // 立即执行一次检查
-        TaskManager.checkClassReminders();
     }
 };
 
@@ -370,3 +333,4 @@ setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 window.TaskManager = TaskManager;
 
 // 注意：这里不需要额外的闭合大括号和分号，因为它们已经在象定义的末尾了
+
