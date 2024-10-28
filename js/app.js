@@ -350,22 +350,23 @@ function generateWeeklyScheduleTemplate() {
     const addRowButton = document.createElement('button');
     addRowButton.className = 'btn btn-secondary mb-3';
     addRowButton.innerHTML = '<i class="fas fa-plus"></i> 添加新时间段';
-    addRowButton.onclick = addNewTimeRow;
+    addRowButton.onclick = () => addNewTimeRow(); // 修改这里，不传参数
     tbody.parentElement.parentElement.insertBefore(addRowButton, tbody.parentElement);
 
     // 生成初始时间段
-    defaultTimeSlots.forEach((slot, index) => {
-        addNewTimeRow(slot);
+    defaultTimeSlots.forEach((slot) => {
+        const [startTime, endTime] = slot.split(" - ");
+        addNewTimeRow(startTime, endTime);
     });
 
-    // 添加新时间行的函数
-    function addNewTimeRow(defaultTime = '') {
+    // 修改添加新时间行的函数
+    function addNewTimeRow(defaultStartTime = '', defaultEndTime = '') {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>
-                <input type="time" class="form-control course-time-start" value="${defaultTime.split(' - ')[0] || ''}" required>
+                <input type="time" class="form-control course-time-start" value="${defaultStartTime}" required>
                 -
-                <input type="time" class="form-control course-time-end" value="${defaultTime.split(' - ')[1] || ''}" required>
+                <input type="time" class="form-control course-time-end" value="${defaultEndTime}" required>
             </td>
             ${Array(5).fill().map((_, dayIndex) => `
                 <td>
