@@ -57,7 +57,7 @@ const TaskManager = {
     // 删除任务
     deleteTask: (index) => {
         try {
-            console.log("TaskManager: 正在删除索引为", index, "的任务");
+            console.log("TaskManager: 正在��除索引为", index, "的任务");
             const tasks = Storage.getItem('tasks') || [];
             if (index < 0 || index >= tasks.length) {
                 throw new Error("无效的任务索引");
@@ -177,7 +177,7 @@ const TaskManager = {
                     console.log("Recognized text:", text); // 日志：显示识别出的文字
                     const classes = TaskManager.parseSchedule(text); // 解析识别出的文字
                     Storage.setItem('classes', classes); // 保存解析后的课程信息
-                    UI.updateClassList(classes); // 更新UI显示的课程列表
+                    UI.updateClassList(classes); // 更新UI显示的课��列表
                     resolve(classes); // 解析成功，返回课程数组
                 })
                 .catch((error) => {
@@ -218,7 +218,7 @@ const TaskManager = {
         try {
             const tasks = Storage.getItem('tasks') || []; // 从存储中获取任务数组
             tasks[index].completed = !tasks[index].completed; // 切换任务的完成状态
-            Storage.setItem('tasks', tasks); // 保存更新后的任务数组
+            Storage.setItem('tasks', tasks); // 保存更新后的任��数组
             UI.updateTaskList(tasks); // 更新UI显示的任务列表
             console.log("Task completion toggled:", tasks[index]); // 日志：显示切换的务状态
         } catch (error) {
@@ -234,10 +234,14 @@ const TaskManager = {
             const inputs = document.querySelectorAll('#weeklyScheduleTemplate .course-input');
             inputs.forEach(input => {
                 if (input.value.trim()) {
+                    const row = input.closest('tr');
+                    const timeInput = row.querySelector('.course-time'); // 新增：获取时间输入
+                    const customTime = timeInput ? timeInput.value : input.dataset.time; // 使用自定义时间或默认时间
+                    
                     weeklySchedule.push({
                         name: input.value.trim(),
                         day: ['周一', '周二', '周三', '周四', '周五'][input.dataset.day],
-                        time: input.dataset.time
+                        time: customTime // 使用自定义时间
                     });
                 }
             });
@@ -247,11 +251,10 @@ const TaskManager = {
             UI.updateClassList(weeklySchedule);
             console.log("Weekly schedule added successfully");
             
-            // 添加成功保存的提醒
             UI.showSuccess("周课表已成功保存！");
         } catch (error) {
             console.error("Error adding weekly schedule:", error);
-            UI.showError("添加周课表时错，请稍后再试");
+            UI.showError("添加周课表时出错，请稍后再试");
         }
     },
 
