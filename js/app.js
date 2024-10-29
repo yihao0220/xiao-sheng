@@ -58,10 +58,14 @@ function initializeApp() {
         // 设置提醒
         setupReminders();
 
-        console.log("应用程序初始化成，登录按钮应该可���使用了");
+        console.log("应用程序初始化成，登录按钮应该可使用了");
 
         // 设置定时器，每天凌晨执行一次删除过期任务的操作
         setDailyTaskCleanup();
+
+        // 加载并显示已保存的时间段
+        const savedSchedule = Storage.getItem('weeklySchedule') || [];
+        UI.updateClassList(savedSchedule);
     } catch (error) {
         console.error("应用程序初始化过程中出错:", error);
         alert("初始化应用时出错，请刷新页面或联系管理员。");
@@ -96,7 +100,7 @@ function setupEventListeners(elements) {
     // 登出按钮点击事件
     elements.logoutButton?.addEventListener('click', Auth.logout);
 
-    // 保存周课按钮点击���件
+    // 保存周课按钮点击件
     elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
         e.preventDefault();
         TaskManager.addWeeklySchedule();
@@ -217,7 +221,7 @@ function setupEventListeners(elements) {
     });
 }
 
-// 处��任务列表点击事件
+// 处任务列表点击事件
 function handleTaskListClick(e) {
     if (e.target.classList.contains('edit-button')) {
         const index = parseInt(e.target.dataset.index);
