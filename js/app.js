@@ -58,7 +58,7 @@ function initializeApp() {
         // 设置提醒
         setupReminders();
 
-        console.log("应用程序初始化成，登录按钮应该可以使用了");
+        console.log("应用程序初始化成，登录按钮应该可���使用了");
 
         // 设置定时器，每天凌晨执行一次删除过期任务的操作
         setDailyTaskCleanup();
@@ -96,7 +96,7 @@ function setupEventListeners(elements) {
     // 登出按钮点击事件
     elements.logoutButton?.addEventListener('click', Auth.logout);
 
-    // 保存周课按钮点击事件
+    // 保存周课按钮点击���件
     elements.saveWeeklyScheduleButton?.addEventListener('click', (e) => {
         e.preventDefault();
         TaskManager.addWeeklySchedule();
@@ -113,7 +113,7 @@ function setupEventListeners(elements) {
     // 添加任务按钮点击事件
     elements.addTaskButton?.addEventListener('click', handleAddTask);
 
-    // 取消添���任务按钮点击事件
+    // 取消添加任务按钮点击事件
     elements.cancelAddTaskButton?.addEventListener('click', (e) => {
         e.preventDefault();
         if (elements.addTaskModal) {
@@ -217,7 +217,7 @@ function setupEventListeners(elements) {
     });
 }
 
-// 处理任务列表点击事件
+// 处��任务列表点击事件
 function handleTaskListClick(e) {
     if (e.target.classList.contains('edit-button')) {
         const index = parseInt(e.target.dataset.index);
@@ -354,8 +354,9 @@ function generateWeeklyScheduleTemplate() {
     tbody.parentElement.parentElement.insertBefore(addTimeButton, tbody.parentElement);
 
     // 生成初始时间段
-    timeSlots.forEach((slot, index) => {
-        addTimeSlotRow(slot);
+    timeSlots.forEach((slot) => {
+        const [startTime, endTime] = slot.split(' - ');
+        addTimeSlotRow(startTime, endTime);
     });
 
     // 添加新时间段的函数
@@ -364,16 +365,18 @@ function generateWeeklyScheduleTemplate() {
     }
 
     // 创建时间段行的函数
-    function addTimeSlotRow(timeSlot = '') {
+    function addTimeSlotRow(startTime = '', endTime = '') {
         const row = document.createElement('tr');
         row.innerHTML = `
             <td>
-                <input type="text" class="form-control time-slot-input" value="${timeSlot}" placeholder="请输入时间段">
-                ${timeSlot ? '' : '<button class="btn btn-danger btn-sm remove-time-slot ml-2">删除</button>'}
+                <input type="time" class="form-control time-slot-start" value="${startTime}" required>
+                -
+                <input type="time" class="form-control time-slot-end" value="${endTime}" required>
+                <button class="btn btn-danger btn-sm remove-time-slot ml-2">删除</button>
             </td>
             ${Array(5).fill().map((_, dayIndex) => `
                 <td>
-                    <input type="text" class="form-control course-input" data-time="${timeSlot}" data-day="${dayIndex}">
+                    <input type="text" class="form-control course-input" data-day="${dayIndex}">
                 </td>
             `).join('')}
         `;
