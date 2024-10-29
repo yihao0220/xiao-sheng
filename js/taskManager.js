@@ -177,7 +177,7 @@ const TaskManager = {
                     console.log("Recognized text:", text); // 日志：显示识别出的文字
                     const classes = TaskManager.parseSchedule(text); // 解析识别出的文字
                     Storage.setItem('classes', classes); // 保存解析后的课程信息
-                    UI.updateClassList(classes); // 更新UI显示的课��列表
+                    UI.updateClassList(classes); // 更新UI显示的课程列表
                     resolve(classes); // 解析成功，返回课程数组
                 })
                 .catch((error) => {
@@ -234,11 +234,12 @@ const TaskManager = {
             const rows = document.querySelectorAll('#weeklyScheduleTemplate tbody tr');
             
             rows.forEach(row => {
-                const timeInput = row.querySelector('.time-slot-input');
+                const startTimeInput = row.querySelector('.time-slot-start');
+                const endTimeInput = row.querySelector('.time-slot-end');
                 const courseInputs = row.querySelectorAll('.course-input');
                 
-                if (timeInput) {
-                    const timeSlot = timeInput.value.trim();
+                if (startTimeInput && endTimeInput) {
+                    const timeSlot = `${startTimeInput.value} - ${endTimeInput.value}`;
                     
                     courseInputs.forEach((input, dayIndex) => {
                         if (input.value.trim()) {
