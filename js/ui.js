@@ -166,7 +166,7 @@ const UI = {
         if (todayClasses && todayClasses.length > 0) {
             let message = "今天的课程提醒：\n\n";
             todayClasses.forEach(classInfo => {
-                message += `预习提醒：${classInfo.name}\n`;
+                message += `预习���醒：${classInfo.name}\n`;
                 message += `时间：${classInfo.time}\n\n`;
             });
             alert(message);
@@ -206,47 +206,41 @@ const UI = {
 
     // 改进提醒功能
     showReminder: (title, message) => {
-        // 检查是否支持通知
-        if ("Notification" in window) {
-            // 如果已经获得了通知权限
-            if (Notification.permission === "granted") {
-                new Notification(title, {
-                    body: message,
-                    icon: '/favicon.ico', // 可以添加一个图标
-                    vibrate: [200, 100, 200] // 振动模式（如果设备支持）
-                });
-                // 同时显示页面内提醒
-                UI.showMobileReminder(title, message);
-            }
-            // 如果没有被拒绝通知权限
-            else if (Notification.permission !== "denied") {
-                // 请求权限
-                Notification.requestPermission().then(permission => {
-                    if (permission === "granted") {
-                        new Notification(title, {
-                            body: message,
-                            icon: '/favicon.ico',
-                            vibrate: [200, 100, 200]
-                        });
-                        UI.showMobileReminder(title, message);
-                    }
-                });
+        // 检查是否为移动备
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+        if (isMobile) {
+            // 移动设备：使用自定义的浮动提示框
+            UI.showMobileReminder(title, message);
+        } else {
+            // 桌面设备：使用之前的通知逻辑
+            if ("Notification" in window) {
+                if (Notification.permission === "granted") {
+                    new Notification(title, { body: message });
+                } else if (Notification.permission !== "denied") {
+                    Notification.requestPermission().then(permission => {
+                        if (permission === "granted") {
+                            new Notification(title, { body: message });
+                        } else {
+                            alert(`${title}\n\n${message}`);
+                        }
+                    });
+                } else {
+                    alert(`${title}\n\n${message}`);
+                }
+            } else {
+                alert(`${title}\n\n${message}`);
             }
         }
-        
-        // 无论是否支持通知，都显示页面内提醒
-        UI.showMobileReminder(title, message);
-        
-        // 添加声音提醒
-        const audio = new Audio('/notification.mp3'); // 需要添加提醒音频文件
-        audio.play().catch(e => console.log('无法播放提醒音频:', e));
     },
 
-    // 显示页面内提醒
+    // 添加新的函数来处理移动设备的提醒
     showMobileReminder: (title, message) => {
+        // 创建提醒容器
         const reminderContainer = document.createElement('div');
         reminderContainer.className = 'mobile-reminder';
         
+        // 使用模板字符串创建内容，添加更多的结构和样式类
         reminderContainer.innerHTML = `
             <div class="reminder-header">
                 <h3>${title}</h3>
@@ -257,42 +251,78 @@ const UI = {
             </div>
         `;
 
-        // 添加提醒样式
+        // 添加样式
         reminderContainer.style.cssText = `
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
             background-color: #ffffff;
-            padding: 15px;
+            color: #333333;
+            padding: 0;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             z-index: 1000;
             max-width: 90%;
             width: 300px;
-            animation: slideIn 0.3s ease-out;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         `;
 
+        // 添加子元素样式
+        const style = document.createElement('style');
+        style.textContent = `
+            .mobile-reminder .reminder-header {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 15px;
+                font-weight: bold;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            .mobile-reminder .reminder-header h3 {
+                margin: 0;
+                font-size: 16px;
+            }
+            .mobile-reminder .close-btn {
+                cursor: pointer;
+                font-size: 20px;
+            }
+            .mobile-reminder .reminder-body {
+                padding: 15px;
+                font-size: 14px;
+                line-height: 1.4;
+            }
+        `;
+        document.head.appendChild(style);
+
+        // 将提醒添加到页面
         document.body.appendChild(reminderContainer);
 
         // 添加关闭按钮功能
         const closeBtn = reminderContainer.querySelector('.close-btn');
         closeBtn.addEventListener('click', () => {
-            reminderContainer.style.animation = 'slideOut 0.3s ease-in';
+            reminderContainer.style.opacity = '0';
+            reminderContainer.style.transform = 'translateX(-50%) translateY(20px)';
             setTimeout(() => {
                 document.body.removeChild(reminderContainer);
             }, 300);
         });
 
-        // 30秒后自动关闭
+        // 设置自动淡出效果
+        setTimeout(() => {
+            reminderContainer.style.opacity = '0';
+            reminderContainer.style.transform = 'translateX(-50%) translateY(20px)';
+        }, 5000); // 5秒后开始淡出
+
+        // 移除元素
         setTimeout(() => {
             if (document.body.contains(reminderContainer)) {
-                reminderContainer.style.animation = 'slideOut 0.3s ease-in';
-                setTimeout(() => {
-                    document.body.removeChild(reminderContainer);
-                }, 300);
+                document.body.removeChild(reminderContainer);
             }
-        }, 30000);
+        }, 5300); // 5.3秒后移除元素
     },
 
     // 添加时间段输入
@@ -464,33 +494,3 @@ const UI = {
 };
 
 window.UI = UI;  // 将 UI 对象添加到全局作用域，使其他脚本可以访问
-
-console.log("UI.js end"); // 输出日志，表示 UI.js 文件执行结束
-
-// 将所有的 DOM 操作和事件监听器设置移到这个函数中
-function initializeUI() {
-    console.log("Initializing UI");
-    
-    // 移除这里的事件监听器设置
-    // const addTimeSlotButton = document.getElementById('addTimeSlot');
-    // if (addTimeSlotButton) {
-    //     addTimeSlotButton.addEventListener('click', () => {
-    //         console.log("Add time slot button clicked");
-    //         UI.addTimeSlotInput('taskTimesList');
-    //     });
-    // }
-
-    const taskTimesList = document.getElementById('taskTimesList');
-    if (taskTimesList) {
-        taskTimesList.addEventListener('click', (e) => {
-            if (e.target.classList.contains('remove-time-slot')) {
-                e.target.closest('.time-slot').remove();
-            }
-        });
-    }
-
-    // 其他初始化代码...
-}
-
-// 确保在 DOM 加载完成后执行初始化
-document.addEventListener('DOMContentLoaded', initializeUI);
