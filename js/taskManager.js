@@ -57,7 +57,7 @@ const TaskManager = {
     // 删除任务
     deleteTask: (index) => {
         try {
-            console.log("TaskManager: 正在删除索引为", index, "的任务");
+            console.log("TaskManager: 正在��除索引为", index, "的任务");
             const tasks = Storage.getItem('tasks') || [];
             if (index < 0 || index >= tasks.length) {
                 throw new Error("无效的任务索引");
@@ -177,7 +177,7 @@ const TaskManager = {
                     console.log("Recognized text:", text); // 日志：显示识别出的文字
                     const classes = TaskManager.parseSchedule(text); // 解析识别出的文字
                     Storage.setItem('classes', classes); // 保存解析后的课程信息
-                    UI.updateClassList(classes); // 更新UI显示的课程列表
+                    UI.updateClassList(classes); // 更新UI显示的课��列表
                     resolve(classes); // 解析成功，返回课程数组
                 })
                 .catch((error) => {
@@ -230,7 +230,8 @@ const TaskManager = {
     // 添加周课表
     addWeeklySchedule: () => {
         try {
-            const weeklySchedule = [];
+            const existingSchedule = Storage.getItem('weeklySchedule') || [];
+            const newSchedule = [];
             const rows = document.querySelectorAll('#weeklyScheduleTemplate tbody tr');
             
             rows.forEach(row => {
@@ -243,19 +244,36 @@ const TaskManager = {
                     
                     courseInputs.forEach((input, dayIndex) => {
                         if (input.value.trim()) {
-                            weeklySchedule.push({
+                            const newClass = {
                                 name: input.value.trim(),
                                 day: ['周一', '周二', '周三', '周四', '周五'][dayIndex],
                                 time: timeSlot
-                            });
+                            };
+
+                            // 检查是否已存在相同的课程
+                            const existingIndex = existingSchedule.findIndex(cls =>
+                                cls.name === newClass.name &&
+                                cls.day === newClass.day &&
+                                cls.time === newClass.time
+                            );
+
+                            if (existingIndex === -1) {
+                                // 如果不存在，则添加
+                                newSchedule.push(newClass);
+                            } else {
+                                // 如果存在，则更新
+                                existingSchedule[existingIndex] = newClass;
+                            }
                         }
                     });
                 }
             });
 
-            console.log("Adding weekly schedule:", weeklySchedule);
-            Storage.setItem('weeklySchedule', weeklySchedule);
-            UI.updateClassList(weeklySchedule);
+            // 合并新旧课表
+            const updatedSchedule = [...existingSchedule, ...newSchedule];
+            console.log("Updated weekly schedule:", updatedSchedule);
+            Storage.setItem('weeklySchedule', updatedSchedule);
+            UI.updateClassList(updatedSchedule);
             UI.showSuccess("周课表已成功保存！");
         } catch (error) {
             console.error("Error adding weekly schedule:", error);
