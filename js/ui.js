@@ -166,7 +166,7 @@ const UI = {
         if (todayClasses && todayClasses.length > 0) {
             let message = "今天的课程提醒：\n\n";
             todayClasses.forEach(classInfo => {
-                message += `预习���醒：${classInfo.name}\n`;
+                message += `预习醒：${classInfo.name}\n`;
                 message += `时间：${classInfo.time}\n\n`;
             });
             alert(message);
@@ -494,3 +494,33 @@ const UI = {
 };
 
 window.UI = UI;  // 将 UI 对象添加到全局作用域，使其他脚本可以访问
+
+console.log("UI.js end"); // 输出日志，表示 UI.js 文件执行结束
+
+// 将所有的 DOM 操作和事件监听器设置移到这个函数中
+function initializeUI() {
+    console.log("Initializing UI");
+    
+    // 移除这里的事件监听器设置
+    // const addTimeSlotButton = document.getElementById('addTimeSlot');
+    // if (addTimeSlotButton) {
+    //     addTimeSlotButton.addEventListener('click', () => {
+    //         console.log("Add time slot button clicked");
+    //         UI.addTimeSlotInput('taskTimesList');
+    //     });
+    // }
+
+    const taskTimesList = document.getElementById('taskTimesList');
+    if (taskTimesList) {
+        taskTimesList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('remove-time-slot')) {
+                e.target.closest('.time-slot').remove();
+            }
+        });
+    }
+
+    // 其他初始化代码...
+}
+
+// 确保在 DOM 加载完成后执行初始化
+document.addEventListener('DOMContentLoaded', initializeUI);
