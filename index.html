@@ -60,7 +60,7 @@
                     <ul id="allTasks" class="list-group"></ul> <!-- 用于显示所有任务的列表 -->
                 </div>
 
-                <!-- 修改周课表模板部分 -->
+                <!-- 添加周课表模板部分 -->
                 <div class="card mb-4">
                     <h2><i class="fas fa-calendar-alt"></i> 周课表</h2>
                     <table id="weeklyScheduleTemplate" class="table">
@@ -72,16 +72,13 @@
                                 <th>周三</th>
                                 <th>周四</th>
                                 <th>周五</th>
-                                <th>操作</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- 这里将动态生成行 -->
+                            <!-- 这里将根据常见的课程时间段生成行 -->
                         </tbody>
                     </table>
-                    <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3">
-                        <i class="fas fa-save"></i> 保存周课表
-                    </button>
+                    <button id="saveWeeklyScheduleButton" class="btn btn-primary mt-3"><i class="fas fa-save"></i> 保存周课表</button>
                     <ul id="weeklyClassList" class="list-group mt-3"></ul>
                 </div>
 
