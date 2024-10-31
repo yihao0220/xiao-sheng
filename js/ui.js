@@ -615,6 +615,53 @@ const UI = {
         if (courseName.includes('体育')) return 'course-pe';
         return 'course-other';
     },
+
+    // 在 UI 对象中添加新方法
+    renderMobileSchedule: (scheduleData) => {
+        const scheduleGrid = document.getElementById('mobileScheduleGrid');
+        if (!scheduleGrid) return;
+
+        const timeSlots = [
+            { start: "08:20", end: "10:00" },
+            { start: "10:20", end: "12:00" },
+            { start: "14:00", end: "15:40" },
+            { start: "16:00", end: "17:40" },
+            { start: "18:40", end: "20:20" }
+        ];
+
+        scheduleGrid.innerHTML = '';
+
+        timeSlots.forEach(timeSlot => {
+            const timeRow = document.createElement('div');
+            timeRow.className = 'schedule-time-row';
+            
+            const timeLabel = document.createElement('div');
+            timeLabel.className = 'time-label';
+            timeLabel.textContent = `${timeSlot.start}-${timeSlot.end}`;
+            
+            const coursesContainer = document.createElement('div');
+            coursesContainer.className = 'courses-container';
+
+            // 查找该时间段的所有课程
+            const coursesInSlot = scheduleData.filter(course => 
+                course.startTime === timeSlot.start && course.endTime === timeSlot.end
+            );
+
+            coursesInSlot.forEach(course => {
+                const courseCard = document.createElement('div');
+                courseCard.className = `mobile-course-card course-${course.type}`;
+                courseCard.innerHTML = `
+                    <div class="course-name">${course.name}</div>
+                    <div class="course-location">${course.location}</div>
+                `;
+                coursesContainer.appendChild(courseCard);
+            });
+
+            timeRow.appendChild(timeLabel);
+            timeRow.appendChild(coursesContainer);
+            scheduleGrid.appendChild(timeRow);
+        });
+    },
 };
 
 window.UI = UI;  // 将 UI 对象添加到全局作用域，使其他脚本可以访问
