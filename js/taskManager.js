@@ -359,6 +359,36 @@ const TaskManager = {
     getDayIndex: (day) => {
         const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
         return days.indexOf(day);
+    },
+
+    // 在 TaskManager 对象中添加新方法
+    renderScheduleView: () => {
+        try {
+            const weeklySchedule = Storage.getItem('weeklySchedule') || [];
+            const scheduleData = weeklySchedule.map(course => ({
+                name: course.name,
+                location: course.location || '',
+                day: course.day,
+                startTime: course.startTime,
+                endTime: course.endTime,
+                type: getClassType(course.name)
+            }));
+            
+            UI.renderMobileSchedule(scheduleData);
+        } catch (error) {
+            console.error('Error rendering schedule view:', error);
+            UI.showError('显示课表时出错');
+        }
+    },
+
+    // 根据课程名称判断课程类型（用于设置颜色）
+    getClassType: (name) => {
+        if (name.includes('英语')) return 'english';
+        if (name.includes('数学')) return 'math';
+        if (name.includes('计算机')) return 'computer';
+        if (name.includes('思政') || name.includes('道德')) return 'politics';
+        if (name.includes('体育')) return 'pe';
+        return 'other';
     }
 };
 
