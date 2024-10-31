@@ -920,3 +920,51 @@ h1, h2 {
 .course-politics { background-color: #55efc4; }    /* 思政课 */
 .course-pe { background-color: #fab1a0; }          /* 体育课 */
 .course-other { background-color: #81ecec; }       /* 其他课程 */
+
+/* 移动端课表样式 */
+.mobile-schedule-container {
+    padding: 10px;
+    background: #f5f5f5;
+}
+
+.schedule-time-row {
+    margin-bottom: 10px;
+}
+
+.time-label {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.courses-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.mobile-course-card {
+    padding: 15px;
+    border-radius: 8px;
+    color: white;
+    min-height: 70px;
+}
+
+/* 课程类型颜色 */
+.course-english { background-color: #a29bfe; }
+.course-math { background-color: #ff7675; }
+.course-computer { background-color: #74b9ff; }
+.course-politics { background-color: #55efc4; }
+.course-pe { background-color: #fab1a0; }
+.course-other { background-color: #81ecec; }
+
+.course-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.course-location {
+    font-size: 12px;
+    opacity: 0.9;
+}
