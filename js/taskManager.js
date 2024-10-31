@@ -342,6 +342,23 @@ const TaskManager = {
             console.error("TaskManager: 获取任务统计时出错:", error.message);
             return { totalTasks: 0, completedTasks: 0, pendingTasks: 0 };
         }
+    },
+
+    // 添加新的课程数据处理方法
+    processNewSchedule: (rawSchedule) => {
+        return rawSchedule.map(course => ({
+            name: course.name,
+            location: course.location,
+            day: getDayIndex(course.day),
+            time: `${course.startTime}-${course.endTime}`,
+            type: getCourseType(course.name)
+        }));
+    },
+
+    // 获取星期几的索引
+    getDayIndex: (day) => {
+        const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+        return days.indexOf(day);
     }
 };
 
