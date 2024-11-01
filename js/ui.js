@@ -234,7 +234,7 @@ const UI = {
         }
     },
 
-    // 添加新的函数处理移动设备的提醒
+    // 添加新的函数来处理移动设备的提醒
     showMobileReminder: (title, message) => {
         // 创建提醒容器
         const reminderContainer = document.createElement('div');
@@ -311,7 +311,7 @@ const UI = {
             }, 300);
         });
 
-        // 设置自动淡出效果
+        // ���置自动淡出效果
         setTimeout(() => {
             reminderContainer.style.opacity = '0';
             reminderContainer.style.transform = 'translateX(-50%) translateY(20px)';
@@ -492,8 +492,10 @@ const UI = {
         }
     },
 
-    renderSchedule: (weekData) => {
-        const scheduleGrid = document.getElementById('scheduleGrid');
+    renderSchedule: () => {
+        const scheduleContent = document.getElementById('scheduleContent');
+        if (!scheduleContent) return;
+
         const timeSlots = [
             { start: "08:20", end: "10:00" },
             { start: "10:20", end: "12:00" },
@@ -502,166 +504,65 @@ const UI = {
             { start: "18:40", end: "20:20" }
         ];
 
-        scheduleGrid.innerHTML = '';
+        const schedule = Storage.getItem('weeklySchedule') || [];
+        scheduleContent.innerHTML = '';
 
-        // 创建时间段和课程网格
-        timeSlots.forEach((slot, index) => {
-            const timeRow = document.createElement('div');
-            timeRow.className = 'time-row';
-            timeRow.innerHTML = `
-                <div class="time-slot">
-                    ${slot.start}<br>|<br>${slot.end}
-                </div>
-                <div class="course-row" data-time-slot="${index}">
-                    <!-- 课程将在这里动态插入 -->
-                </div>
-            `;
-            scheduleGrid.appendChild(timeRow);
-        });
-
-        // 渲染课程
-        weekData.forEach(course => {
-            const courseCard = document.createElement('div');
-            courseCard.className = `course-card course-type-${getCourseType(course.name)}`;
-            courseCard.innerHTML = `
-                <div class="course-name">${course.name}</div>
-                <div class="course-location">${course.location}</div>
-            `;
-            
-            // 将课程卡片插入到对应的时间段和星期几的位置
-            const timeSlotIndex = getTimeSlotIndex(course.startTime);
-            const dayIndex = getDayIndex(course.day);
-            const courseRow = document.querySelector(`[data-time-slot="${timeSlotIndex}"]`);
-            if (courseRow) {
-                courseRow.appendChild(courseCard);
-            }
-        });
-    },
-
-    // 根据课程名称返回课程类型（用于设置颜色）
-    getCourseType: (courseName) => {
-        if (courseName.includes('英语')) return 1;
-        if (courseName.includes('数')) return 2;
-        if (courseName.includes('计算机')) return 3;
-        if (courseName.includes('思想') || courseName.includes('道德')) return 4;
-        if (courseName.includes('体育')) return 5;
-        return 1; // 默认颜色
-    },
-
-    // 其他辅助方法...
-
-    // 添加新的课程表渲染方法
-    renderNewSchedule: (courses) => {
-        const scheduleGrid = document.getElementById('scheduleGrid');
-        if (!scheduleGrid) return;
-
-        // 清空现有内容
-        scheduleGrid.innerHTML = '';
-
-        // 定义时间段
-        const timeSlots = [
-            { start: "08:20", end: "10:00" },
-            { start: "10:20", end: "12:00" },
-            { start: "14:00", end: "15:40" },
-            { start: "16:00", end: "17:40" },
-            { start: "18:40", end: "20:20" }
-        ];
-
-        // 创建时间段行
         timeSlots.forEach(slot => {
-            const row = document.createElement('div');
-            row.className = 'time-row';
-            
-            // 添加时间列
-            const timeCell = document.createElement('div');
-            timeCell.className = 'time-slot';
-            timeCell.textContent = `${slot.start}-${slot.end}`;
-            row.appendChild(timeCell);
+            const timeSlotDiv = document.createElement('div');
+            timeSlotDiv.className = 'time-slot';
 
-            // 为每一天创建单元格
+            // 添加时间标签
+            const timeLabel = document.createElement('div');
+            timeLabel.className = 'time-label';
+            timeLabel.textContent = `${slot.start}\n|\n${slot.end}`;
+            timeSlotDiv.appendChild(timeLabel);
+
+            // 添加课程卡片容器
+            const courseCards = document.createElement('div');
+            courseCards.className = 'course-cards';
+
+            // 为每一天添加课程卡片
             for (let day = 0; day < 7; day++) {
-                const cell = document.createElement('div');
-                cell.className = 'course-cell';
-                
-                // 查找该时间段该天的课程
-                const course = courses.find(c => 
-                    c.time === `${slot.start}-${slot.end}` && 
-                    c.day === day
+                const course = schedule.find(c => 
+                    c.startTime === slot.start && 
+                    c.endTime === slot.end && 
+                    getDayIndex(c.day) === day
                 );
 
                 if (course) {
                     const card = document.createElement('div');
-                    card.className = `course-card ${getCourseColorClass(course.name)}`;
+                    card.className = `course-card course-${getCourseType(course.name)}`;
                     card.innerHTML = `
                         <div class="course-name">${course.name}</div>
                         <div class="course-location">${course.location || ''}</div>
                     `;
-                    cell.appendChild(card);
+                    courseCards.appendChild(card);
+                } else {
+                    // 添加空白占位符
+                    const emptyCard = document.createElement('div');
+                    courseCards.appendChild(emptyCard);
                 }
-
-                row.appendChild(cell);
             }
 
-            scheduleGrid.appendChild(row);
+            timeSlotDiv.appendChild(courseCards);
+            scheduleContent.appendChild(timeSlotDiv);
         });
     },
 
-    // 获取课程颜色类名
-    getCourseColorClass: (courseName) => {
-        if (courseName.includes('英语')) return 'course-english';
-        if (courseName.includes('数学')) return 'course-math';
-        if (courseName.includes('计算机')) return 'course-computer';
-        if (courseName.includes('思政') || courseName.includes('道德')) return 'course-politics';
-        if (courseName.includes('体育')) return 'course-pe';
-        return 'course-other';
+    // 辅助函数
+    getDayIndex: (day) => {
+        const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+        return days.indexOf(day);
     },
 
-    // 在 UI 对象中添加新方法
-    renderMobileSchedule: (scheduleData) => {
-        const scheduleGrid = document.getElementById('mobileScheduleGrid');
-        if (!scheduleGrid) return;
-
-        const timeSlots = [
-            { start: "08:20", end: "10:00" },
-            { start: "10:20", end: "12:00" },
-            { start: "14:00", end: "15:40" },
-            { start: "16:00", end: "17:40" },
-            { start: "18:40", end: "20:20" }
-        ];
-
-        scheduleGrid.innerHTML = '';
-
-        timeSlots.forEach(timeSlot => {
-            const timeRow = document.createElement('div');
-            timeRow.className = 'schedule-time-row';
-            
-            const timeLabel = document.createElement('div');
-            timeLabel.className = 'time-label';
-            timeLabel.textContent = `${timeSlot.start}-${timeSlot.end}`;
-            
-            const coursesContainer = document.createElement('div');
-            coursesContainer.className = 'courses-container';
-
-            // 查找该时间段的所有课程
-            const coursesInSlot = scheduleData.filter(course => 
-                course.startTime === timeSlot.start && course.endTime === timeSlot.end
-            );
-
-            coursesInSlot.forEach(course => {
-                const courseCard = document.createElement('div');
-                courseCard.className = `mobile-course-card course-${course.type}`;
-                courseCard.innerHTML = `
-                    <div class="course-name">${course.name}</div>
-                    <div class="course-location">${course.location}</div>
-                `;
-                coursesContainer.appendChild(courseCard);
-            });
-
-            timeRow.appendChild(timeLabel);
-            timeRow.appendChild(coursesContainer);
-            scheduleGrid.appendChild(timeRow);
-        });
-    },
+    getCourseType: (name) => {
+        if (name.includes('英语')) return 'english';
+        if (name.includes('数学')) return 'math';
+        if (name.includes('计算机')) return 'computer';
+        if (name.includes('思政') || name.includes('道德')) return 'politics';
+        if (name.includes('体育')) return 'pe';
+        return 'other';
+    }
 };
 
 window.UI = UI;  // 将 UI 对象添加到全局作用域，使其他脚本可以访问
