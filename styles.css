@@ -8,6 +8,11 @@
     --color-border: #A8DADC;
     --font-size-base: 16px;
     --font-family-main: 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    --primary-color: #4285f4;
+    --secondary-color: #34a853;
+    --warning-color: #fbbc05;
+    --danger-color: #ea4335;
+    --background-color: #f8f9fa;
 }
 
 /* 设置全局基础样式 */
@@ -293,7 +298,7 @@ body {
 
 /* 设置表单操作区域样式 */
 .form-actions {
-    display: flex; /* 使用弹性布局 */
+    display: flex; /* 使用弹性��局 */
     justify-content: space-between; /* 两端对齐 */
     margin-top: 30px; /* 顶部外边距 */
 }
@@ -686,7 +691,7 @@ h1, h2 {
 
 /* 添加更多自定义样式... */
 
-/* 在 styles.css ���件中添加或更新以下样式 */
+/* 在 styles.css 件中添加或更新以下样式 */
 .list-group-item {
     margin-bottom: 10px;
     border: 1px solid var(--color-border);
@@ -764,7 +769,7 @@ h1, h2 {
     white-space: nowrap;
 }
 
-/* 添加或修改移动提醒���式 */
+/* 添加或修改移动提醒式 */
 .mobile-reminder {
     position: fixed;
     bottom: 20px;
@@ -902,4 +907,72 @@ h1, h2 {
 .course-location {
     font-size: 12px;
     opacity: 0.9;
+}
+
+/* 添加响应式布局支持 */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .schedule-view {
+        overflow-x: auto;
+    }
+    
+    .table {
+        min-width: 600px;
+    }
+}
+
+/* 优化移动端显示 */
+@media screen and (max-width: 768px) {
+    .task-item {
+        padding: 10px;
+    }
+    
+    .task-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .task-actions button {
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .calendar td {
+        padding: 2px;
+        height: 60px;
+    }
+    
+    .calendar-tasks {
+        max-height: 40px;
+    }
+}
+
+/* 添加加载动画样式 */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+/* 添加提示框样式 */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    animation: slideIn 0.3s ease;
+    z-index: 9999;
 }
