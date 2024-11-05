@@ -584,15 +584,46 @@ const UI = {
             dragClass: 'task-drag', // 拖动中的类名
             
             onEnd: function(evt) {
-                const tasks = Storage.getItem('tasks') || [];
-                const task = tasks.splice(evt.oldIndex, 1)[0];
-                tasks.splice(evt.newIndex, 0, task);
-                Storage.setItem('tasks', tasks);
-                
-                // 显示操作成功提示
-                UI.showToast('任务顺序已更新', 'success');
+                try {
+                    const tasks = Storage.getItem('tasks') || [];
+                    const task = tasks.splice(evt.oldIndex, 1)[0];
+                    tasks.splice(evt.newIndex, 0, task);
+                    Storage.setItem('tasks', tasks);
+                    
+                    // 使用 UI 对象的 showToast 方法
+                    UI.showToast('任务顺序已更新', 'success');
+                } catch (error) {
+                    console.error('Error reordering tasks:', error);
+                    UI.showToast('更新任务顺序失败', 'error');
+                }
             }
         });
+    },
+
+    // 将 showToast 添加为 UI 对象的方法
+    showToast: (message, type = 'info') => {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.innerHTML = `
+            <div class="toast-content">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
+            </div>
+        `;
+        document.body.appendChild(toast);
+        
+        // 添加动画类
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 10);
+        
+        // 3秒后移除提示
+        setTimeout(() => {
+            toast.classList.add('hide');
+            setTimeout(() => {
+                toast.remove();
+            }, 300);
+        }, 3000);
     }
 };
 
@@ -639,21 +670,4 @@ function showLoading() {
         </div>
     `;
     document.body.appendChild(loadingDiv);
-}
-
-// 添加操作反馈提示
-function showToast(message, type = 'info') {
-    const toast = document.createElement('div');
-    toast.className = `toast toast-${type}`;
-    toast.innerHTML = `
-        <div class="toast-content">
-            <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-            <span>${message}</span>
-        </div>
-    `;
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
 }
