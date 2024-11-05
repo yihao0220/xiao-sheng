@@ -562,6 +562,22 @@ const UI = {
         if (name.includes('思政') || name.includes('道德')) return 'politics';
         if (name.includes('体育')) return 'pe';
         return 'other';
+    },
+
+    // 初始化拖拽排序
+    initDragAndDrop: () => {
+        const taskList = document.getElementById('allTasks');
+        if (!taskList) return;
+
+        new Sortable(taskList, {
+            animation: 150,
+            onEnd: function(evt) {
+                const tasks = Storage.getItem('tasks') || [];
+                const task = tasks.splice(evt.oldIndex, 1)[0];
+                tasks.splice(evt.newIndex, 0, task);
+                Storage.setItem('tasks', tasks);
+            }
+        });
     }
 };
 
