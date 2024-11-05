@@ -177,7 +177,7 @@ const TaskManager = {
                     console.log("Recognized text:", text); // 日志：显示识别出的文字
                     const classes = TaskManager.parseSchedule(text); // 解析识别出的文字
                     Storage.setItem('classes', classes); // 保存解析后的课程信息
-                    UI.updateClassList(classes); // 更新UI显示的课程列表
+                    UI.updateClassList(classes); // 更新UI显示的课程��表
                     resolve(classes); // 解析成功，返回课程数
                 })
                 .catch((error) => {
@@ -404,6 +404,20 @@ const TaskManager = {
             tasks[taskIndex].tags = tasks[taskIndex].tags.filter(t => t !== tag);
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
+        }
+    },
+
+    // 更新任务顺序
+    updateTaskOrder: (newOrder) => {
+        try {
+            const tasks = Storage.getItem('tasks') || [];
+            const reorderedTasks = newOrder.map(index => tasks[index]);
+            Storage.setItem('tasks', reorderedTasks);
+            UI.updateTaskList(reorderedTasks);
+            return true;
+        } catch (error) {
+            console.error('Error updating task order:', error);
+            return false;
         }
     }
 };
