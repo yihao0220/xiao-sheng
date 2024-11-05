@@ -33,3 +33,41 @@ const Storage = {
     // 移除存储项
     removeItem: (key) => localStorage.removeItem(key) // 从 localStorage 中移除指定的键值对
 };
+
+// 添加数据导出功能
+const DataBackup = {
+    exportData() {
+        const data = {
+            tasks: Storage.getItem('tasks') || [],
+            weeklySchedule: Storage.getItem('weeklySchedule') || [],
+            lastBackup: new Date().toISOString()
+        };
+        
+        const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `task-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        
+        URL.revokeObjectURL(url);
+    },
+    
+    importData(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    Storage.setItem('tasks', data.tasks);
+                    Storage.setItem('weeklySchedule', data.weeklySchedule);
+                    resolve(data);
+                } catch (error) {
+                    reject(error);
+                }
+            };
+            reader.readAsText(file);
+        });
+    }
+};
