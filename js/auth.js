@@ -91,4 +91,21 @@ if (typeof Auth === 'undefined') {
     window.Auth = Auth;
 }
 
+// 添加用户数据持久化
+function persistUserSession(user) {
+    localStorage.setItem('currentUser', JSON.stringify(user));
+    localStorage.setItem('lastLoginTime', new Date().toISOString());
+}
+
+// 添加自动登录功能
+function checkAutoLogin() {
+    const savedUser = localStorage.getItem('currentUser');
+    if (savedUser) {
+        const user = JSON.parse(savedUser);
+        // 自动登录处理
+        UI.showElement('taskManager');
+        UI.hideElement('authForm');
+    }
+}
+
 console.log("Auth.js end"); // 输出日志，表示 Auth.js 文件执行结束
