@@ -37,7 +37,9 @@ const UI = {
         }
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
-            li.className = 'list-group-item';
+            li.className = 'list-group-item task-item';
+            li.setAttribute('data-id', task.id || index); // 添加数据标识
+            li.setAttribute('draggable', 'true'); // 使元素可拖拽
             
             let taskInfo = `<strong>${task.name}</strong>`;
             if (task.times && task.times.length > 0) {
@@ -57,20 +59,24 @@ const UI = {
             }
 
             li.innerHTML = `
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>${taskInfo}</div>
-                    <div>
-                        <button class="btn btn-sm btn-outline-primary edit-button" data-index="${index}">编辑</button>
-                        <button class="btn btn-sm btn-outline-danger delete-button" data-index="${index}">删除</button>
+                <div class="task-content">
+                    <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
+                    <div class="task-info">${taskInfo}</div>
+                    <div class="task-actions">
+                        <button class="btn btn-sm btn-outline-primary edit-button" data-index="${index}">
+                            <i class="fas fa-edit"></i> 编辑
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger delete-button" data-index="${index}">
+                            <i class="fas fa-trash"></i> 删除
+                        </button>
                     </div>
                 </div>
             `;
             allTasks.appendChild(li);
         });
-        console.log("UI: Task list updated");
 
-        // 添加更新日历的调用
-        UI.createTaskCalendar(tasks);
+        // 初始化拖拽排序
+        UI.initDragAndDrop();
     },
 
     // 显示错误消息
@@ -564,18 +570,27 @@ const UI = {
         return 'other';
     },
 
-    // 初始化拖拽排序
+    // 初始化拖拽排序功能
     initDragAndDrop: () => {
         const taskList = document.getElementById('allTasks');
         if (!taskList) return;
 
+        // 创建 Sortable 实例
         new Sortable(taskList, {
-            animation: 150,
+            animation: 150, // 动画时长
+            handle: '.drag-handle', // 拖拽把手
+            ghostClass: 'task-ghost', // 拖动时的占位符类名
+            chosenClass: 'task-chosen', // 被选中项的类名
+            dragClass: 'task-drag', // 拖动中的类名
+            
             onEnd: function(evt) {
                 const tasks = Storage.getItem('tasks') || [];
                 const task = tasks.splice(evt.oldIndex, 1)[0];
                 tasks.splice(evt.newIndex, 0, task);
                 Storage.setItem('tasks', tasks);
+                
+                // 显示操作成功提示
+                UI.showToast('任务顺序已更新', 'success');
             }
         });
     }
