@@ -106,13 +106,63 @@ body {
 
 /* 设置任务项样式 */
 .task-item {
-    background-color: #f8f9fa; /* 设置背景色 */
-    border: 1px solid #e9ecef; /* 添加边框 */
-    border-radius: 12px;       /* 添加圆角 */
-    padding: 15px;             /* 添加内边距 */
-    margin-bottom: 15px;       /* 底部外边距 */
-    transition: all 0.3s ease; /* 添加过渡效果 */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 添加阴影 */
+    background-color: white;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+}
+
+.task-content {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    gap: 15px;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: #999;
+    padding: 5px;
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+.task-info {
+    flex: 1;
+}
+
+/* 拖拽相关样式 */
+.task-ghost {
+    opacity: 0.5;
+    background: #c8ebfb;
+}
+
+.task-chosen {
+    background: #e9ecef;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.task-drag {
+    opacity: 0.99;
+}
+
+/* 动画效果 */
+@keyframes taskReorder {
+    from {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.task-item {
+    animation: taskReorder 0.3s ease;
 }
 
 /* 设置任务项悬停效果 */
@@ -445,7 +495,7 @@ body {
     opacity: 0.9;
 }
 
-/* 添加其他必要的样式来替代 Bootstrap 的样式 */
+/* 添加其他必要的样式来��代 Bootstrap 的样式 */
 /* ... */
 
 .container {
