@@ -178,7 +178,7 @@ const TaskManager = {
                     const classes = TaskManager.parseSchedule(text); // 解析识别出的文字
                     Storage.setItem('classes', classes); // 保存解析后的课程信息
                     UI.updateClassList(classes); // 更新UI显示的课程列表
-                    resolve(classes); // 解析成功，返回课程数组
+                    resolve(classes); // 解析成功，返回课程数
                 })
                 .catch((error) => {
                     console.error("Error recognizing schedule:", error); // 错误日志：识别课程表时出错
@@ -329,7 +329,7 @@ const TaskManager = {
         return Storage.getItem('weeklySchedule') || []; // 从存储中获取周课表，如果没则返回空数组
     },
 
-    // 添加新方法：获取任务统计信息
+    // 添加新方法：获取任务计信息
     getTaskStats: () => {
         try {
             const tasks = Storage.getItem('tasks') || [];
@@ -344,51 +344,67 @@ const TaskManager = {
         }
     },
 
-    // 添加新的课程数据处理方法
-    processNewSchedule: (rawSchedule) => {
-        return rawSchedule.map(course => ({
-            name: course.name,
-            location: course.location,
-            day: getDayIndex(course.day),
-            time: `${course.startTime}-${course.endTime}`,
-            type: getCourseType(course.name)
-        }));
-    },
-
-    // 获取星期几的索引
-    getDayIndex: (day) => {
-        const days = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
-        return days.indexOf(day);
-    },
-
-    // 在 TaskManager 对象中添加新方法
-    renderScheduleView: () => {
-        try {
-            const weeklySchedule = Storage.getItem('weeklySchedule') || [];
-            const scheduleData = weeklySchedule.map(course => ({
-                name: course.name,
-                location: course.location || '',
-                day: course.day,
-                startTime: course.startTime,
-                endTime: course.endTime,
-                type: getClassType(course.name)
-            }));
+    // 搜索和筛选任务
+    filterTasks: (searchText, category, priority) => {
+        const tasks = Storage.getItem('tasks') || [];
+        return tasks.filter(task => {
+            const matchesSearch = searchText ? 
+                task.name.toLowerCase().includes(searchText.toLowerCase()) : true;
+            const matchesCategory = category ? 
+                task.category === category : true;
+            const matchesPriority = priority ? 
+                task.priority === priority : true;
             
-            UI.renderMobileSchedule(scheduleData);
-        } catch (error) {
-            console.error('Error rendering schedule view:', error);
-            UI.showError('显示课表时出错');
+            return matchesSearch && matchesCategory && matchesPriority;
+        });
+    },
+
+    // 获取所有任务分类
+    getCategories: () => {
+        const tasks = Storage.getItem('tasks') || [];
+        const categories = new Set(tasks.map(task => task.category).filter(Boolean));
+        return Array.from(categories);
+    },
+
+    // 更新分类筛选下拉框
+    updateCategoryFilter: () => {
+        const categories = TaskManager.getCategories();
+        const categoryFilter = document.getElementById('categoryFilter');
+        if (categoryFilter) {
+            const currentValue = categoryFilter.value;
+            categoryFilter.innerHTML = '<option value="">所有分类</option>';
+            categories.forEach(category => {
+                categoryFilter.innerHTML += `<option value="${category}">${category}</option>`;
+            });
+            categoryFilter.value = currentValue;
         }
     },
 
-    // 根据课程名称判断课程类型（用于设置颜色）
-    getClassType: (name) => {
-        if (name.includes('英语')) return 'english';
-        if (name.includes('数学')) return 'math';
-        if (name.includes('计算机')) return 'computer';
-        if (name.includes('思政') || name.includes('道德')) return 'politics';
-        if (name.includes('体育')) return 'pe';
-        return 'other';
+    // 添加标签
+    addTag: (taskId, tag) => {
+        const tasks = Storage.getItem('tasks') || [];
+        const taskIndex = tasks.findIndex(t => t.id === taskId);
+        if (taskIndex !== -1) {
+            if (!tasks[taskIndex].tags) {
+                tasks[taskIndex].tags = [];
+            }
+            if (!tasks[taskIndex].tags.includes(tag)) {
+                tasks[taskIndex].tags.push(tag);
+                Storage.setItem('tasks', tasks);
+                UI.updateTaskList(tasks);
+            }
+        }
+    },
+
+    // 移除标签
+    removeTag: (taskId, tag) => {
+        const tasks = Storage.getItem('tasks') || [];
+        const taskIndex = tasks.findIndex(t => t.id === taskId);
+        if (taskIndex !== -1 && tasks[taskIndex].tags) {
+            tasks[taskIndex].tags = tasks[taskIndex].tags.filter(t => t !== tag);
+            Storage.setItem('tasks', tasks);
+            UI.updateTaskList(tasks);
+        }
     }
 };
 
@@ -397,6 +413,16 @@ setInterval(TaskManager.checkExpiredTasks.bind(TaskManager), 60000);
 
 // 将 TaskManager 对象添加到全局作用域
 window.TaskManager = TaskManager;
+
+// 添加任务提醒功能
+function scheduleNotification(task) {
+    if (Notification.permission === 'granted') {
+        const notification = new Notification('任务提醒', {
+            body: `任务"${task.name}"即将开始`,
+            icon: '/path/to/icon.png'
+        });
+    }
+}
 
 // 注意：这里不需要额外的闭合大括号和分号，因为它们已经在象定义的末尾了
 
