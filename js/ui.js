@@ -38,36 +38,30 @@ const UI = {
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
             li.className = 'list-group-item task-item';
-            li.setAttribute('data-id', task.id || index); // 添加数据标识
-            li.setAttribute('draggable', 'true'); // 使元素可拖拽
+            li.setAttribute('data-id', task.id || index);
             
-            let taskInfo = `<strong>${task.name}</strong>`;
-            if (task.times && task.times.length > 0) {
-                taskInfo += '<br>时间段:';
-                task.times.forEach(time => {
-                    taskInfo += `<br>${time.date} ${time.startTime}-${time.endTime}`;
-                });
-            }
-            if (task.priority) {
-                taskInfo += `<br>优先级: ${task.priority}`;
-            }
-            if (task.category) {
-                taskInfo += `<br>分类: ${task.category}`;
-            }
-            if (task.location) {
-                taskInfo += `<br>地点: ${task.location}`;
-            }
-
             li.innerHTML = `
                 <div class="task-content">
-                    <div class="drag-handle"><i class="fas fa-grip-vertical"></i></div>
-                    <div class="task-info">${taskInfo}</div>
+                    <div class="drag-handle">
+                        <i class="fas fa-grip-vertical"></i>
+                        <i class="fas fa-grip-vertical" style="margin-left: -4px"></i>
+                    </div>
+                    <div class="task-info">
+                        <strong>${task.name}</strong>
+                        ${task.times && task.times.length > 0 ? 
+                            task.times.map(time => 
+                                `<div class="task-time">${time.date} ${time.startTime}-${time.endTime}</div>`
+                            ).join('') : ''}
+                        ${task.priority ? `<div class="task-priority">优先级: ${task.priority}</div>` : ''}
+                        ${task.category ? `<div class="task-category">分类: ${task.category}</div>` : ''}
+                        ${task.location ? `<div class="task-location">地点: ${task.location}</div>` : ''}
+                    </div>
                     <div class="task-actions">
                         <button class="btn btn-sm btn-outline-primary edit-button" data-index="${index}">
-                            <i class="fas fa-edit"></i> 编辑
+                            <i class="fas fa-edit"></i>
                         </button>
                         <button class="btn btn-sm btn-outline-danger delete-button" data-index="${index}">
-                            <i class="fas fa-trash"></i> 删除
+                            <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
@@ -276,7 +270,7 @@ const UI = {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         `;
 
-        // 添加子元素样式
+        // 添���子元素样式
         const style = document.createElement('style');
         style.textContent = `
             .mobile-reminder .reminder-header {
@@ -578,15 +572,29 @@ const UI = {
         // 创建 Sortable 实例
         new Sortable(taskList, {
             animation: 150,
-            handle: '.drag-handle', // 使用拖拽把手
+            handle: '.drag-handle',
             ghostClass: 'task-ghost',
             chosenClass: 'task-chosen',
             dragClass: 'task-drag',
-            forceFallback: true, // 强制使用回退模式,解决移动端问题
-            fallbackTolerance: 3, // 降低拖拽触发阈值
-            touchStartThreshold: 3, // 触摸启动阈值
+            forceFallback: true,
+            fallbackTolerance: 1,
+            touchStartThreshold: 1,
+            delay: 150, // 添加延迟，防止意外触发
+            delayOnTouchOnly: true, // 仅在触摸时应用延迟
             
+            // 开始拖动时
+            onStart: function(evt) {
+                const item = evt.item;
+                item.classList.add('dragging');
+                document.body.style.overflow = 'hidden'; // 防止页面滚动
+            },
+            
+            // 拖动结束时
             onEnd: function(evt) {
+                const item = evt.item;
+                item.classList.remove('dragging');
+                document.body.style.overflow = '';
+                
                 try {
                     const tasks = Storage.getItem('tasks') || [];
                     const task = tasks.splice(evt.oldIndex, 1)[0];
