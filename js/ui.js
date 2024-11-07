@@ -270,7 +270,7 @@ const UI = {
             transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         `;
 
-        // 添���子元素样式
+        // 添子元素样式
         const style = document.createElement('style');
         style.textContent = `
             .mobile-reminder .reminder-header {
@@ -579,14 +579,39 @@ const UI = {
             forceFallback: true,
             fallbackTolerance: 1,
             touchStartThreshold: 1,
-            delay: 150, // 添加延迟，防止意外触发
-            delayOnTouchOnly: true, // 仅在触摸时应用延迟
+            delay: 150,
+            delayOnTouchOnly: true,
             
             // 开始拖动时
             onStart: function(evt) {
                 const item = evt.item;
                 item.classList.add('dragging');
-                document.body.style.overflow = 'hidden'; // 防止页面滚动
+                document.body.style.overflow = 'hidden';
+            },
+            
+            // 拖动时
+            onMove: function(evt) {
+                const dragged = evt.dragged;
+                const related = evt.related;
+                
+                if (!related) return true;
+                
+                // 获取鼠标/触摸位置相对于目标元素的位置
+                const relatedRect = related.getBoundingClientRect();
+                const mouseY = evt.originalEvent.touches ? 
+                    evt.originalEvent.touches[0].clientY : evt.originalEvent.clientY;
+                
+                // 计算鼠标在目标元素上半部分还是下半部分
+                const threshold = relatedRect.top + relatedRect.height / 2;
+                
+                // 根据位置决定是放在目标元素的前面还是后面
+                if (mouseY < threshold) {
+                    related.parentNode.insertBefore(dragged, related);
+                } else {
+                    related.parentNode.insertBefore(dragged, related.nextSibling);
+                }
+                
+                return false; // 阻止默认的移动行为
             },
             
             // 拖动结束时
@@ -596,11 +621,22 @@ const UI = {
                 document.body.style.overflow = '';
                 
                 try {
+                    // 获取所有任务元素
+                    const taskElements = Array.from(taskList.children);
                     const tasks = Storage.getItem('tasks') || [];
-                    const task = tasks.splice(evt.oldIndex, 1)[0];
-                    tasks.splice(evt.newIndex, 0, task);
-                    Storage.setItem('tasks', tasks);
+                    
+                    // 创建新的任务数组，按照当前DOM顺序重新排列
+                    const newTasks = taskElements.map(element => {
+                        const taskId = element.getAttribute('data-id');
+                        return tasks.find(task => (task.id || '').toString() === taskId);
+                    }).filter(Boolean); // 过滤掉可能的null值
+                    
+                    // 保存新的任务顺序
+                    Storage.setItem('tasks', newTasks);
                     UI.showToast('任务顺序已更新', 'success');
+                    
+                    // 重新加载任务列表以确保显示正确
+                    UI.updateTaskList(newTasks);
                 } catch (error) {
                     console.error('Error reordering tasks:', error);
                     UI.showToast('更新任务顺序失败', 'error');
