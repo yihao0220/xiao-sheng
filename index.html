@@ -127,6 +127,29 @@
                         <!-- 课程内容将通过 JavaScript 动态生成 -->
                     </div>
                 </div>
+
+                <!-- 在 taskManager div 中添加提醒设置部分 -->
+                <div class="card mb-4">
+                    <h2><i class="fas fa-bell"></i> 提醒设置</h2>
+                    <div class="reminder-settings">
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="enableClassReminder" checked>
+                                开启课程提醒
+                            </label>
+                        </div>
+                        <div class="form-group">
+                            <label>提前提醒时间</label>
+                            <select id="reminderTime" class="form-control">
+                                <option value="5">5分钟</option>
+                                <option value="10">10分钟</option>
+                                <option value="15" selected>15分钟</option>
+                                <option value="30">30分钟</option>
+                                <option value="60">1小时</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
 
