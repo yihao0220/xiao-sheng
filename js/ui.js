@@ -577,11 +577,14 @@ const UI = {
 
         // 创建 Sortable 实例
         new Sortable(taskList, {
-            animation: 150, // 动画时长
-            handle: '.drag-handle', // 拖拽把手
-            ghostClass: 'task-ghost', // 拖动时的占位符类名
-            chosenClass: 'task-chosen', // 被选中项的类名
-            dragClass: 'task-drag', // 拖动中的类名
+            animation: 150,
+            handle: '.drag-handle', // 使用拖拽把手
+            ghostClass: 'task-ghost',
+            chosenClass: 'task-chosen',
+            dragClass: 'task-drag',
+            forceFallback: true, // 强制使用回退模式,解决移动端问题
+            fallbackTolerance: 3, // 降低拖拽触发阈值
+            touchStartThreshold: 3, // 触摸启动阈值
             
             onEnd: function(evt) {
                 try {
@@ -589,8 +592,6 @@ const UI = {
                     const task = tasks.splice(evt.oldIndex, 1)[0];
                     tasks.splice(evt.newIndex, 0, task);
                     Storage.setItem('tasks', tasks);
-                    
-                    // 使用 UI 对象的 showToast 方法
                     UI.showToast('任务顺序已更新', 'success');
                 } catch (error) {
                     console.error('Error reordering tasks:', error);
@@ -624,6 +625,46 @@ const UI = {
                 toast.remove();
             }, 300);
         }, 3000);
+    },
+
+    // 显示课程通知
+    showClassNotification: (classInfo) => {
+        // 创建通知元素
+        const notification = document.createElement('div');
+        notification.className = 'notification';
+        notification.innerHTML = `
+            <div class="notification-content">
+                <h3>课程提醒</h3>
+                <p>课程：${classInfo.name}</p>
+                <p>时间：${classInfo.startTime}</p>
+                <p>地点：${classInfo.location || '未设置'}</p>
+            </div>
+            <button class="notification-close">&times;</button>
+        `;
+
+        // 添加到页面
+        document.body.appendChild(notification);
+
+        // 添加关闭按钮事件
+        const closeButton = notification.querySelector('.notification-close');
+        closeButton.addEventListener('click', () => {
+            notification.remove();
+        });
+
+        // 5秒后自动关闭
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                notification.remove();
+            }
+        }, 5000);
+
+        // 如果浏览器支持通知，也发送浏览器通知
+        if ("Notification" in window && Notification.permission === "granted") {
+            new Notification("课程提醒", {
+                body: `${classInfo.name}\n时间：${classInfo.startTime}\n地点：${classInfo.location || '未设置'}`,
+                icon: '/path/to/icon.png'
+            });
+        }
     }
 };
 
