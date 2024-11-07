@@ -106,39 +106,64 @@ body {
 
 /* 设置任务项样式 */
 .task-item {
-    background-color: white;
+    touch-action: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    position: relative;
+    background: white;
     border: 1px solid var(--color-border);
     border-radius: 8px;
     margin-bottom: 10px;
-    transition: all 0.3s ease;
-    touch-action: none; /* 防止触摸事件的默认行为 */
-    user-select: none; /* 防止文本选择 */
-    -webkit-user-select: none;
-    position: relative;
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: default; /* 防止移动端长按选择文本 */
+    overflow: hidden;
 }
 
 .task-content {
     display: flex;
-    align-items: center;
-    padding: 15px;
-    gap: 15px;
+    align-items: flex-start;
+    padding: 12px;
+    gap: 12px;
 }
 
 .drag-handle {
-    cursor: move;
+    display: flex;
+    align-items: center;
     padding: 8px;
+    margin: -8px 0;
+    cursor: move;
+    touch-action: none;
     color: #999;
-    margin-right: 10px;
-}
-
-.drag-handle:active {
-    cursor: grabbing;
 }
 
 .task-info {
     flex: 1;
+    min-width: 0;
+}
+
+.task-info > * {
+    margin-bottom: 4px;
+}
+
+.task-actions {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+}
+
+.task-ghost {
+    opacity: 0.5;
+    background: #f8f9fa;
+}
+
+.task-chosen {
+    background: #e9ecef;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.dragging {
+    opacity: 0.9;
+    background: #f8f9fa;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
 }
 
 /* 拖拽相关样式 */
