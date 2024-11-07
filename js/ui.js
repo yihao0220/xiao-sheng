@@ -559,7 +559,7 @@ const UI = {
         if (name.includes('英语')) return 'english';
         if (name.includes('数学')) return 'math';
         if (name.includes('计算机')) return 'computer';
-        if (name.includes('思政') || name.includes('道德')) return 'politics';
+        if (name.includes('���政') || name.includes('道德')) return 'politics';
         if (name.includes('体育')) return 'pe';
         return 'other';
     },
@@ -589,31 +589,6 @@ const UI = {
                 document.body.style.overflow = 'hidden';
             },
             
-            // 拖动时
-            onMove: function(evt) {
-                const dragged = evt.dragged;
-                const related = evt.related;
-                
-                if (!related) return true;
-                
-                // 获取鼠标/触摸位置相对于目标元素的位置
-                const relatedRect = related.getBoundingClientRect();
-                const mouseY = evt.originalEvent.touches ? 
-                    evt.originalEvent.touches[0].clientY : evt.originalEvent.clientY;
-                
-                // 计算鼠标在目标元素上半部分还是下半部分
-                const threshold = relatedRect.top + relatedRect.height / 2;
-                
-                // 根据位置决定是放在目标元素的前面还是后面
-                if (mouseY < threshold) {
-                    related.parentNode.insertBefore(dragged, related);
-                } else {
-                    related.parentNode.insertBefore(dragged, related.nextSibling);
-                }
-                
-                return false; // 阻止默认的移动行为
-            },
-            
             // 拖动结束时
             onEnd: function(evt) {
                 const item = evt.item;
@@ -621,25 +596,20 @@ const UI = {
                 document.body.style.overflow = '';
                 
                 try {
-                    // 获取所有任务元素
-                    const taskElements = Array.from(taskList.children);
                     const tasks = Storage.getItem('tasks') || [];
+                    // 移动任务
+                    const task = tasks.splice(evt.oldIndex, 1)[0];
+                    tasks.splice(evt.newIndex, 0, task);
+                    // 保存新顺序
+                    Storage.setItem('tasks', tasks);
                     
-                    // 创建新的任务数组，按照当前DOM顺序重新排列
-                    const newTasks = taskElements.map(element => {
-                        const taskId = element.getAttribute('data-id');
-                        return tasks.find(task => (task.id || '').toString() === taskId);
-                    }).filter(Boolean); // 过滤掉可能的null值
-                    
-                    // 保存新的任务顺序
-                    Storage.setItem('tasks', newTasks);
+                    // 不需要重新渲染整个列表
                     UI.showToast('任务顺序已更新', 'success');
-                    
-                    // 重新加载任务列表以确保显示正确
-                    UI.updateTaskList(newTasks);
                 } catch (error) {
                     console.error('Error reordering tasks:', error);
                     UI.showToast('更新任务顺序失败', 'error');
+                    // 如果出错，重新加载任务列表
+                    TaskManager.loadTasks();
                 }
             }
         });
