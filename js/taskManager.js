@@ -43,9 +43,19 @@ const TaskManager = {
             if (!updatedTask.name) {
                 throw new Error("任务名称不能为空");
             }
-            if (!updatedTask.times || updatedTask.times.length === 0) {
-                throw new Error("至少需要一个时间段");
+            
+            // 处理时间信息，允许没有时间
+            if (updatedTask.times && updatedTask.times.length > 0) {
+                updatedTask.times = updatedTask.times.filter(time => {
+                    // 只保留有效的时间记录（至少有一个时间字段）
+                    return time.date || time.startTime || time.endTime;
+                });
+            } else {
+                updatedTask.times = []; // 如果没有时间信息，设置为空数组
             }
+
+            // 保持原有的 ID
+            updatedTask.id = tasks[index].id;
             tasks[index] = updatedTask;
             Storage.setItem('tasks', tasks);
             UI.updateTaskList(tasks);
