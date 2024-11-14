@@ -31,10 +31,8 @@ const UI = {
             return;
         }
         allTasks.innerHTML = '';
-        if (!Array.isArray(tasks)) {
-            console.error("UI: Invalid tasks data:", tasks);
-            return;
-        }
+        
+        // 直接绑定事件处理器到按钮，而不是使用事件委托
         tasks.forEach((task, index) => {
             const li = document.createElement('li');
             li.className = 'list-group-item task-item';
@@ -58,15 +56,32 @@ const UI = {
                         ${task.location ? `<div class="task-location">地点: ${task.location}</div>` : ''}
                     </div>
                     <div class="task-actions">
-                        <button class="btn btn-sm btn-outline-primary edit-button" data-index="${index}">
+                        <button class="btn btn-sm btn-outline-primary edit-btn" data-index="${index}">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger delete-button" data-index="${index}">
+                        <button class="btn btn-sm btn-outline-danger delete-btn" data-index="${index}">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
                 </div>
             `;
+
+            // 直接为按钮添加事件监听器
+            const editBtn = li.querySelector('.edit-btn');
+            const deleteBtn = li.querySelector('.delete-btn');
+
+            editBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // 阻止事件冒泡
+                UI.showEditTaskForm(index);
+            });
+
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // 阻止事件冒泡
+                if (confirm('确定要删除这个任务吗？')) {
+                    TaskManager.deleteTask(index);
+                }
+            });
+
             allTasks.appendChild(li);
         });
 
@@ -466,21 +481,35 @@ const UI = {
         const task = tasks[index];
 
         if (task) {
+            const editTaskModal = document.getElementById('editTaskModal');
+            const editTaskForm = document.getElementById('editTaskForm');
+            const editTaskTimesList = document.getElementById('editTaskTimesList');
+            
             document.getElementById('editTaskName').value = task.name;
-            document.getElementById('editTaskTimesList').innerHTML = '';
-            task.times.forEach(time => {
-                UI.addTimeSlotInput('editTaskTimesList');
-                const timeSlot = document.getElementById('editTaskTimesList').lastElementChild;
-                timeSlot.querySelector('input[type="date"]').value = time.date;
-                timeSlot.querySelectorAll('input[type="time"]')[0].value = time.startTime;
-                timeSlot.querySelectorAll('input[type="time"]')[1].value = time.endTime;
-            });
             document.getElementById('editPriority').value = task.priority || 'medium';
             document.getElementById('editCategory').value = task.category || '';
             document.getElementById('editLocation').value = task.location || '';
 
-            document.getElementById('editTaskForm').dataset.taskIndex = index;
-            document.getElementById('editTaskModal').style.display = 'block';
+            // 清空并重新填充时间段列表
+            editTaskTimesList.innerHTML = '';
+            if (task.times && task.times.length > 0) {
+                task.times.forEach(time => {
+                    const timeSlotDiv = document.createElement('div');
+                    timeSlotDiv.className = 'time-slot mb-2';
+                    timeSlotDiv.innerHTML = `
+                        <input type="date" class="form-control mb-1" value="${time.date || ''}" placeholder="选择日期（可选）">
+                        <div class="d-flex">
+                            <input type="time" class="form-control mr-1" value="${time.startTime || ''}" placeholder="开始时间（可选）">
+                            <input type="time" class="form-control ml-1" value="${time.endTime || ''}" placeholder="结束时间（可选）">
+                            <button type="button" class="btn btn-danger ml-2 remove-time-slot">删除</button>
+                        </div>
+                    `;
+                    editTaskTimesList.appendChild(timeSlotDiv);
+                });
+            }
+
+            editTaskForm.dataset.taskIndex = index;
+            editTaskModal.style.display = 'block';
         } else {
             console.error("Task not found");
             UI.showError("未找到任务");
@@ -696,7 +725,7 @@ const UI = {
     // 在 UI 对象中添加数据恢复方法
     recoverTasks: () => {
         try {
-            // 尝试从 localStorage 获取最后一次正确的任务数据
+            // 尝试从 localStorage 获取最后一次正确的���务数据
             const lastKnownTasks = localStorage.getItem('tasks_backup');
             if (lastKnownTasks) {
                 const tasks = JSON.parse(lastKnownTasks);
