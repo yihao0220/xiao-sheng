@@ -49,11 +49,10 @@ const UI = {
                     <div class="task-info">
                         <strong>${task.name}</strong>
                         ${task.times && task.times.length > 0 ? 
-                            task.times.map(time => `
-                                <div class="task-time">
-                                    ${UI.formatTaskTime(time)}
-                                </div>
-                            `).join('') : ''}
+                            task.times.map(time => {
+                                const formattedTime = UI.formatTaskTime(time);
+                                return formattedTime ? `<div class="task-time">${formattedTime}</div>` : '';
+                            }).join('') : ''}
                         ${task.priority ? `<div class="task-priority">优先级: ${task.priority}</div>` : ''}
                         ${task.category ? `<div class="task-category">分类: ${task.category}</div>` : ''}
                         ${task.location ? `<div class="task-location">地点: ${task.location}</div>` : ''}
@@ -351,10 +350,10 @@ const UI = {
         const timeSlotDiv = document.createElement('div');
         timeSlotDiv.className = 'time-slot mb-2';
         timeSlotDiv.innerHTML = `
-            <input type="date" class="form-control mb-1" required>
+            <input type="date" class="form-control mb-1" placeholder="选择日期（可选）">
             <div class="d-flex">
-                <input type="time" class="form-control mr-1">
-                <input type="time" class="form-control ml-1">
+                <input type="time" class="form-control mr-1" placeholder="开始时间（可选）">
+                <input type="time" class="form-control ml-1" placeholder="结束时间（可选）">
                 <button type="button" class="btn btn-danger ml-2 remove-time-slot">删除</button>
             </div>
         `;
@@ -654,7 +653,7 @@ const UI = {
         }, 3000);
     },
 
-    // 显示��程通知
+    // 显示程通知
     showClassNotification: (classInfo) => {
         // 创建通知元素
         const notification = document.createElement('div');
@@ -715,12 +714,26 @@ const UI = {
 
     // 修改任务时间显示格式的辅助函数
     formatTaskTime: (time) => {
-        const date = new Date(time.date);
-        const formattedDate = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
-        if (time.startTime && time.endTime) {
-            return `${formattedDate} ${time.startTime}-${time.endTime}`;
+        if (!time.date && !time.startTime && !time.endTime) {
+            return ''; // 如果没有设置任何时间，返回空字符串
         }
-        return formattedDate;
+        
+        let formattedTime = '';
+        
+        if (time.date) {
+            const date = new Date(time.date);
+            formattedTime += `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+        }
+        
+        if (time.startTime && time.endTime) {
+            formattedTime += ` ${time.startTime}-${time.endTime}`;
+        } else if (time.startTime) {
+            formattedTime += ` ${time.startTime}起`;
+        } else if (time.endTime) {
+            formattedTime += ` 截止${time.endTime}`;
+        }
+        
+        return formattedTime || '无时间限制';
     }
 };
 
