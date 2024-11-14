@@ -8,18 +8,22 @@ const TaskManager = {
             if (!task.name) {
                 throw new Error("任务名称不能为空");
             }
-            if (!task.times || task.times.length === 0) {
-                throw new Error("至少需要添加一个时间段");
+            
+            // 如果有时间信息，确保格式正确
+            if (task.times && task.times.length > 0) {
+                task.times = task.times.filter(time => {
+                    // 只保留至少有一个时间字段的记录
+                    return time.date || time.startTime || time.endTime;
+                });
+            } else {
+                task.times = []; // 如果没有时间信息，设置为空数组
             }
-            // 确保每个时间段都有有效的日期和时间
-            task.times = task.times.filter(time => time.date && time.startTime);
-            if (task.times.length === 0) {
-                throw new Error("没有有效的时间段");
-            }
+            
+            // 添加唯一ID
+            task.id = Date.now().toString();
             tasks.push(task);
             Storage.setItem('tasks', tasks);
             console.log("TaskManager: 任务已添加到存储，总任务数:", tasks.length);
-            console.log("当前所有任务:", tasks); // 添加这行
             return true;
         } catch (error) {
             console.error("TaskManager: 添加任务时出错:", error.message);
@@ -177,7 +181,7 @@ const TaskManager = {
                     console.log("Recognized text:", text); // 日志：显示识别出的文字
                     const classes = TaskManager.parseSchedule(text); // 解析识别出的文字
                     Storage.setItem('classes', classes); // 保存解析后的课程信息
-                    UI.updateClassList(classes); // 更新UI显示的课程��表
+                    UI.updateClassList(classes); // 更新UI显示的课程列表
                     resolve(classes); // 解析成功，返回课程数
                 })
                 .catch((error) => {
@@ -419,6 +423,52 @@ const TaskManager = {
             console.error('Error updating task order:', error);
             return false;
         }
+    },
+
+    // 检查今日课程并设置提醒
+    setupClassReminders: () => {
+        const weeklySchedule = Storage.getItem('weeklySchedule') || [];
+        if (weeklySchedule.length === 0) return;
+
+        const now = new Date();
+        const currentDay = now.toLocaleString('zh-CN', { weekday: 'long' });
+        
+        // 获取今天的课程
+        const todayClasses = weeklySchedule.filter(cls => cls.day === currentDay);
+        
+        todayClasses.forEach(classInfo => {
+            const [hours, minutes] = classInfo.startTime.split(':').map(Number);
+            const classTime = new Date();
+            classTime.setHours(hours, minutes, 0);
+            
+            // 计算距离上课还有多少毫秒
+            const timeUntilClass = classTime.getTime() - now.getTime();
+            
+            // 如果课程还没开始且在24小时内
+            if (timeUntilClass > 0 && timeUntilClass <= 24 * 60 * 60 * 1000) {
+                // 设置提醒
+                setTimeout(() => {
+                    UI.showClassNotification(classInfo);
+                }, timeUntilClass - 15 * 60 * 1000); // 提前15分钟提醒
+            }
+        });
+    },
+
+    // 初始化提醒系统
+    initReminderSystem: () => {
+        // 立即检查一次
+        TaskManager.setupClassReminders();
+        
+        // 每天凌晨重新设置提醒
+        const now = new Date();
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const timeUntilMidnight = tomorrow - now;
+        
+        setTimeout(() => {
+            TaskManager.setupClassReminders();
+            // 之后每24小时执行一次
+            setInterval(TaskManager.setupClassReminders, 24 * 60 * 60 * 1000);
+        }, timeUntilMidnight);
     }
 };
 
