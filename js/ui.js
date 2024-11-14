@@ -193,7 +193,7 @@ const UI = {
         const todayClasses = TaskManager.getClassesForToday();
         
         if (todayClasses && todayClasses.length > 0) {
-            let message = "��的课程提醒：\n\n";
+            let message = "的课程提醒：\n\n";
             todayClasses.forEach(classInfo => {
                 message += `预习醒：${classInfo.name}\n`;
                 message += `时间：${classInfo.time}\n\n`;
@@ -686,14 +686,12 @@ const UI = {
     showClassNotification: (classInfo) => {
         console.log("Showing class notification:", classInfo);
         
-        // 检查是否支持通知
         if (!("Notification" in window)) {
             console.log("This browser does not support notifications");
             alert(`课程提醒：${classInfo.name} - ${classInfo.message}`);
             return;
         }
 
-        // 如果已经有权限，直接显示通知
         if (Notification.permission === "granted") {
             const notification = new Notification("课程提醒", {
                 body: `${classInfo.name}\n时间：${classInfo.startTime}\n${classInfo.message}`,
@@ -701,17 +699,11 @@ const UI = {
                 requireInteraction: true
             });
 
-            // 添加声音提醒
-            const audio = new Audio('/path/to/notification-sound.mp3');
-            audio.play().catch(e => console.log("Error playing sound:", e));
-
             notification.onclick = () => {
                 window.focus();
                 notification.close();
             };
-        }
-        // 如果没有权限，使用备用提醒方式
-        else {
+        } else {
             alert(`课程提醒：${classInfo.name} - ${classInfo.message}`);
         }
     },
