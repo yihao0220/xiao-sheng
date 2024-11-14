@@ -49,9 +49,14 @@ const UI = {
                     <div class="task-info">
                         <strong>${task.name}</strong>
                         ${task.times && task.times.length > 0 ? 
-                            task.times.map(time => 
-                                `<div class="task-time">${time.date} ${time.startTime}-${time.endTime}</div>`
-                            ).join('') : ''}
+                            task.times.map(time => `
+                                <div class="task-time">
+                                    ${time.date}
+                                    ${time.startTime && time.endTime ? 
+                                        ` ${time.startTime}-${time.endTime}` : 
+                                        ''}
+                                </div>
+                            `).join('') : ''}
                         ${task.priority ? `<div class="task-priority">优先级: ${task.priority}</div>` : ''}
                         ${task.category ? `<div class="task-category">分类: ${task.category}</div>` : ''}
                         ${task.location ? `<div class="task-location">地点: ${task.location}</div>` : ''}
@@ -338,8 +343,8 @@ const UI = {
         timeSlotDiv.innerHTML = `
             <input type="date" class="form-control mb-1" required>
             <div class="d-flex">
-                <input type="time" class="form-control mr-1" required>
-                <input type="time" class="form-control ml-1" required>
+                <input type="time" class="form-control mr-1">
+                <input type="time" class="form-control ml-1">
                 <button type="button" class="btn btn-danger ml-2 remove-time-slot">删除</button>
             </div>
         `;
@@ -559,7 +564,7 @@ const UI = {
         if (name.includes('英语')) return 'english';
         if (name.includes('数学')) return 'math';
         if (name.includes('计算机')) return 'computer';
-        if (name.includes('���政') || name.includes('道德')) return 'politics';
+        if (name.includes('思政') || name.includes('道德')) return 'politics';
         if (name.includes('体育')) return 'pe';
         return 'other';
     },
@@ -603,12 +608,10 @@ const UI = {
                     // 保存新顺序
                     Storage.setItem('tasks', tasks);
                     
-                    // 不需要重新渲染整个列表
                     UI.showToast('任务顺序已更新', 'success');
                 } catch (error) {
                     console.error('Error reordering tasks:', error);
                     UI.showToast('更新任务顺序失败', 'error');
-                    // 如果出错，重新加载任务列表
                     TaskManager.loadTasks();
                 }
             }
@@ -678,6 +681,25 @@ const UI = {
                 body: `${classInfo.name}\n时间：${classInfo.startTime}\n地点：${classInfo.location || '未设置'}`,
                 icon: '/path/to/icon.png'
             });
+        }
+    },
+
+    // 在 UI 对象中添加数据恢复方法
+    recoverTasks: () => {
+        try {
+            // 尝试从 localStorage 获取最后一次正确的任务数据
+            const lastKnownTasks = localStorage.getItem('tasks_backup');
+            if (lastKnownTasks) {
+                const tasks = JSON.parse(lastKnownTasks);
+                Storage.setItem('tasks', tasks);
+                UI.updateTaskList(tasks);
+                UI.showToast('任务数据已恢复', 'success');
+                return true;
+            }
+            return false;
+        } catch (error) {
+            console.error('Error recovering tasks:', error);
+            return false;
         }
     }
 };
