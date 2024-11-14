@@ -51,10 +51,7 @@ const UI = {
                         ${task.times && task.times.length > 0 ? 
                             task.times.map(time => `
                                 <div class="task-time">
-                                    ${time.date}
-                                    ${time.startTime && time.endTime ? 
-                                        ` ${time.startTime}-${time.endTime}` : 
-                                        ''}
+                                    ${UI.formatTaskTime(time)}
                                 </div>
                             `).join('') : ''}
                         ${task.priority ? `<div class="task-priority">优先级: ${task.priority}</div>` : ''}
@@ -75,7 +72,20 @@ const UI = {
         });
 
         // 初始化拖拽排序
-        UI.initDragAndDrop();
+        if (typeof Sortable !== 'undefined') {
+            new Sortable(allTasks, {
+                handle: '.drag-handle',
+                animation: 150,
+                onEnd: (evt) => {
+                    const tasks = Storage.getItem('tasks') || [];
+                    const task = tasks.splice(evt.oldIndex, 1)[0];
+                    tasks.splice(evt.newIndex, 0, task);
+                    Storage.setItem('tasks', tasks);
+                }
+            });
+        } else {
+            console.warn("Sortable library not loaded, drag functionality disabled");
+        }
     },
 
     // 显示错误消息
@@ -644,7 +654,7 @@ const UI = {
         }, 3000);
     },
 
-    // 显示课程通知
+    // 显示��程通知
     showClassNotification: (classInfo) => {
         // 创建通知元素
         const notification = document.createElement('div');
@@ -701,6 +711,16 @@ const UI = {
             console.error('Error recovering tasks:', error);
             return false;
         }
+    },
+
+    // 修改任务时间显示格式的辅助函数
+    formatTaskTime: (time) => {
+        const date = new Date(time.date);
+        const formattedDate = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+        if (time.startTime && time.endTime) {
+            return `${formattedDate} ${time.startTime}-${time.endTime}`;
+        }
+        return formattedDate;
     }
 };
 
