@@ -193,7 +193,7 @@ const UI = {
         const todayClasses = TaskManager.getClassesForToday();
         
         if (todayClasses && todayClasses.length > 0) {
-            let message = "今天的课程提醒：\n\n";
+            let message = "��的课程提醒：\n\n";
             todayClasses.forEach(classInfo => {
                 message += `预习醒：${classInfo.name}\n`;
                 message += `时间：${classInfo.time}\n\n`;
@@ -684,48 +684,42 @@ const UI = {
 
     // 显示程通知
     showClassNotification: (classInfo) => {
-        // 创建通知元素
-        const notification = document.createElement('div');
-        notification.className = 'notification';
-        notification.innerHTML = `
-            <div class="notification-content">
-                <h3>课程提醒</h3>
-                <p>课程：${classInfo.name}</p>
-                <p>时间：${classInfo.startTime}</p>
-                <p>地点：${classInfo.location || '未设置'}</p>
-            </div>
-            <button class="notification-close">&times;</button>
-        `;
+        console.log("Showing class notification:", classInfo);
+        
+        // 检查是否支持通知
+        if (!("Notification" in window)) {
+            console.log("This browser does not support notifications");
+            alert(`课程提醒：${classInfo.name} - ${classInfo.message}`);
+            return;
+        }
 
-        // 添加到页面
-        document.body.appendChild(notification);
-
-        // 添加关闭按钮事件
-        const closeButton = notification.querySelector('.notification-close');
-        closeButton.addEventListener('click', () => {
-            notification.remove();
-        });
-
-        // 5秒后自动关闭
-        setTimeout(() => {
-            if (document.body.contains(notification)) {
-                notification.remove();
-            }
-        }, 5000);
-
-        // 如果浏览器支持通知，也发送浏览器通知
-        if ("Notification" in window && Notification.permission === "granted") {
-            new Notification("课程提醒", {
-                body: `${classInfo.name}\n时间：${classInfo.startTime}\n地点：${classInfo.location || '未设置'}`,
-                icon: '/path/to/icon.png'
+        // 如果已经有权限，直接显示通知
+        if (Notification.permission === "granted") {
+            const notification = new Notification("课程提醒", {
+                body: `${classInfo.name}\n时间：${classInfo.startTime}\n${classInfo.message}`,
+                icon: '/favicon.ico',
+                requireInteraction: true
             });
+
+            // 添加声音提醒
+            const audio = new Audio('/path/to/notification-sound.mp3');
+            audio.play().catch(e => console.log("Error playing sound:", e));
+
+            notification.onclick = () => {
+                window.focus();
+                notification.close();
+            };
+        }
+        // 如果没有权限，使用备用提醒方式
+        else {
+            alert(`课程提醒：${classInfo.name} - ${classInfo.message}`);
         }
     },
 
     // 在 UI 对象中添加数据恢复方法
     recoverTasks: () => {
         try {
-            // 尝试从 localStorage 获取最后一次正确的���务数据
+            // 尝试从 localStorage 获取最后一次正确的务数据
             const lastKnownTasks = localStorage.getItem('tasks_backup');
             if (lastKnownTasks) {
                 const tasks = JSON.parse(lastKnownTasks);
